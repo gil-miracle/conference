@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIRACLE — 2026 GIL Community Conference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#EF9089; --coral:#E2726B; --salmon:#F6BCAD; --orange:#F2A24E;
+    --lavender:#AFA3CB; --green:#35603C; --deepgreen:#21402A;
+    --cream:#FBF4EA; --ink:#2A2622; --paper:#FFFDF9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:var(--cream);line-height:1.65}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .disp{font-family:'Archivo Black',sans-serif;letter-spacing:.01em}
+  .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
+  .container{max-width:680px;margin:0 auto;padding:0 20px}
+  section{padding:64px 0}
+  h2.sec{font-size:1.9rem;font-weight:900;margin:6px 0 22px}
+
+  /* ── Nav ── */
+  nav{position:sticky;top:0;z-index:50;background:rgba(251,244,234,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(42,38,34,.08)}
+  .nav-in{display:flex;align-items:center;gap:14px;padding:12px 16px;overflow-x:auto;scrollbar-width:none}
+  .nav-in::-webkit-scrollbar{display:none}
+  .nav-logo{font-family:'Archivo Black';font-size:.95rem;color:var(--coral);flex-shrink:0}
+  .nav-in a.lnk{font-size:.85rem;font-weight:500;white-space:nowrap;opacity:.8}
+  .nav-in a.lock{display:inline-flex;align-items:center;gap:4px}
+  .nav-in a.lock::before{content:"🔒";font-size:.7rem}
+  body.authed .nav-in a.lock::before{content:"";display:none}
+
+  /* ── Hero (포스터 재현) ── */
+  .hero{position:relative;overflow:hidden;background:linear-gradient(180deg,#F0938C 0%,#EE8E88 42%,#F6B79F 60%,#F9D6B8 78%,#FBF4EA 100%);padding:0;color:#fff}
+  .hero-in{padding:72px 20px 0;text-align:left}
+  .hero .eyebrow{color:#fff;opacity:.95}
+  .hero h1{font-family:'Archivo Black';font-size:clamp(3.4rem,17vw,6.5rem);line-height:.95;margin:14px 0 20px;text-shadow:0 2px 0 rgba(0,0,0,.06)}
+  .hero .meta{font-weight:700;font-size:.95rem;line-height:1.9;text-align:right;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+  .count{display:flex;gap:10px;margin:28px 0 0}
+  .count div{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.45);border-radius:10px;padding:10px 0;text-align:center;flex:1;backdrop-filter:blur(2px)}
+  .count b{display:block;font-family:'Archivo Black';font-size:1.5rem;line-height:1.1}
+  .count span{font-size:.68rem;letter-spacing:.12em;opacity:.9}
+  /* 찢은 종이 산 레이어 */
+  .tear{height:52px;margin-top:-1px}
+  .tear svg{display:block;width:100%;height:100%}
+  .hero-mtns{position:relative;height:170px;margin-top:36px}
+  .mtn{position:absolute;left:0;right:0;bottom:0}
+  .mtn svg{display:block;width:100%}
+
+  /* ── About ── */
+  .verse{background:var(--paper);border-left:4px solid var(--coral);border-radius:0 12px 12px 0;padding:18px 20px;font-size:.95rem;margin:20px 0;box-shadow:0 2px 10px rgba(42,38,34,.05)}
+  .verse .ref{display:block;margin-top:10px;font-size:.78rem;font-weight:700;color:var(--coral)}
+  .place-card{background:var(--paper);border-radius:14px;padding:20px;box-shadow:0 2px 12px rgba(42,38,34,.06)}
+  .map-ph{height:150px;border-radius:10px;background:repeating-linear-gradient(45deg,#EFE7DA,#EFE7DA 10px,#F6EFE4 10px,#F6EFE4 20px);display:flex;align-items:center;justify-content:center;color:#9a8f80;font-size:.85rem;margin-bottom:14px}
+  .map-links{display:flex;gap:8px}
+  .map-links a{flex:1;text-align:center;font-size:.85rem;font-weight:700;padding:10px;border-radius:9px;border:1.5px solid rgba(42,38,34,.12);background:#fff}
+
+  /* ── Speakers ── */
+  .spk-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .spk{background:var(--paper);border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(42,38,34,.06)}
+  .spk .ph{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-family:'Archivo Black';font-size:2rem;color:#fff}
+  .spk .in{padding:12px 14px 14px}
+  .spk b{display:block;font-size:.98rem}
+  .spk small{font-size:.76rem;opacity:.65}
+  .spk .tag{display:inline-block;margin-top:8px;font-size:.68rem;font-weight:700;color:var(--coral);background:rgba(226,114,107,.1);padding:3px 8px;border-radius:20px}
+
+  /* ── Timetable ── */
+  #timetable{background:var(--deepgreen);color:var(--cream)}
+  #timetable .eyebrow{color:var(--salmon)}
+  .day-tabs{display:flex;gap:8px;margin-bottom:18px}
+  .day-tabs button{flex:1;padding:11px 0;border-radius:10px;border:1.5px solid rgba(251,244,234,.25);background:transparent;color:var(--cream);font-weight:700;font-size:.9rem;font-family:inherit;cursor:pointer}
+  .day-tabs button.on{background:var(--coral);border-color:var(--coral);color:#fff}
+  .tt-list{display:flex;flex-direction:column;gap:10px}
+  .tt{display:flex;gap:14px;background:rgba(251,244,234,.07);border:1px solid rgba(251,244,234,.12);border-radius:12px;padding:14px 16px}
+  .tt time{font-family:'Archivo Black';font-size:.82rem;color:var(--orange);min-width:74px;line-height:1.5}
+  .tt b{font-size:.95rem}
+  .tt small{display:block;font-size:.78rem;opacity:.65}
+
+  /* ── Songs ── */
+  .song{display:flex;align-items:center;gap:12px;background:var(--paper);border-radius:12px;padding:13px 16px;margin-bottom:9px;box-shadow:0 1px 8px rgba(42,38,34,.05)}
+  .song .key{font-family:'Archivo Black';font-size:.8rem;color:#fff;background:var(--lavender);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .song b{font-size:.93rem;display:block}
+  .song small{font-size:.76rem;opacity:.6}
+  .song .yt{margin-left:auto;font-size:.72rem;font-weight:700;color:var(--coral)}
+
+  /* ── 방명록 ── */
+  .gb{background:var(--paper);border-radius:12px;padding:15px 17px;margin-bottom:10px;box-shadow:0 1px 8px rgba(42,38,34,.05)}
+  .gb b{font-size:.85rem;color:var(--green)}
+  .gb time{font-size:.72rem;opacity:.5;margin-left:8px}
+  .gb p{font-size:.92rem;margin-top:5px}
+  .gb-write{width:100%;padding:14px;border-radius:12px;border:2px dashed rgba(42,38,34,.18);background:transparent;font-family:inherit;font-weight:700;font-size:.9rem;color:var(--ink);opacity:.75;cursor:pointer}
+
+  /* ── 영상 ── */
+  .video-ph{aspect-ratio:16/9;border-radius:14px;background:linear-gradient(135deg,var(--deepgreen),var(--green));display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--cream);gap:10px}
+  .video-ph .play{width:58px;height:58px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff}
+
+  /* ── My / 갤러리 (로그인 영역) ── */
+  #my,#gallery{background:linear-gradient(180deg,#F3EBDE,var(--cream))}
+  .locked{border:2px dashed rgba(42,38,34,.2);border-radius:16px;padding:36px 24px;text-align:center}
+  .locked .ico{font-size:2rem}
+  .locked p{font-size:.9rem;opacity:.7;margin:8px 0 18px}
+  .btn{display:inline-block;background:var(--coral);color:#fff;font-weight:700;font-size:.92rem;padding:13px 30px;border-radius:30px;border:none;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(226,114,107,.35)}
+  .my-card{background:var(--paper);border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(42,38,34,.06)}
+  .my-card .eyebrow{color:var(--coral);opacity:1}
+  .my-card h3{font-size:1.25rem;margin:4px 0 2px}
+  .my-card small{font-size:.8rem;opacity:.6}
+  .mates{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .mates span{font-size:.78rem;font-weight:500;background:rgba(53,96,60,.1);color:var(--green);padding:4px 11px;border-radius:20px}
+  .qr{width:150px;height:150px;margin:14px auto 6px;border-radius:12px;background:
+      conic-gradient(var(--ink) 25%,transparent 0 50%,var(--ink) 0 75%,transparent 0) 0 0/28px 28px;opacity:.85}
+  .gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .gal-grid div{aspect-ratio:1/1;border-radius:8px;background:linear-gradient(135deg,#E9DFCE,#DDD2BE)}
+  .hidden{display:none!important}
+
+  /* ── 로그인 시트 ── */
+  .sheet-bg{position:fixed;inset:0;background:rgba(42,38,34,.45);z-index:90;display:flex;align-items:flex-end;justify-content:center}
+  .sheet{background:var(--cream);border-radius:22px 22px 0 0;padding:28px 24px 36px;width:100%;max-width:680px}
+  .sheet h3{font-size:1.2rem;margin-bottom:4px}
+  .sheet .sub{font-size:.82rem;opacity:.6;margin-bottom:20px}
+  .sheet label{display:block;font-size:.78rem;font-weight:700;margin:14px 0 6px}
+  .sheet input{width:100%;padding:13px 15px;border-radius:11px;border:1.5px solid rgba(42,38,34,.15);font-family:inherit;font-size:.95rem;background:#fff}
+  .sheet input:focus{outline:2px solid var(--coral);border-color:transparent}
+  .sheet .btn{width:100%;margin-top:22px}
+  .sheet .note{font-size:.74rem;opacity:.55;text-align:center;margin-top:12px}
+
+  footer{background:var(--deepgreen);color:var(--cream);padding:44px 0 60px;font-size:.8rem}
+  footer .disp{color:var(--pink);font-size:1rem;margin-bottom:10px}
+  footer p{opacity:.65}
+  @media(min-width:600px){.hero h1{letter-spacing:.02em}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a href="#top" class="nav-logo">MIRACLE</a>
+    <a class="lnk" href="#about">About</a>
+    <a class="lnk" href="#speakers">Speakers</a>
+    <a class="lnk" href="#timetable">Timetable</a>
+    <a class="lnk" href="#songs">Songs</a>
+    <a class="lnk" href="#guestbook">방명록</a>
+    <a class="lnk" href="#video">영상</a>
+    <a class="lnk lock" href="#my">My</a>
+    <a class="lnk lock" href="#gallery">갤러리</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<header class="hero" id="top">
+  <div class="hero-in container">
+    <div class="eyebrow">2026 GIL Community Conference</div>
+    <h1>MIRA<br>CLE</h1>
+    <p class="meta">일시 : 9월 11일(금) ~ 13일(주일)<br>장소 : ACTS29 비전 빌리지(양지 온누리교회)</p>
+    <div class="count" id="count">
+      <div><b id="cd-d">00</b><span>DAYS</span></div>
+      <div><b id="cd-h">00</b><span>HRS</span></div>
+      <div><b id="cd-m">00</b><span>MIN</span></div>
+      <div><b id="cd-s">00</b><span>SEC</span></div>
+    </div>
+  </div>
+  <!-- 찢은 종이 산 레이어 -->
+  <div class="hero-mtns">
+    <div class="mtn" style="bottom:96px"><svg viewBox="0 0 400 60" preserveAspectRatio="none" height="90"><path d="M0,60 L0,34 L28,22 L52,30 L90,12 L128,26 L166,18 L204,32 L248,10 L296,28 L342,16 L400,30 L400,60 Z" fill="#FFF" opacity=".9"/><path d="M0,60 L0,38 L28,26 L52,34 L90,16 L128,30 L166,22 L204,36 L248,14 L296,32 L342,20 L400,34 L400,60 Z" fill="var(--pink)"/></svg></div>
+    <div class="mtn" style="bottom:56px"><svg viewBox="0 0 400 60" preserveAspectRatio="none" height="80"><path d="M0,60 L0,30 L44,20 L86,32 L130,14 L172,28 L224,18 L272,34 L324,12 L400,26 L400,60 Z" fill="#FFF" opacity=".9"/><path d="M0,60 L0,34 L44,24 L86,36 L130,18 L172,32 L224,22 L272,38 L324,16 L400,30 L400,60 Z" fill="var(--orange)"/></svg></div>
+    <div class="mtn" style="bottom:26px"><svg viewBox="0 0 400 60" preserveAspectRatio="none" height="76"><path d="M0,60 L0,26 L52,18 L104,30 L150,16 L210,32 L262,14 L318,28 L400,18 L400,60 Z" fill="#FFF" opacity=".9"/><path d="M0,60 L0,30 L52,22 L104,34 L150,20 L210,36 L262,18 L318,32 L400,22 L400,60 Z" fill="var(--lavender)"/></svg></div>
+    <div class="mtn" style="bottom:0"><svg viewBox="0 0 400 60" preserveAspectRatio="none" height="70"><path d="M0,60 L0,22 L60,14 L118,28 L176,12 L238,26 L300,10 L356,24 L400,16 L400,60 Z" fill="#FFF" opacity=".9"/><path d="M0,60 L0,26 L60,18 L118,32 L176,16 L238,30 L300,14 L356,28 L400,20 L400,60 Z" fill="var(--green)"/></svg></div>
+  </div>
+</header>
+
+<!-- ══ ABOUT ══ -->
+<section id="about">
+  <div class="container">
+    <div class="eyebrow" style="color:var(--coral)">Theme &amp; Place</div>
+    <h2 class="sec">주제 및 장소</h2>
+    <p>하나님이 기뻐하시는 일이라면 무엇이든 행하시는 그분의 <b>기적(MIRACLE)</b>을 함께 경험하는 3일. (임시 소개 문구)</p>
+    <div class="verse">
+      여호와께서는 하늘과 땅에서, 바다와 모든 깊은 곳에서 기뻐하시는 일이라면 무엇이든 하신다. 여호와께서는 땅끝에서 안개를 일으키고 비와 함께 번개를 보내시며 그 창고에서 바람을 내보내신다.
+      <span class="ref">시편 135:6–7</span>
+    </div>
+    <div class="place-card">
+      <div class="map-ph">약도 이미지 영역</div>
+      <b>ACTS29 비전 빌리지</b>
+      <p style="font-size:.85rem;opacity:.65">경기 용인시 처인구 양지면 ○○로 123 (양지 온누리교회)</p>
+      <div class="map-links" style="margin-top:12px">
+        <a href="#">네이버지도</a><a href="#">카카오맵</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SPEAKERS ══ -->
+<section id="speakers" style="background:var(--paper)">
+  <div class="container">
+    <div class="eyebrow" style="color:var(--coral)">Speakers</div>
+    <h2 class="sec">강사 소개</h2>
+    <div class="spk-row">
+      <div class="spk"><div class="ph" style="background:var(--coral)">김</div><div class="in"><b>김은혜 목사</b><small>OO교회</small><br><span class="tag">금요 저녁집회</span></div></div>
+      <div class="spk"><div class="ph" style="background:var(--orange)">이</div><div class="in"><b>이믿음 목사</b><small>△△교회</small><br><span class="tag">토요 오전집회</span></div></div>
+      <div class="spk"><div class="ph" style="background:var(--lavender)">박</div><div class="in"><b>박소망 선교사</b><small>□□선교회</small><br><span class="tag">토요 저녁집회</span></div></div>
+      <div class="spk"><div class="ph" style="background:var(--green)">최</div><div class="in"><b>최사랑 목사</b><small>GIL 공동체</small><br><span class="tag">주일 예배</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TIMETABLE ══ -->
+<section id="timetable">
+  <div class="container">
+    <div class="eyebrow">Timetable</div>
+    <h2 class="sec">타임테이블</h2>
+    <div class="day-tabs">
+      <button class="on" data-day="1">9/11 금</button>
+      <button data-day="2">9/12 토</button>
+      <button data-day="3">9/13 주일</button>
+    </div>
+    <div class="tt-list" data-panel="1">
+      <div class="tt"><time>16:00</time><div><b>도착 &amp; 체크인</b><small>본관 로비 · 숙소 안내</small></div></div>
+      <div class="tt"><time>18:00</time><div><b>저녁 식사</b><small>식당동</small></div></div>
+      <div class="tt"><time>19:30</time><div><b>개회 예배 — CALL</b><small>김은혜 목사 · 대예배실</small></div></div>
+      <div class="tt"><time>22:00</time><div><b>조 모임</b><small>각 숙소</small></div></div>
+    </div>
+    <div class="tt-list hidden" data-panel="2">
+      <div class="tt"><time>07:30</time><div><b>아침 식사</b><small>식당동</small></div></div>
+      <div class="tt"><time>09:30</time><div><b>오전 집회 — FAITH</b><small>이믿음 목사</small></div></div>
+      <div class="tt"><time>14:00</time><div><b>공동체 게임</b><small>야외 잔디마당 · 조별</small></div></div>
+      <div class="tt"><time>19:30</time><div><b>저녁 집회 — MIRACLE</b><small>박소망 선교사</small></div></div>
+    </div>
+    <div class="tt-list hidden" data-panel="3">
+      <div class="tt"><time>08:00</time><div><b>아침 식사 &amp; 퇴실 정리</b><small>숙소 점검</small></div></div>
+      <div class="tt"><time>10:30</time><div><b>주일 예배 — SENT</b><small>최사랑 목사</small></div></div>
+      <div class="tt"><time>12:30</time><div><b>점심 &amp; 파송</b><small>단체사진 촬영</small></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SONGS ══ -->
+<section id="songs">
+  <div class="container">
+    <div class="eyebrow" style="color:var(--coral)">Setlist</div>
+    <h2 class="sec">송리스트</h2>
+    <div class="song"><span class="key">G</span><div><b>은혜의 강가로 (임시)</b><small>개회 예배</small></div><a class="yt" href="#">▶ 듣기</a></div>
+    <div class="song"><span class="key">A</span><div><b>기적을 노래해 (임시)</b><small>저녁 집회</small></div><a class="yt" href="#">▶ 듣기</a></div>
+    <div class="song"><span class="key">D</span><div><b>주가 일하시네 (임시)</b><small>저녁 집회</small></div><a class="yt" href="#">▶ 듣기</a></div>
+    <div class="song"><span class="key">E</span><div><b>보내소서 (임시)</b><small>주일 예배</small></div><a class="yt" href="#">▶ 듣기</a></div>
+  </div>
+</section>
+
+<!-- ══ 방명록 ══ -->
+<section id="guestbook" style="background:var(--paper)">
+  <div class="container">
+    <div class="eyebrow" style="color:var(--coral)">Guestbook</div>
+    <h2 class="sec">방명록</h2>
+    <div class="gb"><b>은혜</b><time>8/19 21:40</time><p>벌써 기대돼요! 올해도 기적을 경험하길 🙏</p></div>
+    <div class="gb"><b>요셉</b><time>8/18 13:02</time><p>작년에 은혜 받고 올해 또 갑니다. 다들 만나요!</p></div>
+    <div class="gb"><b>한나</b><time>8/17 09:15</time><p>송리스트 미리 듣고 있어요. 현장에서 같이 불러요~</p></div>
+    <button class="gb-write" onclick="requireAuth(()=>alert('작성 폼 (목업)'))">✏️ 방명록 남기기 — 로그인 후 작성할 수 있어요</button>
+  </div>
+</section>
+
+<!-- ══ 영상 ══ -->
+<section id="video">
+  <div class="container">
+    <div class="eyebrow" style="color:var(--coral)">Video</div>
+    <h2 class="sec">홍보 영상</h2>
+    <div class="video-ph"><div class="play">▶</div><b>MIRACLE 티저 (YouTube 임베드 영역)</b></div>
+  </div>
+</section>
+
+<!-- ══ MY (로그인 영역) ══ -->
+<section id="my">
+  <div class="container">
+    <div class="eyebrow" style="color:var(--green)">My · 로그인 영역</div>
+    <h2 class="sec">내 정보</h2>
+
+    <div class="locked" id="my-locked">
+      <div class="ico">🔒</div>
+      <p>숙소·조·체크인 QR은 로그인 후 볼 수 있어요.</p>
+      <button class="btn" onclick="openLogin()">로그인</button>
+    </div>
+
+    <div class="hidden" id="my-open">
+      <div class="my-card">
+        <div class="eyebrow">My Room</div>
+        <h3>비전관 203호</h3>
+        <small>본관에서 도보 2분 · 4인실</small>
+        <div class="mates"><span>김예찬</span><span>이요셉</span><span>박다윗</span><span>정사무엘</span></div>
+      </div>
+      <div class="my-card">
+        <div class="eyebrow">My Team</div>
+        <h3>🍊 오렌지조</h3>
+        <small>조장: 이요셉 · 토요일 14:00 잔디마당 집합</small>
+      </div>
+      <div class="my-card" style="text-align:center">
+        <div class="eyebrow">Check-in QR</div>
+        <div class="qr"></div>
+        <small>체크인 데스크에서 이 화면을 보여주세요</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 갤러리 (로그인 영역) ══ -->
+<section id="gallery">
+  <div class="container">
+    <div class="eyebrow" style="color:var(--green)">Gallery · 로그인 영역</div>
+    <h2 class="sec">갤러리</h2>
+    <div class="locked" id="gal-locked">
+      <div class="ico">📷</div>
+      <p>컨퍼런스가 끝나면 사진을 올리고 볼 수 있어요.<br>(행사 후 오픈 예정)</p>
+      <button class="btn" onclick="openLogin()">로그인</button>
+    </div>
+    <div class="hidden" id="gal-open">
+      <div class="gal-grid">
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      </div>
+      <div style="text-align:center;margin-top:20px"><button class="btn" onclick="alert('업로드 (목업)')">＋ 사진 올리기</button></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="disp">MIRACLE</div>
+    <p>2026 GIL Community Conference · 9.11(금)–13(주일) · ACTS29 비전 빌리지</p>
+    <p style="margin-top:8px">© GIL Community. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ══ 로그인 시트 ══ -->
+<div class="sheet-bg hidden" id="sheet" onclick="if(event.target===this)closeLogin()">
+  <div class="sheet">
+    <h3>참가자 로그인</h3>
+    <p class="sub">신청 명단 기준으로 확인해요. 비밀번호는 체크인 때 설정한 4자리 숫자예요.</p>
+    <label>이름</label><input placeholder="김예찬" id="li-name">
+    <label>생년월일</label><input placeholder="19940101" inputmode="numeric" maxlength="8">
+    <label>비밀번호 (숫자 4자리)</label><input placeholder="••••" type="password" inputmode="numeric" maxlength="4">
+    <button class="btn" onclick="doLogin()">로그인</button>
+    <p class="note">비밀번호를 잊었다면 체크인 데스크에 문의해주세요.</p>
+  </div>
+</div>
+
+<script>
+// D-day 카운트다운
+const target=new Date('2026-09-11T16:00:00+09:00');
+function tick(){
+  const diff=Math.max(0,target-new Date());
+  const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4),s=Math.floor(diff%6e4/1e3);
+  cdD.textContent=String(d).padStart(2,'0');cdH.textContent=String(h).padStart(2,'0');
+  cdM.textContent=String(m).padStart(2,'0');cdS.textContent=String(s).padStart(2,'0');
+}
+const cdD=document.getElementById('cd-d'),cdH=document.getElementById('cd-h'),cdM=document.getElementById('cd-m'),cdS=document.getElementById('cd-s');
+tick();setInterval(tick,1000);
+
+// 타임테이블 탭
+document.querySelectorAll('.day-tabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.day-tabs button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('.tt-list').forEach(p=>p.classList.toggle('hidden',p.dataset.panel!==b.dataset.day));
+}));
+
+// 로그인 목업 (실서비스: 이름+생년월일 매칭 → PIN 검증 → JWT 세션)
+let authed=false,pending=null;
+function openLogin(cb){pending=cb||null;document.getElementById('sheet').classList.remove('hidden')}
+function closeLogin(){document.getElementById('sheet').classList.add('hidden')}
+function requireAuth(cb){authed?cb():openLogin(cb)}
+function doLogin(){
+  authed=true;closeLogin();document.body.classList.add('authed');
+  document.getElementById('my-locked').classList.add('hidden');
+  document.getElementById('my-open').classList.remove('hidden');
+  document.getElementById('gal-locked').classList.add('hidden');
+  document.getElementById('gal-open').classList.remove('hidden');
+  if(pending){pending();pending=null}
+}
+</script>
+</body>
+</html>

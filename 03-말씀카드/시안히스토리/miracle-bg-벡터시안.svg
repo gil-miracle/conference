@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- 하늘 -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E8837E"/>
+      <stop offset=".22" stop-color="#EF9089"/>
+      <stop offset=".38" stop-color="#F4A48E"/>
+      <stop offset=".52" stop-color="#F0B49C"/>
+      <stop offset=".62" stop-color="#C9C3C2"/>
+      <stop offset=".72" stop-color="#AFC3D3"/>
+    </linearGradient>
+    <!-- 전경 초원 -->
+    <linearGradient id="field" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4A7A52"/>
+      <stop offset=".45" stop-color="#35603C"/>
+      <stop offset="1" stop-color="#1B3323"/>
+    </linearGradient>
+    <linearGradient id="fieldL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5C8B60"/>
+      <stop offset="1" stop-color="#2E5638"/>
+    </linearGradient>
+    <!-- 개울 -->
+    <linearGradient id="stream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#D8E4E8"/>
+      <stop offset="1" stop-color="#9FB8C4"/>
+    </linearGradient>
+    <!-- 구름 블러 -->
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+    <filter id="softer" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="44"/>
+    </filter>
+    <!-- 찢은 층 그림자 -->
+    <filter id="tear" x="-10%" y="-30%" width="120%" height="160%">
+      <feDropShadow dx="0" dy="-7" stdDeviation="9" flood-color="#5A2C26" flood-opacity=".28"/>
+    </filter>
+    <!-- 종이 그레인 -->
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" result="n"/>
+      <feColorMatrix in="n" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .05 0"/>
+      <feComposite operator="over" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <!-- ═══ 하늘 ═══ -->
+  <rect width="1200" height="1200" fill="url(#sky)"/>
+
+  <!-- 상단 찢은 하늘 결 (핑크 톤 레이어) -->
+  <path d="M0,290 L52,278 L118,292 L176,274 L241,290 L305,272 L370,288 L438,270 L505,286 L570,268 L640,284 L706,266 L772,282 L840,264 L905,280 L972,262 L1040,278 L1105,262 L1200,276 L1200,0 L0,0 Z" fill="#E4776F" opacity=".55"/>
+  <path d="M0,296 L52,284 L118,298 L176,280 L241,296 L305,278 L370,294 L438,276 L505,292 L570,274 L640,290 L706,272 L772,288 L840,270 L905,286 L972,268 L1040,284 L1105,268 L1200,282" fill="none" stroke="#FFF7EE" stroke-width="5" opacity=".7"/>
+
+  <path d="M0,520 L64,506 L132,522 L198,502 L266,520 L334,500 L402,518 L470,498 L540,516 L608,496 L676,514 L744,494 L812,512 L880,492 L948,510 L1016,490 L1084,508 L1152,490 L1200,502 L1200,300 L0,300 Z" fill="#F09287" opacity=".45"/>
+  <path d="M0,526 L64,512 L132,528 L198,508 L266,526 L334,506 L402,524 L470,504 L540,522 L608,502 L676,520 L744,500 L812,518 L880,498 L948,516 L1016,496 L1084,514 L1152,496 L1200,508" fill="none" stroke="#FFF7EE" stroke-width="5" opacity=".6"/>
+
+  <!-- ═══ 구름 ═══ -->
+  <g opacity=".8">
+    <ellipse cx="290" cy="880" rx="300" ry="52" fill="#F6C6AE" filter="url(#softer)"/>
+    <ellipse cx="820" cy="800" rx="360" ry="60" fill="#F3B39C" filter="url(#softer)"/>
+    <ellipse cx="1020" cy="920" rx="260" ry="44" fill="#EEA28E" filter="url(#soft)"/>
+    <ellipse cx="180" cy="990" rx="240" ry="38" fill="#F8D8BE" filter="url(#soft)"/>
+    <ellipse cx="620" cy="950" rx="200" ry="30" fill="#FBE4CC" filter="url(#soft)" opacity=".85"/>
+    <ellipse cx="520" cy="740" rx="180" ry="26" fill="#F4BBA4" filter="url(#soft)" opacity=".7"/>
+  </g>
+
+  <!-- ═══ 찢은 산 레이어 ═══ -->
+  <!-- 1. 핑크 봉우리 -->
+  <g filter="url(#tear)">
+    <path d="M0,1108 L0,1002 L46,974 L88,930 L128,896 L162,916 L204,882 L246,908 L292,948 L338,972 L384,996 L432,1010 L484,1022 L536,1030 L1200,1054 L1200,1108 Z" fill="#FFF6EE"/>
+    <path d="M0,1108 L0,1012 L46,984 L88,940 L128,906 L162,926 L204,892 L246,918 L292,958 L338,982 L384,1006 L432,1020 L484,1032 L536,1040 L1200,1064 L1200,1108 Z" fill="#EE8A85"/>
+  </g>
+
+  <!-- 2. 오렌지 능선 -->
+  <g filter="url(#tear)">
+    <path d="M0,1150 L0,1094 L88,1088 L176,1078 L262,1084 L348,1070 L430,1052 L502,1030 L560,1012 L618,1028 L676,1046 L742,1062 L818,1074 L900,1066 L986,1078 L1074,1070 L1200,1080 L1200,1150 Z" fill="#FFF6EC"/>
+    <path d="M0,1150 L0,1102 L88,1096 L176,1086 L262,1092 L348,1078 L430,1060 L502,1038 L560,1020 L618,1036 L676,1054 L742,1070 L818,1082 L900,1074 L986,1086 L1074,1078 L1200,1088 L1200,1150 Z" fill="#EF9E4B"/>
+  </g>
+
+  <!-- 3. 라벤더 능선 -->
+  <g filter="url(#tear)">
+    <path d="M0,1210 L0,1128 L74,1140 L150,1122 L228,1136 L306,1116 L384,1132 L462,1112 L540,1128 L618,1108 L696,1124 L774,1104 L852,1120 L930,1102 L1008,1118 L1086,1100 L1200,1114 L1200,1210 Z" fill="#FBF4EE"/>
+    <path d="M0,1210 L0,1136 L74,1148 L150,1130 L228,1144 L306,1124 L384,1140 L462,1120 L540,1136 L618,1116 L696,1132 L774,1112 L852,1128 L930,1110 L1008,1126 L1086,1108 L1200,1122 L1200,1210 Z" fill="#A79BC8"/>
+  </g>
+
+  <!-- 4. 딥그린 숲 능선 -->
+  <g filter="url(#tear)">
+    <path d="M0,1290 L0,1196 L58,1206 L112,1188 L164,1200 L214,1182 L266,1196 L320,1176 L378,1192 L440,1172 L502,1188 L566,1168 L632,1184 L700,1164 L768,1180 L838,1162 L910,1178 L984,1158 L1060,1174 L1136,1156 L1200,1168 L1200,1290 Z" fill="#F7F2E8"/>
+    <path d="M0,1290 L0,1204 L58,1214 L112,1196 L164,1208 L214,1190 L266,1204 L320,1184 L378,1200 L440,1180 L502,1196 L566,1176 L632,1192 L700,1172 L768,1188 L838,1170 L910,1186 L984,1166 L1060,1182 L1136,1164 L1200,1176 L1200,1290 Z" fill="#274A30"/>
+    <!-- 숲 결 -->
+    <path d="M0,1290 L0,1236 C60,1224 90,1244 150,1232 C210,1220 250,1240 310,1230 C370,1220 420,1238 480,1228 C540,1218 600,1236 660,1226 C720,1216 780,1234 840,1224 C900,1214 960,1232 1020,1222 C1080,1212 1140,1230 1200,1220 L1200,1290 Z" fill="#1E3D27" opacity=".8"/>
+  </g>
+
+  <!-- ═══ 전경 초원 + 개울 ═══ -->
+  <g filter="url(#tear)">
+    <path d="M0,1600 L0,1288 C90,1268 170,1284 260,1272 C350,1260 440,1278 530,1268 C620,1258 710,1276 800,1266 C890,1256 980,1274 1070,1264 C1130,1258 1170,1266 1200,1262 L1200,1600 Z" fill="#F6F1E4"/>
+    <path d="M0,1600 L0,1296 C90,1276 170,1292 260,1280 C350,1268 440,1286 530,1276 C620,1266 710,1284 800,1274 C890,1264 980,1282 1070,1272 C1130,1266 1170,1274 1200,1270 L1200,1600 Z" fill="url(#field)"/>
+  </g>
+
+  <!-- 왼쪽 언덕 -->
+  <path d="M0,1600 L0,1330 C70,1310 140,1336 200,1360 C280,1392 330,1440 370,1500 C400,1546 415,1575 420,1600 Z" fill="url(#fieldL)" opacity=".9"/>
+  <!-- 오른쪽 언덕 -->
+  <path d="M1200,1600 L1200,1316 C1120,1306 1050,1330 990,1362 C920,1400 870,1456 838,1520 C818,1560 810,1584 806,1600 Z" fill="url(#fieldL)" opacity=".85"/>
+
+  <!-- 개울 -->
+  <path d="M598,1308 C588,1350 606,1392 590,1436 C572,1484 596,1524 580,1566 C572,1586 570,1594 568,1600 L680,1600 C672,1580 662,1560 668,1532 C678,1490 654,1452 668,1410 C680,1374 664,1340 672,1310 Z" fill="url(#stream)" opacity=".9"/>
+  <path d="M612,1330 C606,1362 618,1394 608,1428 M636,1440 C630,1472 642,1504 632,1540" stroke="#FFFFFF" stroke-width="4" fill="none" opacity=".5" stroke-linecap="round"/>
+
+  <!-- 바위 -->
+  <g fill="#7A6B54">
+    <ellipse cx="548" cy="1420" rx="26" ry="15"/>
+    <ellipse cx="700" cy="1470" rx="32" ry="18"/>
+    <ellipse cx="560" cy="1530" rx="22" ry="13"/>
+    <ellipse cx="690" cy="1560" rx="26" ry="14"/>
+  </g>
+  <g fill="#95856B" opacity=".85">
+    <ellipse cx="542" cy="1414" rx="18" ry="9"/>
+    <ellipse cx="694" cy="1464" rx="22" ry="11"/>
+    <ellipse cx="556" cy="1524" rx="15" ry="8"/>
+  </g>
+
+  <!-- 풀 하이라이트 -->
+  <g stroke="#8FB37E" stroke-width="3.5" stroke-linecap="round" opacity=".55" fill="none">
+    <path d="M180,1440 q6,-30 2,-52 M200,1452 q10,-26 4,-50 M222,1444 q4,-28 -2,-48"/>
+    <path d="M980,1420 q6,-30 2,-52 M1002,1432 q10,-26 4,-50 M1024,1424 q4,-28 -2,-48"/>
+    <path d="M420,1560 q6,-26 2,-46 M444,1568 q8,-24 4,-44"/>
+    <path d="M770,1540 q6,-26 2,-46 M792,1548 q8,-24 4,-44"/>
+  </g>
+
+  <!-- ═══ 그레인 ═══ -->
+  <rect width="1200" height="1600" filter="url(#grain)" opacity=".9" fill="transparent"/>
+</svg>

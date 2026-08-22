@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIRACLE — 말씀카드 시안 A–D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --pink:#EF8F88; --coral:#DC5A51; --peach:#F6BCA6; --orange:#EF9A47;
+    --lavender:#A79BC8; --green:#2E5638; --deep:#17281C;
+    --cream:#FAF6EE; --paper:#FFFDF8; --ink:#211D19; --ink-60:rgba(33,29,25,.56);
+    --hair:rgba(33,29,25,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Pretendard Variable',Pretendard,sans-serif;color:var(--ink);background:var(--cream);line-height:1.7;-webkit-font-smoothing:antialiased;padding:52px 0 90px}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .wrap{max-width:520px;margin:0 auto;padding:0 24px}
+  h1{font-size:1.4rem;font-weight:700;letter-spacing:-.03em}
+  .sub{font-size:.85rem;color:var(--ink-60);margin-top:4px}
+  .label{display:flex;justify-content:space-between;align-items:baseline;margin:56px 0 14px;border-bottom:1px solid var(--ink);padding-bottom:10px}
+  .label b{font-size:.95rem;font-weight:700;letter-spacing:-.01em}
+  .label span{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.24em;color:var(--ink-60)}
+  .cap{font-size:.8rem;color:var(--ink-60);margin-top:12px;word-break:keep-all}
+
+  .grain{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.4;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .033 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .card{position:relative;aspect-ratio:1/1;overflow:hidden;display:flex;flex-direction:column}
+  .mtns{position:absolute;left:-2px;right:-2px;bottom:-2px;pointer-events:none}
+  .mtns svg{display:block;width:100%}
+
+  /* ══ A — EDITORIAL ══ */
+  .cA{background:var(--paper);border:1px solid var(--ink);padding:26px 28px}
+  .cA .corner{position:absolute;width:11px;height:11px;color:var(--ink-60)}
+  .cA .corner svg{display:block}
+  .cA .top{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.22em;color:var(--ink-60);border-bottom:1px solid var(--ink);padding-bottom:13px}
+  .cA .body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .cA .main{font-size:clamp(1.3rem,6vw,1.7rem);font-weight:700;letter-spacing:-.035em;line-height:1.5;word-break:keep-all}
+  .cA .main em{font-style:normal;color:var(--coral)}
+  .cA .verse{font-size:.75rem;color:var(--ink-60);line-height:1.85;margin-top:15px;word-break:keep-all;max-width:36ch}
+  .cA .foot{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.2em;padding-bottom:56px}
+  .cA .foot .ref{color:var(--coral)}
+
+  /* ══ B — SUNSET ══ */
+  .cB{background:linear-gradient(168deg,#EA827B 0%,#EF9089 34%,#F4A793 58%,#F8CDB0 88%);color:#fff;padding:26px 28px}
+  .cB .top{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.22em;opacity:.95;border-bottom:1px solid rgba(255,255,255,.55);padding-bottom:13px}
+  .cB .body{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .cB .word{font-family:'Anton';font-size:clamp(2rem,9.5vw,2.7rem);letter-spacing:.02em;line-height:1;text-shadow:0 3px 20px rgba(170,64,55,.25)}
+  .cB .main{font-size:clamp(1.1rem,5vw,1.4rem);font-weight:700;letter-spacing:-.03em;line-height:1.55;word-break:keep-all;margin-top:18px;text-shadow:0 1px 12px rgba(160,60,50,.2)}
+  .cB .foot{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.2em;padding-bottom:64px;opacity:.95}
+
+  /* ══ C — NIGHT ══ */
+  .cC{background:var(--deep);color:var(--cream);padding:26px 28px}
+  .cC::after{content:"";position:absolute;inset:11px;border:1px solid rgba(250,246,238,.28);pointer-events:none}
+  .cC .top{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.22em;color:rgba(250,246,238,.55);padding:8px 8px 0}
+  .cC .body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 10px}
+  .cC .ref{font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.3em;color:var(--orange);margin-bottom:16px}
+  .cC .main{font-size:clamp(1.25rem,5.8vw,1.6rem);font-weight:600;letter-spacing:-.03em;line-height:1.65;word-break:keep-all}
+  .cC .main em{font-style:normal;color:var(--peach)}
+  .cC .foot{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.22em;color:rgba(250,246,238,.55);padding-bottom:60px}
+
+  /* ══ D — TYPOGRAPHIC ══ */
+  .cD{background:var(--paper);border:1px solid var(--ink);padding:26px 28px}
+  .cD .bigtype{position:absolute;right:-14px;bottom:-38px;font-family:'Anton';font-size:15rem;line-height:.8;color:var(--pink);opacity:.16;letter-spacing:-.02em;pointer-events:none;user-select:none}
+  .cD .top{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.22em;color:var(--ink-60)}
+  .cD .rule{border-top:1px solid var(--ink);margin-top:13px}
+  .cD .body{flex:1;display:flex;flex-direction:column;justify-content:flex-end;position:relative;padding-bottom:6px}
+  .cD .main{font-size:clamp(1.45rem,6.6vw,1.9rem);font-weight:700;letter-spacing:-.04em;line-height:1.42;word-break:keep-all}
+  .cD .main em{font-style:normal;color:var(--coral)}
+  .cD .verse{font-size:.74rem;color:var(--ink-60);line-height:1.85;margin-top:14px;word-break:keep-all;max-width:34ch}
+  .cD .foot{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.55rem;letter-spacing:.2em;margin-top:22px;border-top:1px solid var(--ink);padding-top:13px}
+  .cD .foot .ref{color:var(--coral)}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="wrap">
+  <h1>말씀카드 시안</h1>
+  <p class="sub">정사각 1:1 · 실제 저장본은 1080×1080 렌더링 기준</p>
+
+  <!-- ══ A ══ -->
+  <div class="label"><b>A. 에디토리얼</b><span>PAPER / INK</span></div>
+  <div class="card cA">
+    <span class="corner" style="top:9px;left:9px"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor"><path d="M5.5 0v11M0 5.5h11"/></svg></span>
+    <span class="corner" style="top:9px;right:9px"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor"><path d="M5.5 0v11M0 5.5h11"/></svg></span>
+    <span class="corner" style="bottom:9px;left:9px"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor"><path d="M5.5 0v11M0 5.5h11"/></svg></span>
+    <span class="corner" style="bottom:9px;right:9px"><svg viewBox="0 0 11 11" fill="none" stroke="currentColor"><path d="M5.5 0v11M0 5.5h11"/></svg></span>
+    <div class="top"><span>MIRACLE — WORD CARD</span><span>2026.09</span></div>
+    <div class="body">
+      <p class="main">기뻐하시는 일이라면,<br><em>무엇이든</em> 하신다.</p>
+      <p class="verse">여호와께서는 하늘과 땅에서, 바다와 모든 깊은 곳에서 기뻐하시는 일이라면 무엇이든 하신다.</p>
+    </div>
+    <div class="foot"><span>FOR 김예찬</span><span class="ref">PSALM 135:6</span></div>
+    <div class="mtns" aria-hidden="true">
+      <svg viewBox="0 0 400 74" preserveAspectRatio="none">
+        <path d="M0,74 L0,30 L21,27 L43,31 L65,25 L87,29 L109,24 L131,29 L153,23 L175,28 L197,22 L219,27 L241,21 L263,26 L285,20 L307,25 L329,19 L351,24 L373,18 L400,22 L400,74 Z" fill="#FFFDF8"/>
+        <path d="M0,74 L0,34 L21,31 L43,35 L65,29 L87,33 L109,28 L131,33 L153,27 L175,32 L197,26 L219,31 L241,25 L263,30 L285,24 L307,29 L329,23 L351,28 L373,22 L400,26 L400,74 Z" fill="var(--pink)"/>
+        <path d="M0,74 L0,46 L23,49 L47,43 L71,47 L95,41 L119,46 L143,40 L167,45 L191,39 L215,44 L239,38 L263,43 L287,37 L311,42 L335,36 L359,41 L383,35 L400,38 L400,74 Z" fill="#FFFDF8"/>
+        <path d="M0,74 L0,50 L23,53 L47,47 L71,51 L95,45 L119,50 L143,44 L167,49 L191,43 L215,48 L239,42 L263,47 L287,41 L311,46 L335,40 L359,45 L383,39 L400,42 L400,74 Z" fill="var(--orange)"/>
+        <path d="M0,74 L0,62 L26,59 L52,63 L78,57 L104,62 L130,56 L156,61 L182,55 L208,60 L234,54 L260,59 L286,53 L312,58 L338,52 L364,57 L390,51 L400,54 L400,74 Z" fill="#FFFDF8"/>
+        <path d="M0,74 L0,66 L26,63 L52,67 L78,61 L104,66 L130,60 L156,65 L182,59 L208,64 L234,58 L260,63 L286,57 L312,62 L338,56 L364,61 L390,55 L400,58 L400,74 Z" fill="var(--green)"/>
+      </svg>
+    </div>
+  </div>
+  <p class="cap">v5를 다듬은 안. 인쇄 도련 마크(+)로 지류 인쇄물 느낌을 더했어요.</p>
+
+  <!-- ══ B ══ -->
+  <div class="label"><b>B. 선셋 풀블리드</b><span>POSTER GRADIENT</span></div>
+  <div class="card cB">
+    <div class="top"><span>MIRACLE — WORD CARD</span><span>2026.09</span></div>
+    <div class="body">
+      <div class="word">WHATEVER<br>HE PLEASES</div>
+      <p class="main">기뻐하시는 일이라면,<br>무엇이든 하신다.</p>
+    </div>
+    <div class="foot"><span>FOR 김예찬</span><span>PSALM 135:6</span></div>
+    <div class="mtns" aria-hidden="true">
+      <svg viewBox="0 0 400 82" preserveAspectRatio="none">
+        <path d="M0,82 L0,34 L23,31 L47,35 L71,29 L95,33 L119,28 L143,33 L167,27 L191,32 L215,26 L239,31 L263,25 L287,30 L311,24 L335,29 L359,23 L383,28 L400,25 L400,82 Z" fill="#FFFDF8"/>
+        <path d="M0,82 L0,38 L23,35 L47,39 L71,33 L95,37 L119,32 L143,37 L167,31 L191,36 L215,30 L239,35 L263,29 L287,34 L311,28 L335,33 L359,27 L383,32 L400,29 L400,82 Z" fill="var(--orange)"/>
+        <path d="M0,82 L0,52 L26,55 L52,49 L78,53 L104,47 L130,52 L156,46 L182,51 L208,45 L234,50 L260,44 L286,49 L312,43 L338,48 L364,42 L390,46 L400,44 L400,82 Z" fill="#FFFDF8"/>
+        <path d="M0,82 L0,56 L26,59 L52,53 L78,57 L104,51 L130,56 L156,50 L182,55 L208,49 L234,54 L260,48 L286,53 L312,47 L338,52 L364,46 L390,50 L400,48 L400,82 Z" fill="var(--lavender)"/>
+        <path d="M0,82 L0,68 L28,65 L56,69 L84,63 L112,68 L140,62 L168,67 L196,61 L224,66 L252,60 L280,65 L308,59 L336,64 L364,58 L392,63 L400,61 L400,82 Z" fill="#FFFDF8"/>
+        <path d="M0,82 L0,72 L28,69 L56,73 L84,67 L112,72 L140,66 L168,71 L196,65 L224,70 L252,64 L280,69 L308,63 L336,68 L364,62 L392,67 L400,65 L400,82 Z" fill="var(--green)"/>
+      </svg>
+    </div>
+  </div>
+  <p class="cap">포스터를 그대로 옮긴 안. 영문 워드마크 + 한글 구절 조합, SNS에서 제일 눈에 띄는 방향.</p>
+
+  <!-- ══ C ══ -->
+  <div class="label"><b>C. 나이트</b><span>DEEP GREEN</span></div>
+  <div class="card cC">
+    <div class="top"><span>MIRACLE</span><span>2026.09</span></div>
+    <div class="body">
+      <div class="ref">PSALM 135:6</div>
+      <p class="main">여호와께서는 하늘과 땅에서,<br>바다와 모든 깊은 곳에서<br>기뻐하시는 일이라면<br><em>무엇이든 하신다.</em></p>
+    </div>
+    <div class="foot">FOR 김예찬</div>
+    <div class="mtns" aria-hidden="true">
+      <svg viewBox="0 0 400 58" preserveAspectRatio="none">
+        <path d="M0,58 L0,26 L24,23 L49,27 L74,21 L99,25 L124,20 L149,25 L174,19 L199,24 L224,18 L249,23 L274,17 L299,22 L324,16 L349,21 L374,15 L400,19 L400,58 Z" fill="rgba(250,246,238,.16)"/>
+        <path d="M0,58 L0,30 L24,27 L49,31 L74,25 L99,29 L124,24 L149,29 L174,23 L199,28 L224,22 L249,27 L274,21 L299,26 L324,20 L349,25 L374,19 L400,23 L400,58 Z" fill="#24402C"/>
+        <path d="M0,58 L0,42 L27,39 L54,43 L81,37 L108,42 L135,36 L162,41 L189,35 L216,40 L243,34 L270,39 L297,33 L324,38 L351,32 L378,37 L400,34 L400,58 Z" fill="rgba(250,246,238,.14)"/>
+        <path d="M0,58 L0,46 L27,43 L54,47 L81,41 L108,46 L135,40 L162,45 L189,39 L216,44 L243,38 L270,43 L297,37 L324,42 L351,36 L378,41 L400,38 L400,58 Z" fill="#2E5638"/>
+      </svg>
+    </div>
+  </div>
+  <p class="cap">타임테이블 섹션과 같은 딥그린. 구절 전체를 중앙 정렬로 담아 차분하고 묵상적인 톤.</p>
+
+  <!-- ══ D ══ -->
+  <div class="label"><b>D. 타이포그래픽</b><span>ANTON CROP</span></div>
+  <div class="card cD">
+    <div class="bigtype">M</div>
+    <div class="top"><span>MIRACLE — WORD CARD</span><span>2026.09</span></div>
+    <div class="rule"></div>
+    <div class="body">
+      <p class="main">기뻐하시는<br>일이라면,<br><em>무엇이든.</em></p>
+      <p class="verse">여호와께서는 하늘과 땅에서, 바다와 모든 깊은 곳에서 기뻐하시는 일이라면 무엇이든 하신다.</p>
+    </div>
+    <div class="foot"><span>FOR 김예찬</span><span class="ref">PSALM 135:6</span></div>
+  </div>
+  <p class="cap">거대한 Anton 'M'을 크롭해 배경으로. 산 없이 타이포만으로 승부하는 가장 미니멀한 안.</p>
+</div>
+</body>
+</html>

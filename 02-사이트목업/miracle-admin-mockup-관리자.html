@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIRACLE — ADMIN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --coral:#DC5A51; --orange:#EF9A47; --green:#2E5638; --deep:#17281C;
+    --cream:#FAF6EE; --paper:#FFFDF8; --ink:#211D19; --ink-60:rgba(33,29,25,.56);
+    --hair:rgba(33,29,25,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Pretendard Variable',Pretendard,sans-serif;color:var(--ink);background:var(--cream);line-height:1.65;-webkit-font-smoothing:antialiased;font-size:15px;padding-bottom:90px}
+  button{font-family:inherit;cursor:pointer}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-60)}
+  .container{max-width:640px;margin:0 auto;padding:0 22px}
+
+  /* 상단바 */
+  header{position:sticky;top:0;z-index:50;background:var(--deep);color:var(--cream)}
+  .hd{display:flex;align-items:center;justify-content:space-between;padding:15px 22px;max-width:640px;margin:0 auto}
+  .hd .logo{font-family:'Anton';font-size:.92rem;letter-spacing:.08em;color:#EF8F88}
+  .hd .logo span{color:var(--cream);opacity:.6;margin-left:8px;font-size:.8rem}
+  .hd .who{font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.16em;opacity:.6}
+
+  /* 탭 */
+  .tabs{position:sticky;top:49px;z-index:49;background:var(--cream);border-bottom:1px solid var(--ink);display:flex;max-width:640px;margin:0 auto}
+  .tabs button{flex:1;padding:13px 0;border:none;background:transparent;font-weight:600;font-size:.82rem;color:var(--ink-60);border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s}
+  .tabs button.on{color:var(--ink);border-color:var(--ink)}
+
+  .panel{display:none;padding-top:28px}
+  .panel.on{display:block}
+  .sec-title{display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 14px}
+  .sec-title b{font-size:1.02rem;font-weight:700;letter-spacing:-.02em}
+  .sec-title span{font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.2em;color:var(--ink-60)}
+
+  /* 대시보드 */
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--ink);border:1px solid var(--ink)}
+  .stat{background:var(--paper);padding:18px 18px 16px}
+  .stat .n{font-family:'Anton';font-size:2rem;line-height:1.1}
+  .stat .n em{font-style:normal;font-size:1rem;color:var(--ink-60)}
+  .stat .l{font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.2em;color:var(--ink-60);margin-top:4px}
+  .stat.hot .n{color:var(--coral)}
+  .bar{height:8px;background:rgba(33,29,25,.08);margin-top:14px;position:relative}
+  .bar i{position:absolute;inset:0;right:auto;background:var(--green)}
+  .feed{border:1px solid var(--ink);background:var(--paper)}
+  .feed .row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--hair);font-size:.86rem}
+  .feed .row:last-child{border:0}
+  .feed time{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--ink-60);letter-spacing:.1em}
+  .chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.56rem;letter-spacing:.12em;padding:3px 9px;border:1px solid var(--hair);color:var(--ink-60)}
+  .chip.ok{color:var(--green);border-color:rgba(46,86,56,.4)}
+
+  /* 체크인 */
+  .search{display:flex;gap:8px;margin-bottom:14px}
+  .search input{flex:1;padding:13px 15px;border:1px solid var(--ink);background:var(--paper);font-family:inherit;font-size:.92rem}
+  .search input:focus{outline:none;box-shadow:inset 0 0 0 1px var(--ink)}
+  .btn{background:var(--ink);color:var(--cream);font-weight:600;font-size:.84rem;padding:13px 20px;border:none;letter-spacing:.02em;transition:.2s}
+  .btn:hover{background:var(--coral)}
+  .btn.accent{background:var(--coral);color:#fff}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+  .btn.sm{padding:8px 14px;font-size:.76rem}
+  .plist{border:1px solid var(--ink);background:var(--paper)}
+  .p-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--hair)}
+  .p-row:last-child{border:0}
+  .p-row .info{flex:1;min-width:0}
+  .p-row b{font-size:.9rem;font-weight:700}
+  .p-row small{display:block;font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.1em;color:var(--ink-60);margin-top:2px}
+  .p-row .done{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.14em;color:var(--green)}
+  .qr-strip{display:flex;gap:8px;margin-bottom:14px}
+
+  /* 숙소·조 */
+  .room{border:1px solid var(--ink);background:var(--paper);margin-bottom:-1px;padding:16px 18px}
+  .room .top{display:flex;justify-content:space-between;align-items:baseline}
+  .room b{font-size:.95rem;font-weight:700}
+  .room .cap{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.14em;color:var(--ink-60)}
+  .room .cap.full{color:var(--coral)}
+  .room .members{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .room .members span{font-size:.74rem;font-weight:500;border:1px solid var(--hair);padding:3px 11px;color:var(--green)}
+  .room .members span.empty{color:var(--ink-60);border-style:dashed}
+  .unassigned{border:1px dashed rgba(33,29,25,.3);padding:16px 18px;margin-top:20px}
+  .unassigned .members{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .unassigned .members button{font-size:.74rem;font-weight:500;border:1px solid var(--ink);background:var(--paper);padding:4px 12px}
+
+  /* 게시판 */
+  .mod{border:1px solid var(--ink);background:var(--paper);padding:15px 17px;margin-bottom:-1px}
+  .mod .row{display:flex;justify-content:space-between;align-items:baseline}
+  .mod b{font-size:.82rem;font-weight:700;color:var(--green)}
+  .mod time{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--ink-60)}
+  .mod p{font-size:.88rem;margin-top:5px}
+  .mod .acts{display:flex;gap:8px;margin-top:11px}
+  .gal-mod{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair)}
+  .gal-mod .cell{position:relative;aspect-ratio:1/1;background:linear-gradient(135deg,#EAE0CB,#DFD1B6)}
+  .gal-mod .cell:nth-child(2){background:linear-gradient(135deg,#E7D7D1,#DABFB6)}
+  .gal-mod .cell:nth-child(3){background:linear-gradient(135deg,#DEE1D3,#C8CFBA)}
+  .gal-mod .cell:nth-child(5){background:linear-gradient(135deg,#E4DEEA,#CDC4D9)}
+  .gal-mod .cell button{position:absolute;right:6px;top:6px;font-size:.6rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;background:rgba(33,29,25,.75);color:var(--cream);border:none;padding:4px 8px}
+
+  /* 설정 */
+  .set{border:1px solid var(--ink);background:var(--paper);padding:18px;margin-bottom:-1px}
+  .set .row{display:flex;justify-content:space-between;align-items:center;gap:14px}
+  .set b{font-size:.92rem;font-weight:700}
+  .set small{display:block;font-size:.76rem;color:var(--ink-60);margin-top:2px}
+  .set input[type=text]{width:100%;margin-top:12px;padding:12px 14px;border:1px solid var(--ink);background:var(--cream);font-family:inherit;font-size:.9rem}
+  .toggle{position:relative;width:46px;height:26px;background:rgba(33,29,25,.18);border:none;flex-shrink:0;transition:.2s}
+  .toggle::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;background:var(--paper);transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .toggle.on{background:var(--green)}
+  .toggle.on::after{left:23px}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <div class="logo">MIRACLE<span>ADMIN</span></div>
+    <div class="who">운영자 · 김예찬</div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="on" data-t="dash">대시보드</button>
+  <button data-t="checkin">체크인</button>
+  <button data-t="rooms">숙소·조</button>
+  <button data-t="board">게시판</button>
+  <button data-t="set">설정</button>
+</nav>
+
+<!-- ══ 대시보드 ══ -->
+<div class="panel on container" id="p-dash">
+  <div class="stat-grid">
+    <div class="stat hot"><div class="n">87<em> / 120</em></div><div class="l">CHECKED IN</div></div>
+    <div class="stat"><div class="n">33</div><div class="l">NOT ARRIVED</div></div>
+    <div class="stat"><div class="n">28<em> / 30</em></div><div class="l">ROOMS ASSIGNED</div></div>
+    <div class="stat"><div class="n">142</div><div class="l">GUESTBOOK</div></div>
+  </div>
+  <div class="bar"><i style="width:72.5%"></i></div>
+  <p style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.16em;color:var(--ink-60);margin-top:8px">72.5% ARRIVED · 갱신 16:34</p>
+
+  <div class="sec-title"><b>최근 체크인</b><span>LIVE</span></div>
+  <div class="feed">
+    <div class="row"><span><b>박다윗</b> · 비전관 203</span><time>16:32</time></div>
+    <div class="row"><span><b>정사무엘</b> · 비전관 203</span><time>16:31</time></div>
+    <div class="row"><span><b>김한나</b> · 은혜관 102</span><time>16:28</time></div>
+    <div class="row"><span><b>이레베카</b> · 은혜관 102</span><time>16:25</time></div>
+  </div>
+
+  <div class="sec-title"><b>미도착</b><span>33명</span></div>
+  <div class="feed">
+    <div class="row"><span>이요셉 <span class="chip">010-****-1234</span></span><span class="chip">비전관 203</span></div>
+    <div class="row"><span>최마리아 <span class="chip">010-****-5678</span></span><span class="chip">은혜관 103</span></div>
+    <div class="row"><span>강바울 <span class="chip">010-****-9012</span></span><span class="chip">미배정</span></div>
+  </div>
+</div>
+
+<!-- ══ 체크인 ══ -->
+<div class="panel container" id="p-checkin">
+  <div class="qr-strip">
+    <button class="btn accent" style="flex:1" onclick="alert('카메라 QR 스캔 (목업)')">QR 스캔</button>
+    <button class="btn ghost" onclick="alert('명단 새로고침 (목업)')">새로고침</button>
+  </div>
+  <div class="search"><input placeholder="이름 또는 전화번호 뒷자리 검색" oninput="filterP(this.value)"></div>
+  <div class="plist" id="plist">
+    <div class="p-row" data-n="김예찬"><div class="info"><b>김예찬</b><small>1990.xx.xx · 010-****-3456 · 비전관 203</small></div><span class="done">✓ 16:02</span><button class="btn sm ghost" onclick="alert('PIN 초기화 (목업)')">PIN</button></div>
+    <div class="p-row" data-n="이요셉"><div class="info"><b>이요셉</b><small>1992.xx.xx · 010-****-1234 · 비전관 203</small></div><button class="btn sm" onclick="doCheckin(this)">체크인</button><button class="btn sm ghost" onclick="alert('PIN 초기화 (목업)')">PIN</button></div>
+    <div class="p-row" data-n="최마리아"><div class="info"><b>최마리아</b><small>1995.xx.xx · 010-****-5678 · 은혜관 103</small></div><button class="btn sm" onclick="doCheckin(this)">체크인</button><button class="btn sm ghost" onclick="alert('PIN 초기화 (목업)')">PIN</button></div>
+    <div class="p-row" data-n="강바울"><div class="info"><b>강바울</b><small>1998.xx.xx · 010-****-9012 · 미배정</small></div><button class="btn sm" onclick="doCheckin(this)">체크인</button><button class="btn sm ghost" onclick="alert('PIN 초기화 (목업)')">PIN</button></div>
+  </div>
+  <p style="font-size:.76rem;color:var(--ink-60);margin-top:12px;word-break:keep-all">체크인 시 참가자가 현장에서 4자리 PIN을 직접 설정합니다. 분실 시 PIN 버튼으로 초기화.</p>
+</div>
+
+<!-- ══ 숙소·조 ══ -->
+<div class="panel container" id="p-rooms">
+  <div class="sec-title"><b>숙소 배정</b><span>28/30 ROOMS</span></div>
+  <div class="room">
+    <div class="top"><b>비전관 203</b><span class="cap full">4 / 4</span></div>
+    <div class="members"><span>김예찬</span><span>이요셉</span><span>박다윗</span><span>정사무엘</span></div>
+  </div>
+  <div class="room">
+    <div class="top"><b>은혜관 102</b><span class="cap">3 / 4</span></div>
+    <div class="members"><span>김한나</span><span>이레베카</span><span>윤에스더</span><span class="empty">＋ 빈 자리</span></div>
+  </div>
+  <div class="room">
+    <div class="top"><b>은혜관 103</b><span class="cap">1 / 4</span></div>
+    <div class="members"><span>최마리아</span><span class="empty">＋ 빈 자리</span><span class="empty">＋ 빈 자리</span><span class="empty">＋ 빈 자리</span></div>
+  </div>
+  <div class="unassigned">
+    <div class="eyebrow">미배정 · 2명 — 탭해서 배정</div>
+    <div class="members">
+      <button onclick="alert('강바울 → 방 선택 (목업)')">강바울</button>
+      <button onclick="alert('한느헤미야 → 방 선택 (목업)')">한느헤미야</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:20px">
+    <button class="btn ghost" style="flex:1" onclick="alert('엑셀 일괄 업로드 (목업)')">엑셀 업로드</button>
+    <button class="btn ghost" style="flex:1" onclick="alert('배정표 다운로드 (목업)')">다운로드</button>
+  </div>
+
+  <div class="sec-title" style="margin-top:38px"><b>게임 조 배정</b><span>OPTIONAL</span></div>
+  <div class="room">
+    <div class="top"><b>🍊 오렌지조</b><span class="cap">6명 · 조장 이요셉</span></div>
+  </div>
+  <div class="room">
+    <div class="top"><b>🌿 그린조</b><span class="cap">6명 · 조장 김한나</span></div>
+  </div>
+  <button class="btn" style="width:100%;margin-top:14px" onclick="alert('무작위 자동 배정 (목업)')">미배정 인원 자동 배정</button>
+</div>
+
+<!-- ══ 게시판 ══ -->
+<div class="panel container" id="p-board">
+  <div class="sec-title"><b>방명록 관리</b><span>142 · 신고 1</span></div>
+  <div class="mod" style="border-left:3px solid var(--coral)">
+    <div class="row"><b>익명</b><time>08.20 23:11 · 신고 1건</time></div>
+    <p>(부적절한 내용 예시)</p>
+    <div class="acts"><button class="btn sm ghost" onclick="this.closest('.mod').style.opacity=.35;this.textContent='숨김됨'">숨김</button><button class="btn sm accent" onclick="alert('삭제 (목업)')">삭제</button></div>
+  </div>
+  <div class="mod">
+    <div class="row"><b>은혜</b><time>08.19 21:40</time></div>
+    <p>벌써 기대돼요! 올해도 기적을 경험하길 바라요.</p>
+    <div class="acts"><button class="btn sm ghost" onclick="this.closest('.mod').style.opacity=.35;this.textContent='숨김됨'">숨김</button></div>
+  </div>
+
+  <div class="sec-title"><b>갤러리 관리</b><span>0장 · 오픈 전</span></div>
+  <div class="gal-mod">
+    <div class="cell"><button onclick="this.parentElement.style.opacity=.3;this.textContent='HIDDEN'">HIDE</button></div>
+    <div class="cell"><button onclick="this.parentElement.style.opacity=.3;this.textContent='HIDDEN'">HIDE</button></div>
+    <div class="cell"><button onclick="this.parentElement.style.opacity=.3;this.textContent='HIDDEN'">HIDE</button></div>
+    <div class="cell"><button onclick="this.parentElement.style.opacity=.3;this.textContent='HIDDEN'">HIDE</button></div>
+    <div class="cell"><button onclick="this.parentElement.style.opacity=.3;this.textContent='HIDDEN'">HIDE</button></div>
+    <div class="cell"><button onclick="this.parentElement.style.opacity=.3;this.textContent='HIDDEN'">HIDE</button></div>
+  </div>
+</div>
+
+<!-- ══ 설정 ══ -->
+<div class="panel container" id="p-set">
+  <div class="set">
+    <div class="row"><div><b>공지 배너</b><small>사이트 상단에 표시됩니다</small></div><button class="btn sm" onclick="alert('배너 적용 (목업)')">적용</button></div>
+    <input type="text" placeholder="예) 우천 시 개회 예배는 대예배실에서 진행합니다" value="">
+  </div>
+  <div class="set">
+    <div class="row"><div><b>갤러리 오픈</b><small>참가자 사진 업로드·열람 허용</small></div><button class="toggle" onclick="this.classList.toggle('on')"></button></div>
+  </div>
+  <div class="set">
+    <div class="row"><div><b>방명록 작성</b><small>로그인 참가자 작성 허용</small></div><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+  </div>
+  <div class="set">
+    <div class="row"><div><b>참가자 명단</b><small>엑셀 업로드로 명단 교체·추가</small></div></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn ghost" style="flex:1" onclick="alert('엑셀 업로드 (목업)')">업로드</button>
+      <button class="btn ghost" style="flex:1" onclick="alert('엑셀 다운로드 (목업)')">다운로드</button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+b.dataset.t).classList.add('on');
+}));
+function doCheckin(btn){
+  const now=new Date(),t=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const s=document.createElement('span');s.className='done';s.textContent='✓ '+t;
+  btn.replaceWith(s);
+}
+function filterP(v){
+  document.querySelectorAll('#plist .p-row').forEach(r=>{
+    r.style.display=r.dataset.n.includes(v.trim())||!v.trim()?'':'none';
+  });
+}
+</script>
+</body>
+</html>

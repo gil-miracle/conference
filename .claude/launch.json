@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "miracle-site",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "04-site", "run", "dev"],
+      "port": 3000
+    }
+  ]
+}

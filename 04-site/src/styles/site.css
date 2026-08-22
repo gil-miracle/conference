@@ -1,0 +1,511 @@
+/* ════ MIRACLE 2026 — 참가자 사이트 (목업 v10 이식) ════ */
+
+section { padding: 100px 0; }
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 18px;
+  margin-bottom: 34px;
+}
+.sec-head h2 {
+  font-size: clamp(1.5rem, 5.4vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  word-break: keep-all;
+}
+.sec-head .idx {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-60);
+}
+.lede { font-size: 0.92rem; color: var(--ink-60); max-width: 44ch; word-break: keep-all; }
+
+/* 스크롤 리빌 */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ── Nav ── */
+nav.site {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  background: rgba(250, 246, 238, 0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--hair);
+}
+.nav-in {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.nav-in::-webkit-scrollbar { display: none; }
+.nav-logo {
+  font-family: "Anton";
+  font-size: 0.9rem;
+  color: var(--coral);
+  flex-shrink: 0;
+  letter-spacing: 0.08em;
+}
+.nav-in a.lnk, .nav-in button.lnk {
+  font-size: 0.79rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--ink-60);
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.nav-in a.lnk:hover, .nav-in button.lnk:hover { color: var(--ink); }
+.nav-in .lock { display: inline-flex; align-items: center; gap: 5px; }
+.nav-in .lock svg { width: 9px; height: 9px; opacity: 0.5; }
+.nav-auth {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Hero ── */
+.hero { background: var(--cream); }
+.hero .poster { display: block; width: 100%; height: auto; }
+.dday-strip {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 18px 26px;
+  border-bottom: 1px solid var(--ink);
+}
+.dday-strip .big { font-family: "Anton"; font-size: 1.6rem; line-height: 1; color: var(--coral); }
+.dday-strip .lbl {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-60);
+}
+.dday-strip .clock {
+  margin-left: auto;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+}
+
+/* ── About ── */
+.verse {
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding: 36px 0;
+  margin: 44px 0;
+}
+.verse p {
+  font-size: 1.06rem;
+  font-weight: 500;
+  line-height: 2.1;
+  word-break: keep-all;
+  letter-spacing: -0.01em;
+}
+.verse .ref {
+  display: block;
+  margin-top: 20px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  color: var(--coral);
+}
+.place { border: 1px solid var(--ink); background: var(--paper); }
+.map-ph {
+  height: 180px;
+  border-bottom: 1px solid var(--ink);
+  background: linear-gradient(rgba(33, 29, 25, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(33, 29, 25, 0.05) 1px, transparent 1px), #f1eadd;
+  background-size: 22px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a2957d;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.26em;
+}
+.place .in { padding: 24px 26px 28px; }
+.place .in b { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.015em; }
+.place .in p { font-size: 0.83rem; color: var(--ink-60); margin-top: 4px; }
+.map-links { display: flex; gap: 0; margin-top: 20px; border: 1px solid var(--ink); }
+.map-links a { flex: 1; text-align: center; font-size: 0.79rem; font-weight: 600; padding: 12px; transition: 0.2s; }
+.map-links a + a { border-left: 1px solid var(--ink); }
+.map-links a:hover { background: var(--ink); color: var(--cream); }
+
+/* ── Speakers ── */
+#speakers { background: var(--paper); border-top: 1px solid var(--hair); }
+.spk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+}
+.spk { background: var(--paper); }
+.spk .ph { position: relative; aspect-ratio: 1/1; overflow: hidden; background: #e8dfd2; }
+.spk .ph img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(0.92); }
+.spk .ph .ph-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(33, 29, 25, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(33, 29, 25, 0.05) 1px, transparent 1px), #ece3d4;
+  background-size: 18px 18px;
+  color: #a2957d;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.26em;
+}
+.spk .in { padding: 16px 18px 20px; }
+.spk b { display: block; font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
+.spk small { font-size: 0.74rem; color: var(--ink-60); }
+.spk .tag {
+  display: block;
+  margin-top: 10px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--coral);
+  text-transform: uppercase;
+}
+
+/* ── Timetable ── */
+#timetable { background: var(--deep); color: var(--cream); }
+#timetable .sec-head { border-color: rgba(250, 246, 238, 0.9); }
+#timetable .eyebrow { color: var(--peach); }
+#timetable .lede { color: rgba(250, 246, 238, 0.5); }
+.day-tabs { display: flex; margin: 34px 0 0; border: 1px solid rgba(250, 246, 238, 0.35); }
+.day-tabs button {
+  flex: 1;
+  padding: 13px 0;
+  border: none;
+  background: transparent;
+  color: rgba(250, 246, 238, 0.55);
+  font-weight: 600;
+  font-size: 0.84rem;
+  transition: 0.2s;
+  letter-spacing: 0.02em;
+}
+.day-tabs button + button { border-left: 1px solid rgba(250, 246, 238, 0.35); }
+.day-tabs button.on { background: var(--cream); color: var(--deep); }
+.tt-list { margin-top: 0; }
+.tt {
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 18px;
+  padding: 20px 2px;
+  border-bottom: 1px solid rgba(250, 246, 238, 0.14);
+  align-items: baseline;
+}
+.tt time {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: rgba(250, 246, 238, 0.5);
+}
+.tt.main time { color: var(--orange); }
+.tt b { font-size: 0.97rem; font-weight: 700; display: block; letter-spacing: -0.01em; }
+.tt.main b { color: var(--peach); }
+.tt small { font-size: 0.76rem; color: rgba(250, 246, 238, 0.42); }
+
+/* ── Songs ── */
+.song {
+  display: grid;
+  grid-template-columns: 34px 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 19px 2px;
+  border-bottom: 1px solid var(--hair);
+}
+.song:first-of-type { border-top: 1px solid var(--ink); }
+.song:last-of-type { border-bottom: 1px solid var(--ink); }
+.song .no {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.64rem;
+  font-weight: 500;
+  color: var(--ink-60);
+  letter-spacing: 0.1em;
+}
+.song b { font-size: 0.93rem; font-weight: 600; display: block; letter-spacing: -0.01em; }
+.song small { font-size: 0.74rem; color: var(--ink-60); }
+.song .key {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.64rem;
+  font-weight: 500;
+  color: var(--ink-60);
+  border: 1px solid var(--hair);
+  padding: 3px 10px;
+  letter-spacing: 0.08em;
+}
+.song .yt {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--hair);
+  color: var(--ink-60);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+.song .yt svg { width: 9px; height: 9px; }
+.song .yt:hover { background: var(--coral); border-color: var(--coral); color: #fff; }
+
+/* ── 방명록 ── */
+#guestbook { background: var(--paper); border-top: 1px solid var(--hair); }
+.gb { padding: 22px 0; border-bottom: 1px solid var(--hair); }
+.gb .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.gb b { font-size: 0.82rem; font-weight: 700; color: var(--green); }
+.gb time {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.6rem;
+  color: var(--ink-60);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+.gb p { font-size: 0.92rem; margin-top: 6px; word-break: keep-all; white-space: pre-line; }
+.gb .del {
+  background: none;
+  border: none;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-60);
+  margin-top: 6px;
+  padding: 0;
+}
+.gb .del:hover { color: var(--coral); }
+.gb-write {
+  margin-top: 30px;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--ink);
+  transition: 0.2s;
+}
+.gb-write:hover { background: var(--ink); color: var(--cream); }
+.gb-form { margin-top: 26px; border: 1px solid var(--ink); background: var(--cream); padding: 4px 22px 22px; }
+
+/* ── 영상 ── */
+.video-ph {
+  position: relative;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--deep) 0%, var(--green) 62%, #3f6547 100%);
+  color: var(--cream);
+  margin-top: 0;
+  border: none;
+  width: 100%;
+  padding: 0;
+}
+.video-ph .play {
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(250, 246, 238, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+.video-ph .play svg { width: 13px; height: 13px; margin-left: 2px; }
+.video-ph:hover .play { background: var(--coral); border-color: var(--coral); }
+.video-ph small {
+  position: absolute;
+  bottom: 16px;
+  left: 18px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.24em;
+  opacity: 0.55;
+}
+.video-embed { position: relative; aspect-ratio: 16/9; background: #000; }
+.video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* ── My ── */
+#my { background: var(--paper); border-top: 1px solid var(--hair); }
+.locked { border: 1px dashed rgba(33, 29, 25, 0.3); padding: 50px 30px; text-align: center; }
+.locked svg { width: 20px; height: 20px; color: var(--ink-60); }
+.locked p { font-size: 0.86rem; color: var(--ink-60); margin: 14px 0 26px; word-break: keep-all; }
+
+/* 말씀카드 (세로 분할) */
+.wcard {
+  position: relative;
+  aspect-ratio: 1/1;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  padding: 6.5%;
+  display: flex;
+  gap: 7%;
+  overflow: hidden;
+}
+.wcard .img-col { width: 34%; flex-shrink: 0; overflow: hidden; }
+.wcard .img-col img { width: 100%; height: 100%; object-fit: cover; object-position: 38% center; display: block; }
+.wcard .txt-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.wcard .wc-ref {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.26em;
+  color: var(--coral);
+}
+.wcard .wc-verse {
+  font-family: "Nanum Myeongjo", serif;
+  font-weight: 400;
+  font-size: clamp(0.82rem, 3.8vw, 1.04rem);
+  line-height: 2.1;
+  margin-top: 9%;
+  word-break: keep-all;
+}
+.wcard .wc-verse b { font-weight: 700; }
+.wcard .wc-foot {
+  margin-top: auto;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-60);
+  line-height: 2;
+}
+.wc-save { width: 100%; margin-top: 14px; }
+.my-card { border: 1px solid var(--ink); background: var(--paper); padding: 26px; margin-top: -1px; }
+.my-card .eyebrow { color: var(--coral); }
+.my-card h3 { font-size: 1.3rem; font-weight: 700; margin: 10px 0 3px; letter-spacing: -0.025em; }
+.my-card small { font-size: 0.79rem; color: var(--ink-60); }
+.mates { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 15px; }
+.mates span { font-size: 0.74rem; font-weight: 500; border: 1px solid var(--hair); color: var(--green); padding: 4px 12px; }
+.qr { width: 150px; height: 150px; margin: 18px auto 10px; padding: 12px; background: #fff; border: 1px solid var(--hair); }
+.qr svg { display: block; width: 100%; height: 100%; }
+.chip-in {
+  display: inline-block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  border: 1px solid rgba(46, 86, 56, 0.4);
+  color: var(--green);
+  padding: 3px 10px;
+  margin-top: 12px;
+}
+
+/* ── 갤러리 ── */
+.gal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--hair);
+  border: 1px solid var(--hair);
+}
+.gal-grid .cell { aspect-ratio: 1/1; position: relative; background: #eae0cb; overflow: hidden; }
+.gal-grid .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gal-grid .cell .del {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  font-size: 0.6rem;
+  font-family: "IBM Plex Mono", monospace;
+  letter-spacing: 0.08em;
+  background: rgba(33, 29, 25, 0.75);
+  color: var(--cream);
+  border: none;
+  padding: 4px 8px;
+}
+/* 미리보기(데모) 모드 자리 채움 — 목업 v10 그라데이션 */
+.gal-grid .cell.demo:nth-child(4n + 1) { background: linear-gradient(135deg, #eae0cb, #dfd1b6); }
+.gal-grid .cell.demo:nth-child(4n + 2) { background: linear-gradient(135deg, #e7d7d1, #dabfb6); }
+.gal-grid .cell.demo:nth-child(4n + 3) { background: linear-gradient(135deg, #dee1d3, #c8cfba); }
+.gal-grid .cell.demo:nth-child(4n) { background: linear-gradient(135deg, #e4deea, #cdc4d9); }
+
+/* ── 로그인 시트 ── */
+.sheet-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(33, 29, 25, 0.5);
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.sheet {
+  background: var(--cream);
+  border-top: 1px solid var(--ink);
+  padding: 30px 28px 44px;
+  width: 100%;
+  max-width: 640px;
+  animation: up 0.38s cubic-bezier(0.2, 0.85, 0.25, 1);
+}
+.sheet h3 { font-size: 1.16rem; font-weight: 700; letter-spacing: -0.02em; }
+.sheet .sub { font-size: 0.81rem; color: var(--ink-60); margin: 6px 0 4px; word-break: keep-all; }
+/* 시트·바인딩 페이지 공용 하단 안내문 */
+.note { font-size: 0.72rem; color: var(--ink-60); text-align: center; margin-top: 15px; word-break: keep-all; }
+.note a, .note button { text-decoration: underline; text-underline-offset: 3px; }
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 15px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: 0.15s;
+  margin-top: 10px;
+}
+.social-btn:first-of-type { margin-top: 24px; }
+.social-btn.kakao { background: #fee500; border-color: #fee500; color: #191919; }
+.social-btn.google { background: #fff; }
+.social-btn:hover { filter: brightness(0.96); }
+.social-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.social-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+/* ── 바인딩(명단 연결) 페이지 ── */
+.bind-wrap { max-width: 640px; margin: 0 auto; padding: 70px 26px 120px; }
+.bind-wrap h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-top: 10px; }
+.bind-wrap .sub { font-size: 0.86rem; color: var(--ink-60); margin-top: 8px; word-break: keep-all; }
+
+footer.site { background: var(--deep); color: var(--cream); padding: 60px 0 78px; font-size: 0.78rem; }
+footer.site .disp { color: var(--pink); font-size: 1.05rem; letter-spacing: 0.1em; margin-bottom: 16px; }
+footer.site p { color: rgba(250, 246, 238, 0.45); line-height: 1.95; }
+footer.site .rule {
+  border-top: 1px solid rgba(250, 246, 238, 0.18);
+  margin: 22px 0;
+  padding-top: 18px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  color: rgba(250, 246, 238, 0.35);
+}
