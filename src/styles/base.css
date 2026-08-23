@@ -13,6 +13,8 @@
   --ink: #211d19;
   --ink-60: rgba(33, 29, 25, 0.56);
   --hair: rgba(33, 29, 25, 0.14);
+  /* IBM Plex Mono엔 한글 글리프가 없어 한글은 Pretendard로 폴백시킨다 */
+  --mono: "IBM Plex Mono", "Pretendard Variable", Pretendard, monospace;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -28,7 +30,7 @@ a { color: inherit; text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 .disp { font-family: "Anton", sans-serif; font-weight: 400; }
 .eyebrow {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.34em;
@@ -84,7 +86,7 @@ button { font-family: inherit; cursor: pointer; }
 /* ── 폼 요소 ── */
 .f-label {
   display: block;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.6rem;
   font-weight: 500;
   letter-spacing: 0.24em;

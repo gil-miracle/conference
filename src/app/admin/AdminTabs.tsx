@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 const TABS = [
   { href: "/admin", label: "대시보드" },
   { href: "/admin/checkin", label: "체크인" },
-  { href: "/admin/rooms", label: "숙소·조" },
+  { href: "/admin/rooms", label: "숙소" },
+  { href: "/admin/songs", label: "찬양" },
   { href: "/admin/board", label: "게시판" },
   { href: "/admin/settings", label: "설정" },
 ];

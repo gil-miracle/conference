@@ -13,7 +13,7 @@
 .admin .hd .logo { font-family: "Anton"; font-size: 0.92rem; letter-spacing: 0.08em; color: #ef8f88; }
 .admin .hd .logo span { color: var(--cream); opacity: 0.6; margin-left: 8px; font-size: 0.8rem; font-family: "Anton"; }
 .admin .hd .who {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.16em;
   opacity: 0.6;
@@ -48,7 +48,7 @@
 .admin .sec-title { display: flex; justify-content: space-between; align-items: baseline; margin: 26px 0 14px; }
 .admin .sec-title b { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
 .admin .sec-title span {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.2em;
   color: var(--ink-60);
@@ -62,7 +62,7 @@
 .stat .n { font-family: "Anton"; font-size: 2rem; line-height: 1.1; }
 .stat .n em { font-style: normal; font-size: 1rem; color: var(--ink-60); }
 .stat .l {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.56rem;
   letter-spacing: 0.2em;
   color: var(--ink-60);
@@ -72,7 +72,7 @@
 .bar { height: 8px; background: rgba(33, 29, 25, 0.08); margin-top: 14px; position: relative; }
 .bar i { position: absolute; inset: 0; right: auto; background: var(--green); transition: width 0.4s; }
 .upd {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.6rem;
   letter-spacing: 0.16em;
   color: var(--ink-60);
@@ -90,10 +90,10 @@
 }
 .feed .row:last-child { border: 0; }
 .feed .row.empty { color: var(--ink-60); font-size: 0.8rem; }
-.feed time { font-family: "IBM Plex Mono", monospace; font-size: 0.6rem; color: var(--ink-60); letter-spacing: 0.1em; }
+.feed time { font-family: var(--mono); font-size: 0.6rem; color: var(--ink-60); letter-spacing: 0.1em; }
 .chip {
   display: inline-block;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.56rem;
   letter-spacing: 0.12em;
   padding: 3px 9px;
@@ -122,7 +122,7 @@
 .p-row b { font-size: 0.9rem; font-weight: 700; }
 .p-row small {
   display: block;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.1em;
   color: var(--ink-60);
@@ -131,13 +131,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.p-row .done { font-family: "IBM Plex Mono", monospace; font-size: 0.6rem; letter-spacing: 0.14em; color: var(--green); white-space: nowrap; }
+.p-row .done { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--green); white-space: nowrap; }
 
 /* 숙소·조 */
 .room { border: 1px solid var(--ink); background: var(--paper); margin-bottom: -1px; padding: 16px 18px; }
 .room .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .room b { font-size: 0.95rem; font-weight: 700; }
-.room .cap { font-family: "IBM Plex Mono", monospace; font-size: 0.6rem; letter-spacing: 0.14em; color: var(--ink-60); white-space: nowrap; }
+.room .cap { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--ink-60); white-space: nowrap; }
 .room .cap.full { color: var(--coral); }
 .room .members { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .room .members span { font-size: 0.74rem; font-weight: 500; border: 1px solid var(--hair); padding: 3px 11px; color: var(--green); }
@@ -171,7 +171,7 @@
 .mod.dim { opacity: 0.4; }
 .mod .row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .mod b { font-size: 0.82rem; font-weight: 700; color: var(--green); }
-.mod time { font-family: "IBM Plex Mono", monospace; font-size: 0.58rem; color: var(--ink-60); flex-shrink: 0; }
+.mod time { font-family: var(--mono); font-size: 0.58rem; color: var(--ink-60); flex-shrink: 0; }
 .mod p { font-size: 0.88rem; margin-top: 5px; word-break: keep-all; }
 .mod .acts { display: flex; gap: 8px; margin-top: 11px; }
 .gal-mod { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
@@ -183,7 +183,7 @@
   right: 6px;
   top: 6px;
   font-size: 0.6rem;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   letter-spacing: 0.08em;
   background: rgba(33, 29, 25, 0.75);
   color: var(--cream);
@@ -212,7 +212,7 @@
   padding: 12px 14px;
   border: 1px solid var(--ink);
   background: var(--cream);
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.78rem;
   min-height: 120px;
   resize: vertical;
@@ -256,7 +256,7 @@
   padding: 24px;
 }
 .scan-overlay .hint {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.62rem;
   letter-spacing: 0.22em;
   opacity: 0.6;
@@ -277,3 +277,53 @@
   max-width: 340px;
 }
 .scan-result b { color: var(--peach); }
+
+/* ── 송리스트 관리 ── */
+.hint-text { font-size: 0.78rem; color: var(--ink-60); margin-bottom: 18px; word-break: keep-all; }
+
+.song-set { border: 1px solid var(--ink); background: var(--paper); margin-bottom: 16px; }
+.song-set .set-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 15px 17px; border-bottom: 1px solid var(--hair);
+}
+.song-set .set-head b { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
+.song-set .set-head small {
+  display: block; font-family: var(--mono);
+  font-size: 0.58rem; letter-spacing: 0.12em; color: var(--ink-60); margin-top: 3px;
+}
+.set-songs { list-style: none; }
+.set-songs .empty { padding: 16px 17px; font-size: 0.8rem; color: var(--ink-60); }
+
+.song-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 17px; border-bottom: 1px solid var(--hair);
+}
+.song-row:last-child { border-bottom: none; }
+.song-row .no {
+  font-family: var(--mono); font-size: 0.6rem;
+  color: var(--ink-60); letter-spacing: 0.1em; width: 20px; flex-shrink: 0;
+}
+.song-row .info { flex: 1; min-width: 0; }
+.song-row .info b { display: block; font-size: 0.88rem; font-weight: 600; }
+.song-row .info small {
+  display: block; font-family: var(--mono); font-size: 0.56rem;
+  letter-spacing: 0.08em; color: var(--ink-60); margin-top: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.song-row .acts { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.icon-btn {
+  width: 26px; height: 26px; border: 1px solid var(--hair); background: transparent;
+  color: var(--ink-60); font-size: 0.8rem; line-height: 1; transition: 0.15s;
+}
+.icon-btn:hover { border-color: var(--ink); color: var(--ink); }
+.icon-btn.del:hover { border-color: var(--coral); color: var(--coral); }
+.icon-btn:disabled { opacity: 0.4; }
+
+.song-row.editing { flex-direction: column; align-items: stretch; gap: 8px; padding: 14px 17px; }
+.song-row .edit-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.song-row .edit-grid input {
+  flex: 1; min-width: 90px; padding: 9px 11px; border: 1px solid var(--ink);
+  background: var(--cream); font-family: inherit; font-size: 0.84rem;
+}
+.song-row .edit-grid input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+.song-row .edit-acts { display: flex; gap: 8px; }

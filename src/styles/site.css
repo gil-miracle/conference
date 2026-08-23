@@ -17,7 +17,7 @@ section { padding: 100px 0; }
   word-break: keep-all;
 }
 .sec-head .idx {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.62rem;
   letter-spacing: 0.2em;
   color: var(--ink-60);
@@ -104,14 +104,14 @@ nav.site {
 }
 .dday-strip .big { font-family: "Anton"; font-size: 1.6rem; line-height: 1; color: var(--coral); }
 .dday-strip .lbl {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   color: var(--ink-60);
 }
 .dday-strip .clock {
   margin-left: auto;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.85rem;
   letter-spacing: 0.12em;
   font-weight: 500;
@@ -134,7 +134,7 @@ nav.site {
 .verse .ref {
   display: block;
   margin-top: 20px;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.28em;
@@ -151,7 +151,7 @@ nav.site {
   align-items: center;
   justify-content: center;
   color: #a2957d;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.66rem;
   letter-spacing: 0.26em;
 }
@@ -164,7 +164,7 @@ nav.site {
 .map-links a:hover { background: var(--ink); color: var(--cream); }
 
 /* ── Speakers ── */
-#speakers { background: var(--paper); border-top: 1px solid var(--hair); }
+#speakers { border-top: 1px solid var(--hair); }
 .spk-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -185,7 +185,7 @@ nav.site {
     linear-gradient(90deg, rgba(33, 29, 25, 0.05) 1px, transparent 1px), #ece3d4;
   background-size: 18px 18px;
   color: #a2957d;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.56rem;
   letter-spacing: 0.26em;
 }
@@ -195,7 +195,7 @@ nav.site {
 .spk .tag {
   display: block;
   margin-top: 10px;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -204,24 +204,21 @@ nav.site {
 }
 
 /* ── Timetable ── */
-#timetable { background: var(--deep); color: var(--cream); }
-#timetable .sec-head { border-color: rgba(250, 246, 238, 0.9); }
-#timetable .eyebrow { color: var(--peach); }
-#timetable .lede { color: rgba(250, 246, 238, 0.5); }
-.day-tabs { display: flex; margin: 34px 0 0; border: 1px solid rgba(250, 246, 238, 0.35); }
+#timetable { border-top: 1px solid var(--hair); }
+.day-tabs { display: flex; margin: 34px 0 0; border: 1px solid var(--ink); }
 .day-tabs button {
   flex: 1;
   padding: 13px 0;
   border: none;
   background: transparent;
-  color: rgba(250, 246, 238, 0.55);
+  color: var(--ink-60);
   font-weight: 600;
   font-size: 0.84rem;
   transition: 0.2s;
   letter-spacing: 0.02em;
 }
-.day-tabs button + button { border-left: 1px solid rgba(250, 246, 238, 0.35); }
-.day-tabs button.on { background: var(--cream); color: var(--deep); }
+.day-tabs button + button { border-left: 1px solid var(--ink); }
+.day-tabs button.on { background: var(--ink); color: var(--cream); }
 .tt-list { margin-top: 0; }
 .tt {
   display: grid;
@@ -232,7 +229,7 @@ nav.site {
   align-items: baseline;
 }
 .tt time {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -244,13 +241,6 @@ nav.site {
 .tt.main b { color: var(--coral); }
 .tt small { font-size: 0.76rem; color: var(--ink-60); }
 
-/* 다크 배경 섹션에서만 반전 (메인 타임테이블 요약 · /timetable) */
-#timetable .tt { border-bottom-color: rgba(250, 246, 238, 0.14); }
-#timetable .tt time { color: rgba(250, 246, 238, 0.5); }
-#timetable .tt.main time { color: var(--orange); }
-#timetable .tt b { color: var(--cream); }
-#timetable .tt.main b { color: var(--peach); }
-#timetable .tt small { color: rgba(250, 246, 238, 0.42); }
 
 /* ── Songs ── */
 .song {
@@ -264,7 +254,7 @@ nav.site {
 .song:first-of-type { border-top: 1px solid var(--ink); }
 .song:last-of-type { border-bottom: 1px solid var(--ink); }
 .song .no {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.64rem;
   font-weight: 500;
   color: var(--ink-60);
@@ -273,7 +263,7 @@ nav.site {
 .song b { font-size: 0.93rem; font-weight: 600; display: block; letter-spacing: -0.01em; }
 .song small { font-size: 0.74rem; color: var(--ink-60); }
 .song .key {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.64rem;
   font-weight: 500;
   color: var(--ink-60);
@@ -295,12 +285,12 @@ nav.site {
 .song .yt:hover { background: var(--coral); border-color: var(--coral); color: #fff; }
 
 /* ── 방명록 ── */
-#guestbook { background: var(--paper); border-top: 1px solid var(--hair); }
+#guestbook { border-top: 1px solid var(--hair); }
 .gb { padding: 22px 0; border-bottom: 1px solid var(--hair); }
 .gb .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .gb b { font-size: 0.82rem; font-weight: 700; color: var(--green); }
 .gb time {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.6rem;
   color: var(--ink-60);
   letter-spacing: 0.1em;
@@ -310,7 +300,7 @@ nav.site {
 .gb .del {
   background: none;
   border: none;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.1em;
   color: var(--ink-60);
@@ -361,7 +351,7 @@ nav.site {
   position: absolute;
   bottom: 16px;
   left: 18px;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.24em;
   opacity: 0.55;
@@ -370,7 +360,7 @@ nav.site {
 .video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 /* ── My ── */
-#my { background: var(--paper); border-top: 1px solid var(--hair); }
+#my { border-top: 1px solid var(--hair); }
 .locked { border: 1px dashed rgba(33, 29, 25, 0.3); padding: 50px 30px; text-align: center; }
 .locked svg { width: 20px; height: 20px; color: var(--ink-60); }
 .locked p { font-size: 0.86rem; color: var(--ink-60); margin: 14px 0 26px; word-break: keep-all; }
@@ -390,7 +380,7 @@ nav.site {
 .wcard .img-col img { width: 100%; height: 100%; object-fit: cover; object-position: 38% center; display: block; }
 .wcard .txt-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .wcard .wc-ref {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.26em;
   color: var(--coral);
@@ -406,7 +396,7 @@ nav.site {
 .wcard .wc-verse b { font-weight: 700; }
 .wcard .wc-foot {
   margin-top: auto;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.56rem;
   letter-spacing: 0.2em;
   color: var(--ink-60);
@@ -423,7 +413,7 @@ nav.site {
 .qr svg { display: block; width: 100%; height: 100%; }
 .chip-in {
   display: inline-block;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.14em;
   border: 1px solid rgba(46, 86, 56, 0.4);
@@ -447,7 +437,7 @@ nav.site {
   right: 6px;
   top: 6px;
   font-size: 0.6rem;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   letter-spacing: 0.08em;
   background: rgba(33, 29, 25, 0.75);
   color: var(--cream);
@@ -518,7 +508,7 @@ footer.site .rule {
   border-top: 1px solid rgba(250, 246, 238, 0.18);
   margin: 22px 0;
   padding-top: 18px;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.2em;
   color: rgba(250, 246, 238, 0.35);
@@ -534,9 +524,6 @@ footer.site .rule {
 
 /* 상세 페이지는 히어로가 없으므로 상단 여백 축소 */
 .site-main > section { padding: 56px 0 90px; }
-.site-main > section.page-dark { background: var(--deep); color: var(--cream); }
-.page-dark .sec-head { border-color: rgba(250, 246, 238, 0.9); }
-.page-dark .lede { color: rgba(250, 246, 238, 0.5); }
 
 .sub-head { margin: 44px 0 16px; border-bottom: 1px solid var(--hair); padding-bottom: 10px; }
 .sub-head h3 { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -557,15 +544,13 @@ footer.site .rule {
 }
 .more-link svg { width: 14px; height: 14px; flex-shrink: 0; }
 .more-link:hover { background: var(--ink); color: var(--cream); }
-.page-dark .more-link { border-color: rgba(250, 246, 238, 0.5); }
-.page-dark .more-link:hover { background: var(--cream); color: var(--deep); }
 
 /* 뒤로 가기 */
 .back-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--mono);
   font-size: 0.62rem;
   letter-spacing: 0.2em;
   color: var(--ink-60);
@@ -600,11 +585,11 @@ footer.site .rule {
   background: linear-gradient(rgba(33,29,25,.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(33,29,25,.05) 1px, transparent 1px), #ece3d4;
   background-size: 18px 18px;
-  color: #a2957d; font-family: "IBM Plex Mono", monospace; font-size: 0.54rem; letter-spacing: 0.24em;
+  color: #a2957d; font-family: var(--mono); font-size: 0.54rem; letter-spacing: 0.24em;
 }
 .spk-detail .meta { min-width: 0; }
 .spk-detail .tag {
-  font-family: "IBM Plex Mono", monospace; font-size: 0.58rem; font-weight: 500;
+  font-family: var(--mono); font-size: 0.58rem; font-weight: 500;
   letter-spacing: 0.14em; color: var(--coral); text-transform: uppercase;
 }
 .spk-detail h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-top: 6px; }
@@ -635,7 +620,7 @@ footer.site .rule {
 .pl-item:hover { background: var(--paper); }
 .pl-item.on { background: var(--paper); box-shadow: inset 3px 0 0 var(--coral); }
 .pl-item .no {
-  font-family: "IBM Plex Mono", monospace; font-size: 0.64rem; font-weight: 500;
+  font-family: var(--mono); font-size: 0.64rem; font-weight: 500;
   color: var(--ink-60); letter-spacing: 0.1em; display: flex; align-items: center; justify-content: center;
 }
 .pl-item .no svg { width: 9px; height: 9px; color: var(--coral); }
@@ -644,11 +629,11 @@ footer.site .rule {
 .pl-item.on .info b { color: var(--coral); }
 .pl-item .info small { font-size: 0.74rem; color: var(--ink-60); }
 .pl-item .key {
-  font-family: "IBM Plex Mono", monospace; font-size: 0.64rem; font-weight: 500;
+  font-family: var(--mono); font-size: 0.64rem; font-weight: 500;
   color: var(--ink-60); border: 1px solid var(--hair); padding: 3px 10px; letter-spacing: 0.08em;
 }
 .pl-item .soon {
-  font-family: "IBM Plex Mono", monospace; font-size: 0.54rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.54rem; letter-spacing: 0.08em;
   color: var(--ink-60); border: 1px dashed var(--hair); padding: 2px 7px;
   white-space: nowrap;
 }
@@ -674,4 +659,33 @@ footer.site .rule {
 }
 @media (max-width: 767px) {
   .tabbar { display: flex; }
+}
+
+/* 플레이리스트 — 집회 탭 */
+.pl-tabs { margin: 26px 0 0; }
+.pl-tabs button { font-size: 0.8rem; padding: 11px 0; }
+.pl-set-name {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; padding: 16px 2px 4px;
+}
+.pl-set-name b { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
+.pl-set-name small { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.14em; color: var(--ink-60); }
+.pl-list { margin-top: 8px; }
+
+/* 집회 탭 — 날짜 + 시각 두 줄 (같은 날 집회가 둘 이상이라 날짜만으론 구분 불가) */
+.pl-tabs button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  line-height: 1.3;
+  padding: 9px 0;
+}
+.pl-tabs button .d { font-size: 0.8rem; font-weight: 600; }
+.pl-tabs button .t {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
 }

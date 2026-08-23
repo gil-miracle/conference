@@ -131,18 +131,88 @@ export const TIMETABLE: { day: string; label: string; items: TimetableItem[] }[]
 ];
 
 export type Song = {
+  id: string;
   title: string;
-  sub: string;
-  key: string;
+  /** 원키 */
+  songKey: string | null;
   /** YouTube 영상 ID (URL 아님). 예: "dQw4w9WgXcQ" — 없으면 플레이어에 안내 표시 */
   youtubeId: string | null;
 };
 
-export const SONGS: Song[] = [
-  { title: "은혜의 강가로 (임시)", sub: "개회 예배", key: "G", youtubeId: null },
-  { title: "기적을 노래해 (임시)", sub: "저녁 집회", key: "A", youtubeId: null },
-  { title: "주가 일하시네 (임시)", sub: "저녁 집회", key: "D", youtubeId: null },
-  { title: "보내소서 (임시)", sub: "주일 예배", key: "E", youtubeId: null },
+/** 집회 단위 세트 — 집회별 6~7곡 */
+export type SongSet = {
+  id: string;
+  /** 집회명 (예: 개회 예배 — CALL) */
+  name: string;
+  /** 날짜 라벨 (예: 금 11) */
+  dayLabel: string | null;
+  /** 시각 라벨 (예: 19:30) */
+  timeLabel: string | null;
+  songs: Song[];
+};
+
+/**
+ * Supabase 미설정(목업 모드) 폴백 겸 초기 시드.
+ * 실서비스에서는 관리자 → 찬양 탭에서 관리한다.
+ */
+export const SONG_SETS_FALLBACK: SongSet[] = [
+  {
+    id: "set-1",
+    name: "개회 예배 — CALL",
+    dayLabel: "금 11",
+    timeLabel: "19:30",
+    songs: [
+      { id: "s1-1", title: "은혜의 강가로 (임시)", songKey: "G", youtubeId: null },
+      { id: "s1-2", title: "주 품에 (임시)", songKey: "D", youtubeId: null },
+      { id: "s1-3", title: "여기에 모인 우리 (임시)", songKey: "A", youtubeId: null },
+      { id: "s1-4", title: "성령이 오셨네 (임시)", songKey: "E", youtubeId: null },
+      { id: "s1-5", title: "부르신 곳에서 (임시)", songKey: "C", youtubeId: null },
+      { id: "s1-6", title: "나의 반석 (임시)", songKey: "G", youtubeId: null },
+    ],
+  },
+  {
+    id: "set-2",
+    name: "오전 집회 — FAITH",
+    dayLabel: "토 12",
+    timeLabel: "09:30",
+    songs: [
+      { id: "s2-1", title: "믿음의 노래 (임시)", songKey: "D", youtubeId: null },
+      { id: "s2-2", title: "주 없이 살 수 없네 (임시)", songKey: "A", youtubeId: null },
+      { id: "s2-3", title: "약속하신 말씀 위에 (임시)", songKey: "E", youtubeId: null },
+      { id: "s2-4", title: "내 영혼이 (임시)", songKey: "G", youtubeId: null },
+      { id: "s2-5", title: "주만 바라볼지라 (임시)", songKey: "C", youtubeId: null },
+      { id: "s2-6", title: "선한 능력으로 (임시)", songKey: "F", youtubeId: null },
+    ],
+  },
+  {
+    id: "set-3",
+    name: "저녁 집회 — MIRACLE",
+    dayLabel: "토 12",
+    timeLabel: "19:30",
+    songs: [
+      { id: "s3-1", title: "기적을 노래해 (임시)", songKey: "A", youtubeId: null },
+      { id: "s3-2", title: "주가 일하시네 (임시)", songKey: "D", youtubeId: null },
+      { id: "s3-3", title: "일어나 빛을 발하라 (임시)", songKey: "E", youtubeId: null },
+      { id: "s3-4", title: "놀라운 은혜 (임시)", songKey: "G", youtubeId: null },
+      { id: "s3-5", title: "성령의 불 (임시)", songKey: "B", youtubeId: null },
+      { id: "s3-6", title: "우리의 하나님 (임시)", songKey: "C", youtubeId: null },
+      { id: "s3-7", title: "다시 오실 왕 (임시)", songKey: "D", youtubeId: null },
+    ],
+  },
+  {
+    id: "set-4",
+    name: "주일 예배 — SENT",
+    dayLabel: "주일 13",
+    timeLabel: "10:30",
+    songs: [
+      { id: "s4-1", title: "보내소서 (임시)", songKey: "E", youtubeId: null },
+      { id: "s4-2", title: "복의 근원 (임시)", songKey: "G", youtubeId: null },
+      { id: "s4-3", title: "이 땅에 (임시)", songKey: "A", youtubeId: null },
+      { id: "s4-4", title: "다시 만날 때까지 (임시)", songKey: "C", youtubeId: null },
+      { id: "s4-5", title: "가서 전하라 (임시)", songKey: "D", youtubeId: null },
+      { id: "s4-6", title: "축복하노라 (임시)", songKey: "F", youtubeId: null },
+    ],
+  },
 ];
 
 /** Supabase 미설정(목업 모드)일 때 보여줄 방명록 데모 */

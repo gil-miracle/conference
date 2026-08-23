@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "타임테이블 — MIRACLE 2026" };
 
 export default function TimetablePage() {
   return (
-    <section id="timetable" className="page-dark">
+    <section id="timetable">
       <div className="container">
         <PageHead
           title="타임테이블"

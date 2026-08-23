@@ -1,36 +1,51 @@
 "use client";
 
-import { useState } from "react";
-import type { Song } from "@/lib/content";
+import { useMemo, useState } from "react";
+import type { SongSet } from "@/lib/content";
 import { PlayIcon } from "@/components/icons";
 
 /**
- * 플레이리스트 — 상단 YouTube 플레이어 + 하단 트랙 목록.
- * 트랙을 누르면 같은 자리에서 영상만 교체된다(페이지 이동 없음).
+ * 플레이리스트 — 상단 YouTube 플레이어 + 집회 탭 + 트랙 목록.
+ * 탭을 바꿔도 재생 중인 곡은 유지되고, 트랙을 누르면 영상만 교체된다.
  */
-export default function Playlist({ songs }: { songs: Song[] }) {
-  const firstPlayable = songs.findIndex((s) => s.youtubeId);
-  const [current, setCurrent] = useState(firstPlayable >= 0 ? firstPlayable : 0);
+export default function Playlist({ sets }: { sets: SongSet[] }) {
+  const [activeSet, setActiveSet] = useState(0);
+  // 재생 중인 곡은 집회를 넘나들 수 있으므로 곡 id로 추적
+  const firstPlayable = useMemo(() => {
+    for (const set of sets) {
+      const found = set.songs.find((s) => s.youtubeId);
+      if (found) return found.id;
+    }
+    return sets[0]?.songs[0]?.id ?? null;
+  }, [sets]);
+
+  const [currentId, setCurrentId] = useState<string | null>(firstPlayable);
   const [autoplay, setAutoplay] = useState(false);
 
-  const song = songs[current];
-  const hasVideo = Boolean(song?.youtubeId);
+  const current = useMemo(() => {
+    for (const set of sets) {
+      const song = set.songs.find((s) => s.id === currentId);
+      if (song) return { song, setName: set.name };
+    }
+    return null;
+  }, [sets, currentId]);
 
-  function select(index: number) {
-    setCurrent(index);
-    setAutoplay(true);
+  if (sets.length === 0) {
+    return <p className="msg">아직 등록된 송리스트가 없어요.</p>;
   }
+
+  const shown = sets[activeSet] ?? sets[0];
 
   return (
     <div className="playlist reveal">
       <div className="pl-stage">
-        {hasVideo ? (
+        {current?.song.youtubeId ? (
           <iframe
-            key={song.youtubeId}
-            src={`https://www.youtube-nocookie.com/embed/${song.youtubeId}?rel=0${
+            key={current.song.youtubeId}
+            src={`https://www.youtube-nocookie.com/embed/${current.song.youtubeId}?rel=0${
               autoplay ? "&autoplay=1" : ""
             }`}
-            title={song.title}
+            title={current.song.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
@@ -42,31 +57,58 @@ export default function Playlist({ songs }: { songs: Song[] }) {
         )}
       </div>
 
-      <div className="pl-now">
-        <div className="eyebrow">NOW PLAYING</div>
-        <b>{song?.title}</b>
+      {current && (
+        <div className="pl-now">
+          <div className="eyebrow">NOW PLAYING</div>
+          <b>{current.song.title}</b>
+          <small>
+            {current.setName}
+            {current.song.songKey ? ` · KEY ${current.song.songKey}` : ""}
+          </small>
+        </div>
+      )}
+
+      <div className="day-tabs pl-tabs">
+        {sets.map((set, i) => (
+          <button
+            key={set.id}
+            className={i === activeSet ? "on" : ""}
+            onClick={() => setActiveSet(i)}
+          >
+            {/* 같은 날 집회가 둘 이상이라 날짜만으론 구분되지 않는다 */}
+            <span className="d">{set.dayLabel ?? set.name}</span>
+            {set.timeLabel && <span className="t">{set.timeLabel}</span>}
+          </button>
+        ))}
+      </div>
+
+      <div className="pl-set-name">
+        <b>{shown.name}</b>
         <small>
-          {song?.sub} · KEY {song?.key}
+          {shown.timeLabel ? `${shown.timeLabel} · ` : ""}
+          {shown.songs.length} SONGS
         </small>
       </div>
 
       <ol className="pl-list">
-        {songs.map((s, i) => (
-          <li key={s.title}>
+        {shown.songs.map((song, i) => (
+          <li key={song.id}>
             <button
-              className={`pl-item${i === current ? " on" : ""}`}
-              onClick={() => select(i)}
-              aria-current={i === current ? "true" : undefined}
+              className={`pl-item${song.id === currentId ? " on" : ""}`}
+              onClick={() => {
+                setCurrentId(song.id);
+                setAutoplay(true);
+              }}
+              aria-current={song.id === currentId ? "true" : undefined}
             >
               <span className="no">
-                {i === current ? <PlayIcon /> : String(i + 1).padStart(2, "0")}
+                {song.id === currentId ? <PlayIcon /> : String(i + 1).padStart(2, "0")}
               </span>
               <span className="info">
-                <b>{s.title}</b>
-                <small>{s.sub}</small>
+                <b>{song.title}</b>
               </span>
-              <span className="key">{s.key}</span>
-              {!s.youtubeId && <span className="soon">준비중</span>}
+              {song.songKey && <span className="key">{song.songKey}</span>}
+              {!song.youtubeId && <span className="soon">SOON</span>}
             </button>
           </li>
         ))}

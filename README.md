@@ -22,7 +22,7 @@ npm run dev
 
 - 참가자: 로그인 시트의 "미리보기로 로그인" 버튼, 또는 `/?demo=1`
   → My(말씀카드·숙소·조·QR)와 갤러리의 로그인 후 화면을 데모 데이터로 보여준다
-- 관리자: `/admin` 접속만 하면 5개 탭(대시보드·체크인·숙소조·게시판·설정)이 데모 데이터로 렌더된다 (변경은 저장되지 않음)
+- 관리자: `/admin` 접속만 하면 6개 탭(대시보드·체크인·숙소·찬양·게시판·설정)이 데모 데이터로 렌더된다 (변경은 저장되지 않음)
 - Supabase env가 설정되면 데모 경로는 전부 비활성화되고 실제 인증·권한만 동작한다
 
 콘텐츠(강사·타임테이블·송리스트·링크)는 전부 [src/lib/content.ts](src/lib/content.ts) 한 파일에서 고친다.
@@ -32,9 +32,13 @@ npm run dev
 ```
 /                             # Next.js 앱 (레포 루트 = Vercel Root Directory)
 ├─ src/                       # 애플리케이션 코드 — 아래 상세
-├─ public/                    # poster.jpg · wordcard-bg.jpg
+├─ public/
+│  ├─ poster.jpg  wordcard-bg.jpg
+│  ├─ icons/                  #   PWA 아이콘 (192·512·maskable·apple-touch)
+│  └─ sw.js                   #   서비스 워커
 ├─ supabase/
 │  ├─ migrations/0001_init.sql  # 스키마 + RLS + RPC (SQL Editor에 붙여넣기)
+│  ├─ migrations/0002_songs.sql # 송리스트(집회 세트 + 곡) + 초기 데이터
 │  └─ seed.sql                  # 개발용 데모 데이터
 ├─ docs/
 │  └─ site-design.md          # 설계서 (IA·인증·DB·관리자·말씀카드 스펙)
@@ -49,42 +53,54 @@ npm run dev
 src/
 ├─ middleware.ts              # Supabase 세션 갱신
 ├─ styles/                    # 전역 CSS 3분할 — 라우트별 로드
-│  ├─ base.css                #   토큰·리셋·버튼·폼·토스트·배너 (전 라우트, layout.tsx)
-│  ├─ site.css                #   참가자 페이지 (/, /bind 에서만 로드)
+│  ├─ base.css                #   토큰(--mono 포함)·리셋·버튼·폼·토스트·배너
+│  ├─ site.css                #   참가자 화면 ((site) 그룹 · /bind · /offline)
 │  └─ admin.css               #   관리자 (admin/layout.tsx 에서만 로드)
 ├─ app/
-│  ├─ layout.tsx  page.tsx    # 루트 레이아웃 · 원페이지(섹션 조립만)
+│  ├─ layout.tsx              # 루트 레이아웃 · PWA 메타 · 서비스 워커 등록
+│  ├─ manifest.ts             # PWA 매니페스트 (/manifest.webmanifest)
+│  ├─ offline/                # 오프라인 폴백 페이지
+│  ├─ (site)/                 # 참가자 화면 — 공통 레이아웃(내비·탭바·푸터)
+│  │  ├─ page.tsx             #   메인 (요약 + 전체 보기 링크)
+│  │  ├─ about/ speakers/ speakers/[id]/
+│  │  ├─ timetable/ songs/ guestbook/
+│  │  └─ my/ gallery/
 │  ├─ actions/                # 참가자 서버 액션 (guestbook, gallery)
 │  ├─ auth/                   # OAuth callback · signout
 │  ├─ bind/                   # 명단 연결 (page + BindForm + actions)
 │  ├─ api/                    # photos 페이지네이션 · admin stats/participants/export
 │  └─ admin/
-│     ├─ layout.tsx           # 가드(requireAdmin) + 헤더/탭 + 데모 공지
+│     ├─ layout.tsx  AdminTabs.tsx
 │     ├─ actions/             # 도메인별 서버 액션: checkin · participants · rooms
-│     │                       #   · teams · moderation · settings
+│     │                       #   · teams · songs · moderation · settings
 │     ├─ dashboard/           # Dashboard(SWR) + Stats/Recent/Missing
 │     ├─ checkin/             # CheckinPanel + ParticipantRow + QrScanner
 │     ├─ rooms/               # RoomsPanel + TeamsPanel + AssignSelect + DeleteButton
+│     ├─ songs/               # SongSetCard + SongItem + AddSetForm + DeleteSetButton
 │     ├─ board/               # GuestbookModItem + ModButtons + PhotoModCell
 │     └─ settings/            # BannerSettingCard + ToggleSettingCard + CsvUpload
 ├─ components/
-│  ├─ sections/               # 원페이지 섹션: Hero·About·Speakers·Timetable·Songs
-│  │                          #   ·Guestbook·Video·My·Gallery·SiteFooter
+│  ├─ nav/                    # Nav·NavLinks·NavAuth·BottomTabs·TabIcons·routes
+│  ├─ sections/               # HeroSection · SiteFooter
+│  ├─ home/NextSessions.tsx   # 메인 주요 집회 요약
+│  ├─ songs/Playlist.tsx      # 플레이어 + 집회 탭 + 트랙 목록
 │  ├─ my/                     # WordCard·WordcardSave·RoomCard·TeamCard·QrCard
 │  │                          #   ·MyLocked·MyBindPrompt
 │  ├─ gallery/                # GalleryGrid(업로드)·GalleryLocked·GalleryDemoGrid
 │  ├─ guestbook/              # GuestbookForm·GuestbookWriteCta·GuestbookDelete
-│  └─ (공용)                   # Nav·NavAuth·LoginSheet·LoginButton·Banner·Toast
-│                             #   ·SectionHead·icons·HeroDday·TimetableTabs
-│                             #   ·SongRow·SpeakerCard·VideoPlayer·RevealObserver
+│  └─ (공용)                   # Banner·Toast·LoginSheet·LoginButton·SectionHead
+│                             #   ·PageHead·MoreLink·icons·HeroDday·TimetableTabs
+│                             #   ·SpeakerCard·VideoPlayer·RevealObserver·ServiceWorker
 ├─ hooks/useToast.ts          # 토스트 상태 (타이머 정리 포함)
 └─ lib/
-   ├─ content.ts              # ★ 사이트 콘텐츠 단일 소스
-   ├─ data/home.ts            # 원페이지 데이터 페처 (설정·방명록·My요약·사진)
+   ├─ content.ts              # ★ 사이트 콘텐츠 단일 소스 (+ 송리스트 폴백)
+   ├─ data/site.ts            # 세션·설정 컨텍스트 · 방명록 · 사진
+   ├─ data/songs.ts           # 집회별 송리스트 (DB → 없으면 폴백)
    ├─ supabase/ server.ts client.ts
    ├─ admin.ts                # requireAdmin(페이지) · getAdminContext(액션/API)
    ├─ participant.ts          # getBoundParticipant(참가자 액션 가드)
    ├─ demo.ts                 # 미리보기 모드 데이터 (env 설정 시 미사용)
+   ├─ youtube.ts              # URL → 영상 ID 추출
    ├─ settings.ts cloudinary.ts csv.ts fetcher.ts format.ts
    ├─ wordcard.ts             # 말씀카드 캔버스 렌더 → PNG
    ├─ gallery-upload.ts       # 압축→서명→Cloudinary→메타 저장 파이프라인
@@ -102,23 +118,41 @@ src/
 | `/about` | 주제, 장소·오시는 길, 준비물, 홍보 영상 |
 | `/speakers` | 강사 목록 |
 | `/speakers/[id]` | 강사 상세 — 약력, 담당 세션 (SSG) |
-| `/timetable` | 3일 타임테이블 (날짜 탭, 다크 섹션) |
-| `/songs` | 송리스트 — 상단 YouTube 플레이어 + 하단 트랙 목록(클릭 시 전환) |
+| `/timetable` | 3일 타임테이블 (날짜 탭) |
+| `/songs` | 송리스트 — 상단 YouTube 플레이어 + 집회 탭 + 트랙 목록(클릭 시 전환) |
 | `/guestbook` | 방명록 전체 + 작성 |
 | `/my` | 말씀카드·숙소·조·체크인 QR (로그인) |
 | `/gallery` | 갤러리 (로그인, 행사 후 오픈) |
 | `/bind` | 소셜 계정 ↔ 신청 명단 연결 |
-| `/admin/*` | 운영진 — 대시보드·체크인·숙소조·게시판·설정 |
+| `/admin/*` | 운영진 — 대시보드·체크인·숙소·**찬양**·게시판·설정 |
+| `/offline` | PWA 오프라인 폴백 |
 
 내비게이션은 화면 폭에 따라 갈린다. **데스크톱(768px~)은 상단 가로 메뉴**,
 **모바일은 하단 탭바**(홈·일정·강사·찬양·My)로 행사 당일 체크인 QR 접근을 최단화했다.
 포스터도 모바일에선 풀블리드, 데스크톱에선 컨테이너 폭(640px)에 맞춰 상단 내비와 정렬된다.
 
+### 송리스트 관리
+
+집회(세트) 단위로 곡을 묶는다. 집회별 6~7곡 기준이며 관리자 **찬양** 탭에서
+집회 추가·삭제, 곡 추가·수정·삭제·순서 이동을 할 수 있다.
+YouTube는 주소를 그대로 붙여넣어도 영상 ID만 추출해 저장한다([src/lib/youtube.ts](src/lib/youtube.ts)).
+스키마는 [supabase/migrations/0002_songs.sql](supabase/migrations/0002_songs.sql)이고,
+DB가 비어 있거나 Supabase 미설정이면 `content.ts`의 `SONG_SETS_FALLBACK`이 대신 보인다.
+
+### PWA
+
+홈 화면에 추가하면 앱처럼 실행된다(standalone). 매니페스트는 [src/app/manifest.ts](src/app/manifest.ts)에서
+생성하고, 바로가기로 체크인 QR·타임테이블·송리스트를 등록해뒀다.
+서비스 워커([public/sw.js](public/sw.js))는 정적 자산을 캐시 우선, 페이지를 네트워크 우선으로 처리하고
+연결이 끊기면 `/offline`을 보여준다. **개인정보·인증 경로(`/my`, `/gallery`, `/admin`, `/api`, `/auth`, `/bind`)는
+캐시하지 않는다.** 서비스 워커는 프로덕션 빌드에서만 등록된다.
+
 ## 실서비스 셋업
 
 ### 1. Supabase
 
-1. 프로젝트 생성 → SQL Editor에서 [supabase/migrations/0001_init.sql](supabase/migrations/0001_init.sql) 실행
+1. 프로젝트 생성 → SQL Editor에서 [supabase/migrations/0001_init.sql](supabase/migrations/0001_init.sql) →
+   [0002_songs.sql](supabase/migrations/0002_songs.sql) 순서로 실행
    (개발용 데모 데이터가 필요하면 `supabase/seed.sql` 추가 실행)
 2. **Authentication → Providers**에서 Kakao, Google 활성화
    - 카카오: [Kakao Developers](https://developers.kakao.com)에서 앱 생성 → REST API 키/시크릿 →
