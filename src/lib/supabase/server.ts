@@ -3,11 +3,14 @@ import { cookies } from "next/headers";
 
 type CookieToSet = { name: string; value: string; options: CookieOptions };
 
+/** 신규(PUBLISHABLE_KEY)·기존(ANON_KEY) 이름을 모두 인식 */
+export const SUPABASE_PUBLIC_KEY =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+  "";
+
 export function isSupabaseConfigured() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && SUPABASE_PUBLIC_KEY);
 }
 
 /** 서버 컴포넌트/액션/라우트용 클라이언트. env 미설정이면 null (목업 모드). */
@@ -16,7 +19,7 @@ export async function getSupabaseServer() {
   const cookieStore = await cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    SUPABASE_PUBLIC_KEY,
     {
       cookies: {
         getAll() {

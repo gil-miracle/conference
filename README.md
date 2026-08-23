@@ -223,7 +223,7 @@ where name = '김예찬' and birth_date = '1994-01-01';
 |---|---|
 | `NEXT_PUBLIC_SITE_URL` | 공개 — 배포 도메인 (OG 이미지 절대경로용) |
 | `NEXT_PUBLIC_SUPABASE_URL` | 공개 |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 공개(브라우저 노출 정상) |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` 또는 `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 공개(브라우저 노출 정상) — 둘 중 하나만 |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | 공개 |
 | `CLOUDINARY_API_KEY` | **비밀** |
 | `CLOUDINARY_API_SECRET` | **비밀** |
