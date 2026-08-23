@@ -20,7 +20,7 @@ export default function RevealObserver() {
             io.unobserve(e.target);
           }
         }),
-      { threshold: 0.12 }
+      { threshold: 0.04, rootMargin: "0px 0px -5% 0px" }
     );
 
     const observe = () =>

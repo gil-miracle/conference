@@ -4,7 +4,8 @@ import Playlist from "@/components/songs/Playlist";
 import { getSongSets } from "@/lib/data/songs";
 
 export const metadata: Metadata = { title: "송리스트 — MIRACLE 2026" };
-export const dynamic = "force-dynamic";
+/** 관리자 수정 시 revalidatePath로 즉시 갱신되므로 짧게 캐시해도 안전 */
+export const revalidate = 60;
 
 export default async function SongsPage() {
   const sets = await getSongSets();

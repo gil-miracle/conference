@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { getSupabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
 import { parseSiteSettings } from "@/lib/settings";
@@ -16,15 +17,18 @@ export type SiteContext = {
   demoMode: boolean;
 };
 
-/** 미리보기 모드 활성 여부 (env 미설정일 때만) */
-async function isDemo(demoOverride: boolean) {
+/** 미리보기 쿠키 여부 (env 미설정일 때만 유효) */
+async function hasDemoCookie() {
   if (isSupabaseConfigured()) return false;
-  if (demoOverride) return true;
   const cookieStore = await cookies();
   return Boolean(cookieStore.get(DEMO_COOKIE));
 }
 
-export async function getSiteContext(demoOverride = false): Promise<SiteContext> {
+/**
+ * 세션·설정 조회. React cache로 감싸 한 요청 안에서는 한 번만 실행된다
+ * (레이아웃과 페이지가 각각 호출해도 DB 왕복은 1회).
+ */
+const loadContext = cache(async (): Promise<SiteContext> => {
   const ctx: SiteContext = {
     authed: false,
     summary: null,
@@ -37,7 +41,7 @@ export async function getSiteContext(demoOverride = false): Promise<SiteContext>
   const supabase = await getSupabaseServer();
 
   if (!supabase) {
-    if (await isDemo(demoOverride)) {
+    if (await hasDemoCookie()) {
       ctx.demoMode = true;
       ctx.authed = true;
       ctx.summary = DEMO_SUMMARY;
@@ -46,15 +50,15 @@ export async function getSiteContext(demoOverride = false): Promise<SiteContext>
     return ctx;
   }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // 세션과 사이트 설정은 서로 독립 — 병렬로 받아 왕복을 줄인다
+  const [userRes, settingsRes] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.from("site_settings").select("key,value"),
+  ]);
+  const user = userRes.data.user;
   ctx.authed = Boolean(user);
 
-  const { data: settingsRows } = await supabase
-    .from("site_settings")
-    .select("key,value");
-  const settings = parseSiteSettings(settingsRows);
+  const settings = parseSiteSettings(settingsRes.data);
   ctx.banner = settings.banner.visible ? settings.banner : null;
   ctx.galleryOpen = settings.galleryOpen;
   ctx.guestbookOpen = settings.guestbookOpen;
@@ -62,6 +66,24 @@ export async function getSiteContext(demoOverride = false): Promise<SiteContext>
   if (user) {
     const { data: summary } = await supabase.rpc("get_my_summary");
     ctx.summary = summary as MySummary | null;
+  }
+  return ctx;
+});
+
+/**
+ * `?demo=1`은 목업 모드에서 로그인 후 화면을 바로 보기 위한 편의 기능.
+ * 캐시된 결과 위에 메모리에서만 덧씌워 추가 왕복을 만들지 않는다.
+ */
+export async function getSiteContext(demoOverride = false): Promise<SiteContext> {
+  const ctx = await loadContext();
+  if (demoOverride && !isSupabaseConfigured() && !ctx.demoMode) {
+    return {
+      ...ctx,
+      demoMode: true,
+      authed: true,
+      summary: DEMO_SUMMARY,
+      galleryOpen: true,
+    };
   }
   return ctx;
 }

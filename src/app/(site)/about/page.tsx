@@ -4,6 +4,8 @@ import VideoPlayer from "@/components/VideoPlayer";
 import { ABOUT_LEDE, EVENT, THEME_VERSE } from "@/lib/content";
 
 export const metadata: Metadata = { title: "주제 및 장소 — MIRACLE 2026" };
+/** 콘텐츠가 코드에서만 오므로 매 요청 렌더링할 필요가 없다 */
+export const revalidate = 3600;
 
 export default function AboutPage() {
   return (

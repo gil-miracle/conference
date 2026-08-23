@@ -134,3 +134,30 @@ textarea.f-input { resize: vertical; min-height: 96px; line-height: 1.7; }
   text-align: center;
 }
 .toast.err { background: var(--coral); }
+
+/* ── 라우트 전환 진행바 ── */
+@keyframes route-slide {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+.route-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 200;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--hair);
+}
+.route-loading i {
+  display: block;
+  height: 100%;
+  width: 25%;
+  background: var(--coral);
+  animation: route-slide 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-loading i { animation: none; width: 100%; opacity: 0.5; }
+}
