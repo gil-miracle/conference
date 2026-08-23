@@ -1,0 +1,20 @@
+import type { Metadata } from "next";
+import PageHead from "@/components/PageHead";
+import TimetableTabs from "@/components/TimetableTabs";
+
+export const metadata: Metadata = { title: "타임테이블 — MIRACLE 2026" };
+
+export default function TimetablePage() {
+  return (
+    <section id="timetable" className="page-dark">
+      <div className="container">
+        <PageHead
+          title="타임테이블"
+          idx="TIMETABLE"
+          lede="모든 시간은 임시입니다. 확정되면 업데이트돼요."
+        />
+        <TimetableTabs />
+      </div>
+    </section>
+  );
+}

@@ -35,19 +35,61 @@ export const ABOUT_LEDE =
   "하늘과 땅, 바다와 모든 깊은 곳에서 일하시는 하나님의 기적을 함께 목격하는 3일. (임시 소개 문구)";
 
 export type Speaker = {
+  /** URL slug — /speakers/[id] */
+  id: string;
   name: string;
   org: string;
   tag: string;
   /** /public/speakers/ 아래 파일명 — 사진 확보 전엔 null */
   img: string | null;
+  /** 상세 페이지 약력 (임시) */
+  bio: string;
+  /** 담당 세션 — 타임테이블과 연결 */
+  sessions: { day: string; time: string; title: string }[];
 };
 
 export const SPEAKERS: Speaker[] = [
-  { name: "김은혜 목사", org: "OO교회", tag: "FRI · 저녁집회", img: null },
-  { name: "이믿음 목사", org: "△△교회", tag: "SAT · 오전집회", img: null },
-  { name: "박소망 선교사", org: "□□선교회", tag: "SAT · 저녁집회", img: null },
-  { name: "최사랑 목사", org: "GIL 공동체", tag: "SUN · 주일예배", img: null },
+  {
+    id: "kim-eunhye",
+    name: "김은혜 목사",
+    org: "OO교회",
+    tag: "FRI · 저녁집회",
+    img: null,
+    bio: "(임시 약력) OO교회 담임. 다음세대 사역과 공동체 훈련에 힘써 왔으며, 이번 컨퍼런스에서 개회 예배를 인도합니다.",
+    sessions: [{ day: "금 11", time: "19:30", title: "개회 예배 — CALL" }],
+  },
+  {
+    id: "lee-mideum",
+    name: "이믿음 목사",
+    org: "△△교회",
+    tag: "SAT · 오전집회",
+    img: null,
+    bio: "(임시 약력) △△교회 담임. 말씀 강해와 제자훈련 사역을 이어오고 있습니다.",
+    sessions: [{ day: "토 12", time: "09:30", title: "오전 집회 — FAITH" }],
+  },
+  {
+    id: "park-somang",
+    name: "박소망 선교사",
+    org: "□□선교회",
+    tag: "SAT · 저녁집회",
+    img: null,
+    bio: "(임시 약력) □□선교회 파송 선교사. 현장에서 경험한 하나님의 기적을 나눕니다.",
+    sessions: [{ day: "토 12", time: "19:30", title: "저녁 집회 — MIRACLE" }],
+  },
+  {
+    id: "choi-sarang",
+    name: "최사랑 목사",
+    org: "GIL 공동체",
+    tag: "SUN · 주일예배",
+    img: null,
+    bio: "(임시 약력) GIL 공동체를 섬기고 있습니다. 파송 예배로 3일을 마무리합니다.",
+    sessions: [{ day: "주일 13", time: "10:30", title: "주일 예배 — SENT" }],
+  },
 ];
+
+export function getSpeaker(id: string) {
+  return SPEAKERS.find((s) => s.id === id) ?? null;
+}
 
 export type TimetableItem = {
   time: string;
@@ -88,13 +130,19 @@ export const TIMETABLE: { day: string; label: string; items: TimetableItem[] }[]
   },
 ];
 
-export type Song = { title: string; sub: string; key: string; youtube: string | null };
+export type Song = {
+  title: string;
+  sub: string;
+  key: string;
+  /** YouTube 영상 ID (URL 아님). 예: "dQw4w9WgXcQ" — 없으면 플레이어에 안내 표시 */
+  youtubeId: string | null;
+};
 
 export const SONGS: Song[] = [
-  { title: "은혜의 강가로 (임시)", sub: "개회 예배", key: "G", youtube: null },
-  { title: "기적을 노래해 (임시)", sub: "저녁 집회", key: "A", youtube: null },
-  { title: "주가 일하시네 (임시)", sub: "저녁 집회", key: "D", youtube: null },
-  { title: "보내소서 (임시)", sub: "주일 예배", key: "E", youtube: null },
+  { title: "은혜의 강가로 (임시)", sub: "개회 예배", key: "G", youtubeId: null },
+  { title: "기적을 노래해 (임시)", sub: "저녁 집회", key: "A", youtubeId: null },
+  { title: "주가 일하시네 (임시)", sub: "저녁 집회", key: "D", youtubeId: null },
+  { title: "보내소서 (임시)", sub: "주일 예배", key: "E", youtubeId: null },
 ];
 
 /** Supabase 미설정(목업 모드)일 때 보여줄 방명록 데모 */

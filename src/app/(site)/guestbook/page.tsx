@@ -1,28 +1,25 @@
-import SectionHead from "@/components/SectionHead";
+import type { Metadata } from "next";
+import PageHead from "@/components/PageHead";
 import GuestbookDelete from "@/components/guestbook/GuestbookDelete";
 import GuestbookWriteCta from "@/components/guestbook/GuestbookWriteCta";
 import { fmtDateTime } from "@/lib/format";
-import type { GuestbookEntry } from "@/lib/types";
+import { getGuestbook, getSiteContext } from "@/lib/data/site";
 
-export default function GuestbookSection({
-  entries,
-  authed,
-  bound,
-  open,
-  myParticipantId,
-  myName,
-}: {
-  entries: GuestbookEntry[];
-  authed: boolean;
-  bound: boolean;
-  open: boolean;
-  myParticipantId: string | null;
-  myName: string | null;
-}) {
+export const metadata: Metadata = { title: "방명록 — MIRACLE 2026" };
+export const dynamic = "force-dynamic";
+
+export default async function GuestbookPage() {
+  const [ctx, entries] = await Promise.all([getSiteContext(), getGuestbook(30)]);
+  const myId = ctx.summary?.id ?? null;
+
   return (
     <section id="guestbook">
       <div className="container">
-        <SectionHead title="방명록" idx="05 — GUESTBOOK" />
+        <PageHead
+          title="방명록"
+          idx="GUESTBOOK"
+          lede="함께 나누고 싶은 기대와 기도를 남겨주세요."
+        />
         <div className="reveal">
           {entries.length === 0 && (
             <p className="lede" style={{ padding: "10px 0 4px" }}>
@@ -36,18 +33,16 @@ export default function GuestbookSection({
                 <time>{fmtDateTime(entry.created_at)}</time>
               </div>
               <p>{entry.content}</p>
-              {myParticipantId && entry.participant_id === myParticipantId && (
-                <GuestbookDelete id={entry.id} />
-              )}
+              {myId && entry.participant_id === myId && <GuestbookDelete id={entry.id} />}
             </div>
           ))}
         </div>
         <div className="reveal">
           <GuestbookWriteCta
-            open={open}
-            authed={authed}
-            bound={bound}
-            myName={myName}
+            open={ctx.guestbookOpen}
+            authed={ctx.authed}
+            bound={Boolean(ctx.summary)}
+            myName={ctx.summary?.name ?? null}
           />
         </div>
       </div>
