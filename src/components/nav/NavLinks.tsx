@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ROUTES } from "./routes";
 import { LockIcon } from "@/components/icons";
+import LinkPending from "./LinkPending";
 
 export default function NavLinks({ authed }: { authed: boolean }) {
   const pathname = usePathname();
@@ -14,16 +15,19 @@ export default function NavLinks({ authed }: { authed: boolean }) {
       {NAV_ROUTES.map((r) => (
         <Link key={r.href} className={`lnk${isOn(r.href) ? " on" : ""}`} href={r.href}>
           {r.label}
+          <LinkPending />
         </Link>
       ))}
       <Link className={`lnk${authed ? "" : " lock"}${isOn("/my") ? " on" : ""}`} href="/my">
         {!authed && <LockIcon />}My
+        <LinkPending />
       </Link>
       <Link
         className={`lnk${authed ? "" : " lock"}${isOn("/gallery") ? " on" : ""}`}
         href="/gallery"
       >
         {!authed && <LockIcon />}갤러리
+        <LinkPending />
       </Link>
     </div>
   );

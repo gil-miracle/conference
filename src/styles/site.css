@@ -523,7 +523,11 @@ footer.site .rule {
 
 /* ════ 멀티페이지 구조 ════ */
 
-.site-main { min-height: 60vh; }
+/* 페이지가 짧아도 푸터가 화면 중간으로 올라오지 않게 — 전환 시 위치가 튀는 것을 막는다 */
+.site-main { min-height: calc(100vh - 62px); }
+@media (max-width: 767px) {
+  .site-main { min-height: calc(100vh - 62px - 62px); }
+}
 /* 하단 탭바 높이만큼 여백 (모바일) */
 @media (max-width: 767px) {
   footer.site { padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
@@ -723,3 +727,6 @@ footer.site .rule {
   .pl-stage { border-left: none; border-right: none; }
   .pl-now { border-left: none; border-right: none; }
 }
+
+/* 하단 탭바 — 전환 중인 탭 표시 */
+.tabbar .tab .link-pending { position: absolute; top: 6px; right: calc(50% - 16px); margin: 0; }
