@@ -1,7 +1,7 @@
 /** Cloudinary 표시 URL — 설계서 6장 변환 프리셋 (클라이언트/서버 공용) */
 
 export function getCloudName(): string | null {
-  return process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? null;
+  return process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME?.trim() || null;
 }
 
 function url(publicId: string, transform: string) {
