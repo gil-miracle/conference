@@ -512,13 +512,22 @@ footer.site { background: var(--deep); color: var(--cream); padding: 60px 0 78px
 footer.site .disp { color: var(--pink); font-size: 1.05rem; letter-spacing: 0.1em; margin-bottom: 16px; }
 footer.site p { color: rgba(250, 246, 238, 0.45); line-height: 1.95; }
 footer.site .rule {
-  border-top: 1px solid rgba(250, 246, 238, 0.18);
+  /* 선은 화면 전체로 긋고 글자만 컨테이너 안에 둔다 */
+  position: relative;
   margin: 22px 0;
   padding-top: 18px;
   font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.2em;
   color: rgba(250, 246, 238, 0.35);
+}
+footer.site .rule::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  border-top: 1px solid rgba(250, 246, 238, 0.18);
 }
 
 /* ════ 멀티페이지 구조 ════ */
@@ -727,9 +736,6 @@ footer.site .rule {
   .pl-stage { border-left: none; border-right: none; }
   .pl-now { border-left: none; border-right: none; }
 }
-
-/* 하단 탭바 — 전환 중인 탭 표시 */
-.tabbar .tab .link-pending { position: absolute; top: 6px; right: calc(50% - 16px); margin: 0; }
 
 /* 세션 로드 전 인증 버튼 자리 예약 — 상태가 채워질 때 메뉴가 밀리지 않게 */
 .auth-slot { display: inline-flex; align-items: center; min-width: 48px; justify-content: flex-end; }
