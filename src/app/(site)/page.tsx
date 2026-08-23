@@ -8,7 +8,8 @@ import { EVENT, SPEAKERS, THEME_VERSE, ABOUT_LEDE } from "@/lib/content";
 import { getGuestbook } from "@/lib/data/site";
 import { fmtDateTime } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
+/** 방명록 미리보기만 DB에서 오므로 짧게 캐시 — 정적 렌더로 prefetch가 동작한다 */
+export const revalidate = 60;
 
 export default async function HomePage() {
   const guestbook = await getGuestbook(3);

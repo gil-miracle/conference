@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TAB_ROUTES } from "./routes";
 import { TabIcon } from "./TabIcons";
+import { useSession } from "@/components/SessionProvider";
 import LinkPending from "./LinkPending";
 
 /** 모바일 하단 탭바 — 행사 당일 동선(일정·강사·찬양·QR) 기준 5개 */
-export default function BottomTabs({ authed }: { authed: boolean }) {
+export default function BottomTabs() {
   const pathname = usePathname();
+  const { session } = useSession();
 
   return (
     <nav className="tabbar" aria-label="주요 메뉴">
@@ -27,7 +29,7 @@ export default function BottomTabs({ authed }: { authed: boolean }) {
             <TabIcon name={tab.icon} />
             <span>{tab.label}</span>
             <LinkPending />
-            {tab.href === "/my" && !authed && <i className="dot" aria-hidden="true" />}
+            {tab.href === "/my" && !session.authed && <i className="dot" aria-hidden="true" />}
           </Link>
         );
       })}

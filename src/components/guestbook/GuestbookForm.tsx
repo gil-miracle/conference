@@ -8,11 +8,7 @@ import {
 
 const initialState: GuestbookState = { status: "idle" };
 
-export default function GuestbookForm({
-  defaultName,
-}: {
-  defaultName: string;
-}) {
+export default function GuestbookForm() {
   const [openForm, setOpenForm] = useState(false);
   const [state, formAction, pending] = useActionState(
     addGuestbookEntry,
@@ -48,7 +44,6 @@ export default function GuestbookForm({
         id="gb-name"
         name="display_name"
         className="f-input"
-        defaultValue={defaultName}
         maxLength={20}
         required
       />

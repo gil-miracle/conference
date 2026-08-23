@@ -4,10 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ROUTES } from "./routes";
 import { LockIcon } from "@/components/icons";
+import { useSession } from "@/components/SessionProvider";
 import LinkPending from "./LinkPending";
 
-export default function NavLinks({ authed }: { authed: boolean }) {
+export default function NavLinks() {
   const pathname = usePathname();
+  const { session } = useSession();
   const isOn = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
@@ -18,15 +20,15 @@ export default function NavLinks({ authed }: { authed: boolean }) {
           <LinkPending />
         </Link>
       ))}
-      <Link className={`lnk${authed ? "" : " lock"}${isOn("/my") ? " on" : ""}`} href="/my">
-        {!authed && <LockIcon />}My
+      <Link className={`lnk${session.authed ? "" : " lock"}${isOn("/my") ? " on" : ""}`} href="/my">
+        {!session.authed && <LockIcon />}My
         <LinkPending />
       </Link>
       <Link
-        className={`lnk${authed ? "" : " lock"}${isOn("/gallery") ? " on" : ""}`}
+        className={`lnk${session.authed ? "" : " lock"}${isOn("/gallery") ? " on" : ""}`}
         href="/gallery"
       >
-        {!authed && <LockIcon />}갤러리
+        {!session.authed && <LockIcon />}갤러리
         <LinkPending />
       </Link>
     </div>

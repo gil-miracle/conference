@@ -730,3 +730,6 @@ footer.site .rule {
 
 /* 하단 탭바 — 전환 중인 탭 표시 */
 .tabbar .tab .link-pending { position: absolute; top: 6px; right: calc(50% - 16px); margin: 0; }
+
+/* 세션 로드 전 인증 버튼 자리 예약 — 상태가 채워질 때 메뉴가 밀리지 않게 */
+.auth-slot { display: inline-flex; align-items: center; min-width: 48px; justify-content: flex-end; }

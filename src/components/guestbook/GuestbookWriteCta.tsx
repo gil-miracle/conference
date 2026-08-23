@@ -1,43 +1,35 @@
+"use client";
+
 import Link from "next/link";
-import LoginButton from "@/components/LoginButton";
+import { openLogin } from "@/lib/ui";
+import { useSession } from "@/components/SessionProvider";
 import GuestbookForm from "./GuestbookForm";
 
-/** 작성 영역 — 상태(닫힘/비로그인/미바인딩/작성 가능)에 따라 CTA 분기 */
-export default function GuestbookWriteCta({
-  open,
-  authed,
-  bound,
-  myName,
-}: {
-  open: boolean;
-  authed: boolean;
-  bound: boolean;
-  myName: string | null;
-}) {
-  if (!open)
+/** 작성 영역 — 세션 상태에 따라 CTA 분기 (클라이언트에서 판단해 페이지는 정적 유지) */
+export default function GuestbookWriteCta() {
+  const { session, loaded } = useSession();
+
+  if (!loaded) {
     return (
-      <button className="gb-write" disabled style={{ opacity: 0.5 }}>
-        지금은 방명록 작성이 닫혀 있어요
+      <button className="gb-write" disabled style={{ opacity: 0.4 }}>
+        불러오는 중…
+      </button>
+    );
+  }
+
+  if (!session.authed)
+    return (
+      <button className="gb-write" onClick={() => openLogin()}>
+        방명록 남기기 — 로그인 후 작성할 수 있어요
       </button>
     );
 
-  if (!authed)
+  if (!session.bound)
     return (
-      <LoginButton className="gb-write">
-        방명록 남기기 — 로그인 후 작성할 수 있어요
-      </LoginButton>
-    );
-
-  if (!bound)
-    return (
-      <Link
-        className="gb-write"
-        href="/bind"
-        style={{ display: "block", textAlign: "center" }}
-      >
+      <Link className="gb-write" href="/bind" style={{ display: "block", textAlign: "center" }}>
         방명록 남기기 — 신청 명단 연결 후 작성할 수 있어요
       </Link>
     );
 
-  return <GuestbookForm defaultName={myName ?? ""} />;
+  return <GuestbookForm />;
 }

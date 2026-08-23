@@ -3,14 +3,13 @@ import PageHead from "@/components/PageHead";
 import GuestbookDelete from "@/components/guestbook/GuestbookDelete";
 import GuestbookWriteCta from "@/components/guestbook/GuestbookWriteCta";
 import { fmtDateTime } from "@/lib/format";
-import { getGuestbook, getSiteContext } from "@/lib/data/site";
+import { getGuestbook } from "@/lib/data/site";
 
 export const metadata: Metadata = { title: "방명록 — MIRACLE 2026" };
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export default async function GuestbookPage() {
-  const [ctx, entries] = await Promise.all([getSiteContext(), getGuestbook(30)]);
-  const myId = ctx.summary?.id ?? null;
+  const entries = await getGuestbook(30);
 
   return (
     <section id="guestbook">
@@ -33,17 +32,12 @@ export default async function GuestbookPage() {
                 <time>{fmtDateTime(entry.created_at)}</time>
               </div>
               <p>{entry.content}</p>
-              {myId && entry.participant_id === myId && <GuestbookDelete id={entry.id} />}
+              <GuestbookDelete id={entry.id} ownerId={entry.participant_id} />
             </div>
           ))}
         </div>
         <div className="reveal">
-          <GuestbookWriteCta
-            open={ctx.guestbookOpen}
-            authed={ctx.authed}
-            bound={Boolean(ctx.summary)}
-            myName={ctx.summary?.name ?? null}
-          />
+          <GuestbookWriteCta />
         </div>
       </div>
     </section>
