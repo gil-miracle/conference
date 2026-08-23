@@ -13,7 +13,7 @@ export default function VideoPlayer({
 
   if (youtubeId && playing) {
     return (
-      <div className="video-embed reveal in">
+      <div className="video-embed reveal">
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1`}
           title="MIRACLE 홍보 영상"

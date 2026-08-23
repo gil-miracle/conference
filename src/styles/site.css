@@ -25,15 +25,22 @@ section { padding: 100px 0; }
 .lede { font-size: 0.92rem; color: var(--ink-60); max-width: 44ch; word-break: keep-all; }
 
 /* 스크롤 리빌 */
-.reveal {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.4s cubic-bezier(0.2, 0.6, 0.2, 1),
-    transform 0.4s cubic-bezier(0.2, 0.6, 0.2, 1);
+/* 등장 애니메이션 — CSS만으로 처리한다.
+   IntersectionObserver를 레이아웃에 상주시키면 라우트 전환으로 들어온 요소를
+   놓쳐 opacity:0으로 남는 문제가 있어, 요소가 그려지는 즉시 재생되는 방식으로 바꿨다. */
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
 }
-.reveal.in { opacity: 1; transform: none; }
+.reveal {
+  animation: reveal-in 0.45s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+}
+/* 위에서부터 살짝 시차를 둬 한 번에 뜨지 않게 */
+.reveal:nth-of-type(2) { animation-delay: 0.05s; }
+.reveal:nth-of-type(3) { animation-delay: 0.1s; }
+.reveal:nth-of-type(n + 4) { animation-delay: 0.15s; }
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .reveal { animation: none; opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
 

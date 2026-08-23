@@ -5,7 +5,6 @@ import Nav from "@/components/nav/Nav";
 import BottomTabs from "@/components/nav/BottomTabs";
 import SiteFooter from "@/components/sections/SiteFooter";
 import LoginSheet from "@/components/LoginSheet";
-import RevealObserver from "@/components/RevealObserver";
 import { getSiteContext } from "@/lib/data/site";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +25,6 @@ export default async function SiteLayout({
       <SiteFooter />
       <BottomTabs authed={ctx.authed} />
       <LoginSheet />
-      <RevealObserver />
     </>
   );
 }
