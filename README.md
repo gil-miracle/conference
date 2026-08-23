@@ -187,6 +187,12 @@ DB가 비어 있거나 Supabase 미설정이면 `content.ts`의 `SONG_SETS_FALLB
    - 두 provider 모두 Redirect URI에 Supabase가 보여주는 `https://<프로젝트>.supabase.co/auth/v1/callback` 등록
 3. **Authentication → URL Configuration**: Site URL에 배포 도메인, Redirect URLs에
    `https://<도메인>/auth/callback` 과 `http://localhost:3000/auth/callback` 추가
+
+> **카카오톡 인앱 브라우저 주의** — 참가자 대부분이 카톡으로 링크를 받는데,
+> 구글은 인앱 웹뷰의 OAuth를 정책상 차단한다(`disallowed_useragent`).
+> 코드가 UA로 인앱을 판별해([src/lib/browser-env.ts](src/lib/browser-env.ts))
+> 카카오 로그인을 우선 노출하고, 구글 버튼은 외부 브라우저로 여는 안내로 바꾼다.
+> 카카오 로그인 자체는 카톡 인앱에서 정상 동작하므로 **카카오 provider는 반드시 켜둘 것.**
 4. `.env.example`을 `.env.local`로 복사해 URL·anon key 입력
 
 무료 플랜은 **조직당 활성 프로젝트 2개**, DB 500MB, MAU 5만이고 **1주일 미사용 시 자동 pause**된다

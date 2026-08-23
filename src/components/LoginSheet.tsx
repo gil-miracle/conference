@@ -9,12 +9,25 @@ import { OPEN_LOGIN_EVENT } from "@/lib/ui";
 import { EVENT } from "@/lib/content";
 import { DEMO_COOKIE } from "@/lib/demo";
 import { GoogleIcon, KakaoIcon } from "@/components/icons";
+import {
+  detectInAppBrowser,
+  blocksGoogleOAuth,
+  IN_APP_LABEL,
+  kakaoExternalUrl,
+  type InAppBrowser,
+} from "@/lib/browser-env";
 
 export default function LoginSheet() {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [inApp, setInApp] = useState<InAppBrowser>(null);
   const configured = isSupabaseConfiguredClient();
+
+  // 카카오톡 등 인앱 웹뷰에서는 구글 OAuth가 차단된다
+  useEffect(() => {
+    setInApp(detectInAppBrowser(navigator.userAgent));
+  }, []);
 
   useEffect(() => {
     const handler = () => setOpen(true);
@@ -78,14 +91,37 @@ export default function LoginSheet() {
           <KakaoIcon />
           {busy === "kakao" ? "카카오로 이동 중…" : "카카오로 로그인"}
         </button>
-        <button
-          className="social-btn google"
-          onClick={() => signIn("google")}
-          disabled={!configured || busy !== null}
-        >
-          <GoogleIcon />
-          {busy === "google" ? "구글로 이동 중…" : "구글로 로그인"}
-        </button>
+        {blocksGoogleOAuth(inApp) ? (
+          <>
+            <button
+              className="social-btn google"
+              onClick={() => {
+                const target = `${location.origin}${location.pathname}`;
+                location.href =
+                  inApp === "kakaotalk"
+                    ? kakaoExternalUrl(target)
+                    : target;
+              }}
+              disabled={!configured}
+            >
+              <GoogleIcon />
+              구글로 로그인 — 외부 브라우저로 열기
+            </button>
+            <p className="note" style={{ textAlign: "left", marginTop: 10 }}>
+              {IN_APP_LABEL[inApp!]} 안에서는 구글 정책상 로그인이 막혀 있어요.
+              카카오 로그인을 쓰시거나, 위 버튼으로 외부 브라우저에서 열어주세요.
+            </p>
+          </>
+        ) : (
+          <button
+            className="social-btn google"
+            onClick={() => signIn("google")}
+            disabled={!configured || busy !== null}
+          >
+            <GoogleIcon />
+            {busy === "google" ? "구글로 이동 중…" : "구글로 로그인"}
+          </button>
+        )}
         {!configured && (
           <>
             <p className="msg">
