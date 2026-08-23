@@ -2,7 +2,7 @@ import { THEME_VERSE } from "./content";
 
 /**
  * 화면의 말씀카드(정사각 1:1)를 1080px 캔버스로 다시 그려 PNG Blob 생성.
- * 인쇄용 고품질 카드는 03-말씀카드의 Python 파이프라인이 담당하고,
+ * 인쇄용 고품질 카드는 design/wordcards의 Python 파이프라인이 담당하고,
  * 여기서는 참가자 이름(FOR)이 들어간 SNS 공유용을 즉석 생성한다.
  * (클라이언트 전용 — canvas/document 사용)
  */

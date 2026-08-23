@@ -4,7 +4,7 @@
     {
       "name": "miracle-site",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "04-site", "run", "dev"],
+      "runtimeArgs": ["run", "dev"],
       "port": 3000
     }
   ]
