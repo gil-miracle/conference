@@ -37,7 +37,12 @@ button { font-family: inherit; cursor: pointer; }
   text-transform: uppercase;
   color: var(--ink-60);
 }
-.container { max-width: 640px; margin: 0 auto; padding: 0 26px; }
+/* 가로 여백 기준값 — 모바일은 좁게(포스터처럼 꽉 차게), 데스크톱은 0(포스터 폭과 일치) */
+:root { --gutter: 16px; }
+@media (min-width: 768px) {
+  :root { --gutter: 0px; }
+}
+.container { max-width: 640px; margin: 0 auto; padding: 0 var(--gutter); }
 .hidden { display: none !important; }
 
 /* 공지 배너 — 참가자 상단 공지 + 관리자 데모 공지 공용 */
@@ -46,7 +51,7 @@ button { font-family: inherit; cursor: pointer; }
   color: #fff;
   font-size: 0.8rem;
   font-weight: 600;
-  padding: 10px 26px;
+  padding: 10px var(--gutter);
   text-align: center;
   word-break: keep-all;
 }

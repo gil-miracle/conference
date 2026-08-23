@@ -50,7 +50,7 @@ nav.site {
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 16px 26px;
+  padding: 16px var(--gutter);
   overflow-x: auto;
   scrollbar-width: none;
   /* 포스터·컨테이너와 동일한 폭으로 좌우 경계를 맞춘다 */
@@ -99,7 +99,7 @@ nav.site {
   gap: 16px;
   max-width: 640px;
   margin: 0 auto;
-  padding: 18px 26px;
+  padding: 18px var(--gutter);
   border-bottom: 1px solid var(--ink);
 }
 .dday-strip .big { font-family: "Anton"; font-size: 1.6rem; line-height: 1; color: var(--coral); }
@@ -497,7 +497,7 @@ nav.site {
 .social-btn svg { width: 17px; height: 17px; flex-shrink: 0; }
 
 /* ── 바인딩(명단 연결) 페이지 ── */
-.bind-wrap { max-width: 640px; margin: 0 auto; padding: 70px 26px 120px; }
+.bind-wrap { max-width: 640px; margin: 0 auto; padding: 70px var(--gutter) 120px; }
 .bind-wrap h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-top: 10px; }
 .bind-wrap .sub { font-size: 0.86rem; color: var(--ink-60); margin-top: 8px; word-break: keep-all; }
 
@@ -688,4 +688,31 @@ footer.site .rule {
   font-size: 0.56rem;
   letter-spacing: 0.08em;
   opacity: 0.75;
+}
+
+/* ── 모바일: 포스터처럼 블록을 화면 끝까지 (하단 탭바 구간) ── */
+@media (max-width: 767px) {
+  .spk-grid,
+  .place,
+  .info-grid,
+  .day-tabs,
+  .pl-stage,
+  .pl-now,
+  .gal-grid,
+  .my-card,
+  .wcard,
+  .locked,
+  .video-ph,
+  .video-embed,
+  .map-ph {
+    margin-left: calc(var(--gutter) * -1);
+    margin-right: calc(var(--gutter) * -1);
+  }
+  /* 좌우 테두리는 화면 밖으로 나가므로 지워 이중선처럼 보이지 않게 */
+  .spk-grid, .place, .info-grid, .day-tabs, .my-card, .wcard, .locked {
+    border-left: none;
+    border-right: none;
+  }
+  .pl-stage { border-left: none; border-right: none; }
+  .pl-now { border-left: none; border-right: none; }
 }
