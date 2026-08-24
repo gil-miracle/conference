@@ -17,7 +17,14 @@ export default async function BindPage() {
   if (!user) redirect("/");
 
   const { data: summary } = await supabase.rpc("get_my_summary");
-  if (summary) redirect("/#my");
+  if (summary) redirect("/my");
+
+  // 소셜 프로필 이름을 미리 채워 입력 부담을 줄인다 (수정 가능)
+  const meta = user.user_metadata ?? {};
+  const defaultName =
+    (typeof meta.name === "string" && meta.name) ||
+    (typeof meta.full_name === "string" && meta.full_name) ||
+    "";
 
   return (
     <div className="bind-wrap">
@@ -32,7 +39,7 @@ export default async function BindPage() {
         처음 한 번만 하면 돼요. 참가 신청 때 적은 이름과 생년월일을 입력하면 이
         소셜 계정과 명단이 연결되고, 다음부터는 원탭 로그인이에요.
       </p>
-      <BindForm />
+      <BindForm defaultName={defaultName} />
     </div>
   );
 }

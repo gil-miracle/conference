@@ -1,18 +1,66 @@
 "use client";
 
-import { useActionState } from "react";
-import { bindAction, type BindState } from "./actions";
+import { useActionState, useState } from "react";
 import { EVENT } from "@/lib/content";
+import {
+  lookupAction,
+  requestAction,
+  type LookupResult,
+  type RequestResult,
+} from "./actions";
 
-const initialState: BindState = { status: "idle" };
+/**
+ * 가입 절차 2단계
+ *   ① 이름·생년월일·전화번호로 신청 명단 조회 — 없으면 여기서 끝
+ *   ② 본인이 맞는지 확인받고 가입 요청 전송 → 관리자 승인 대기
+ */
+export default function BindForm({ defaultName }: { defaultName: string }) {
+  const [lookup, lookupFormAction, looking] = useActionState<
+    LookupResult | null,
+    FormData
+  >(lookupAction, null);
+  const [request, requestFormAction, requesting] = useActionState<
+    RequestResult | null,
+    FormData
+  >(requestAction, null);
 
-export default function BindForm() {
-  const [state, formAction, pending] = useActionState(bindAction, initialState);
-  const needPhone =
-    state.status === "need_phone" || state.status === "phone_mismatch";
+  const [name, setName] = useState(defaultName);
+  const [birth, setBirth] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // 조회에 성공하면 확인 화면으로 넘어간다
+  if (lookup?.kind === "found") {
+    return (
+      <form action={requestFormAction}>
+        <input type="hidden" name="name" value={lookup.name} />
+        <input type="hidden" name="birth" value={lookup.birth.replaceAll("-", "")} />
+        <input type="hidden" name="phone" value={lookup.phone} />
+
+        <div className="confirm-card">
+          <div className="eyebrow">신청 내역 확인</div>
+          <h3>{lookup.name} 님</h3>
+          <p>
+            신청 명단에서 확인했어요.
+            <br />
+            본인이 맞다면 가입 요청을 보내주세요.
+          </p>
+          <small>요청 후 운영진 승인을 거치면 숙소·조·체크인 QR을 볼 수 있어요.</small>
+        </div>
+
+        {request?.kind === "error" && <p className="msg err">{request.message}</p>}
+
+        <button className="btn accent full" style={{ marginTop: 22 }} disabled={requesting}>
+          {requesting ? "보내는 중…" : "가입 요청 보내기"}
+        </button>
+        <p className="note">
+          내 정보가 아니라면 보내지 마세요. 잘못 연결되면 본인이 가입할 수 없게 됩니다.
+        </p>
+      </form>
+    );
+  }
 
   return (
-    <form action={formAction}>
+    <form action={lookupFormAction}>
       <label className="f-label" htmlFor="bind-name">
         NAME — 신청서에 적은 이름
       </label>
@@ -22,8 +70,11 @@ export default function BindForm() {
         className="f-input"
         placeholder="김예찬"
         autoComplete="name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         required
       />
+
       <label className="f-label" htmlFor="bind-birth">
         BIRTH — 8자리
       </label>
@@ -34,28 +85,29 @@ export default function BindForm() {
         placeholder="19940101"
         inputMode="numeric"
         maxLength={8}
+        value={birth}
+        onChange={(e) => setBirth(e.target.value.replace(/\D/g, ""))}
         required
       />
-      {needPhone && (
-        <>
-          <label className="f-label" htmlFor="bind-phone4">
-            PHONE — 뒷 4자리
-          </label>
-          <input
-            id="bind-phone4"
-            name="phone4"
-            className="f-input"
-            placeholder="1234"
-            inputMode="numeric"
-            maxLength={4}
-            autoFocus
-          />
-        </>
-      )}
-      {state.status !== "idle" && state.message && (
-        <p className="msg err">{state.message}</p>
-      )}
-      {state.status === "not_found" && EVENT.applyUrl !== "#" && (
+
+      <label className="f-label" htmlFor="bind-phone">
+        PHONE — 신청서에 적은 번호
+      </label>
+      <input
+        id="bind-phone"
+        name="phone"
+        className="f-input"
+        placeholder="01012345678"
+        inputMode="numeric"
+        maxLength={13}
+        autoComplete="tel"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value.replace(/[^\d-]/g, ""))}
+        required
+      />
+
+      {lookup?.kind === "error" && <p className="msg err">{lookup.message}</p>}
+      {lookup?.kind === "error" && lookup.showApply && EVENT.applyUrl !== "#" && (
         <a
           className="btn ghost full"
           style={{ marginTop: 14 }}
@@ -66,8 +118,9 @@ export default function BindForm() {
           참가 신청하러 가기
         </a>
       )}
-      <button className="btn accent full" style={{ marginTop: 30 }} disabled={pending}>
-        {pending ? "확인 중…" : "연결하기"}
+
+      <button className="btn accent full" style={{ marginTop: 30 }} disabled={looking}>
+        {looking ? "확인 중…" : "신청 내역 확인"}
       </button>
       <p className="note">
         다른 계정으로 로그인하려면 <SignOutLink />

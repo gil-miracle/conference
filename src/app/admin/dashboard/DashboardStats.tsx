@@ -33,9 +33,9 @@ export default function DashboardStats({ stats }: { stats: AdminStats }) {
           </div>
           <div className="l">ROOMS USED</div>
         </div>
-        <div className="stat">
-          <div className="n">{stats.guestbook}</div>
-          <div className="l">GUESTBOOK</div>
+        <div className={`stat${stats.pending > 0 ? " hot" : ""}`}>
+          <div className="n">{stats.pending}</div>
+          <div className="l">가입 승인 대기</div>
         </div>
       </div>
       <div className="bar">

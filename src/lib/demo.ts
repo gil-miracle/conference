@@ -14,6 +14,8 @@ export const DEMO_SUMMARY: MySummary = {
   id: "demo",
   name: "김예찬",
   role: "member",
+  status: "approved",
+  reject_reason: null,
   checked_in_at: null,
   checkin_token: "00000000-0000-4000-8000-000000000000",
   room: { building: "비전관", room_no: "203", capacity: 4, note: "본관에서 도보 2분 · 4인실" },
@@ -34,6 +36,7 @@ export function demoAdminStats(): AdminStats {
   return {
     total: 120,
     checked_in: 87,
+    pending: 3,
     rooms_total: 30,
     rooms_used: 28,
     guestbook: 142,

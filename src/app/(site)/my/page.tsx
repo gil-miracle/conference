@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHead from "@/components/PageHead";
 import MyLocked from "@/components/my/MyLocked";
 import MyBindPrompt from "@/components/my/MyBindPrompt";
+import MyPendingCard from "@/components/my/MyPendingCard";
 import WordCard from "@/components/my/WordCard";
 import WordcardSave from "@/components/my/WordcardSave";
 import RoomCard from "@/components/my/RoomCard";
@@ -30,13 +31,20 @@ export default async function MyPage({
           <MyLocked />
         ) : !summary ? (
           <MyBindPrompt />
+        ) : summary.status !== "approved" ? (
+          <MyPendingCard summary={summary} />
         ) : (
           <div className="reveal">
             <WordCard name={summary.name} />
             <WordcardSave name={summary.name} />
             <RoomCard room={summary.room} mates={summary.mates} />
             <TeamCard team={summary.team} />
-            <QrCard token={summary.checkin_token} checkedInAt={summary.checked_in_at} />
+            {summary.checkin_token && (
+              <QrCard
+                token={summary.checkin_token}
+                checkedInAt={summary.checked_in_at}
+              />
+            )}
           </div>
         )}
       </div>

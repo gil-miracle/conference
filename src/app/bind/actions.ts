@@ -4,89 +4,103 @@ import { redirect } from "next/navigation";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { parseBirth8 } from "@/lib/format";
 
-export type BindState = {
-  status:
-    | "idle"
-    | "invalid"
-    | "not_found"
-    | "taken"
-    | "need_phone"
-    | "phone_mismatch"
-    | "ambiguous"
-    | "error";
-  message?: string;
-};
+/** 조회 결과 — 요청을 보낼 수 있는 상태인지 판별한다 */
+export type LookupResult =
+  | { kind: "found"; name: string; birth: string; phone: string }
+  | { kind: "error"; message: string; showApply?: boolean };
 
-const MESSAGES: Record<string, BindState> = {
+/** 가입 요청 결과 */
+export type RequestResult =
+  | { kind: "requested" }
+  | { kind: "error"; message: string; showApply?: boolean };
+
+const MESSAGES: Record<string, { message: string; showApply?: boolean }> = {
   not_found: {
-    status: "not_found",
     message:
-      "신청 내역을 찾지 못했어요. 이름과 생년월일을 확인해주세요. 아직 접수 전이라면 참가 신청을 먼저 해주세요.",
+      "신청 이력을 찾지 못했어요. 이름·생년월일·전화번호가 신청서와 같은지 확인해주세요. 아직 접수 전이라면 참가 신청을 먼저 해주세요.",
+    showApply: true,
   },
   taken: {
-    status: "taken",
     message:
-      "이미 다른 계정과 연결된 참가자예요. 본인이 맞다면 체크인 데스크에 문의해주세요.",
+      "이미 연결된 참가자예요. 본인이 맞다면 운영진에 문의해주세요 — 다른 사람이 잘못 연결했을 수 있어요.",
   },
-  need_phone: {
-    status: "need_phone",
-    message: "같은 이름·생년월일이 두 명 이상이에요. 전화번호 뒷 4자리를 입력해주세요.",
+  invalid: {
+    message: "이름·생년월일·전화번호를 모두 정확히 입력해주세요.",
   },
-  phone_mismatch: {
-    status: "phone_mismatch",
-    message: "전화번호 뒷자리가 신청 정보와 일치하지 않아요.",
-  },
-  ambiguous: {
-    status: "ambiguous",
-    message: "정보만으로 구분이 어려워요. 체크인 데스크에 문의해주세요.",
-  },
+  unauthenticated: { message: "로그인이 필요해요." },
 };
 
-export async function bindAction(
-  _prev: BindState,
+function normalizeInput(formData: FormData) {
+  const name = String(formData.get("name") ?? "").trim();
+  const birth = parseBirth8(String(formData.get("birth") ?? ""));
+  const phone = String(formData.get("phone") ?? "").replace(/\D/g, "");
+  return { name, birth, phone };
+}
+
+/** ① 신청 명단에 있는지 확인만 한다 (아무것도 저장하지 않음) */
+export async function lookupAction(
+  _prev: LookupResult | null,
   formData: FormData
-): Promise<BindState> {
+): Promise<LookupResult> {
   const supabase = await getSupabaseServer();
-  if (!supabase) return { status: "error", message: "서버 설정 전이에요." };
+  if (!supabase) return { kind: "error", message: "서버 설정 전이에요." };
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/");
 
-  const name = String(formData.get("name") ?? "").trim();
-  const birthRaw = String(formData.get("birth") ?? "");
-  const phone4Raw = String(formData.get("phone4") ?? "").replace(/\D/g, "");
-
-  if (!name) return { status: "invalid", message: "이름을 입력해주세요." };
-  const birth = parseBirth8(birthRaw);
+  const { name, birth, phone } = normalizeInput(formData);
+  if (!name) return { kind: "error", message: "이름을 입력해주세요." };
   if (!birth)
-    return {
-      status: "invalid",
-      message: "생년월일 8자리를 확인해주세요. 예) 19940101",
-    };
-  if (phone4Raw && phone4Raw.length !== 4)
-    return { status: "invalid", message: "전화번호 뒷자리는 숫자 4자리예요." };
+    return { kind: "error", message: "생년월일 8자리를 확인해주세요. 예) 19940101" };
+  if (phone.length < 10)
+    return { kind: "error", message: "전화번호를 정확히 입력해주세요." };
+
+  const { data, error } = await supabase.rpc("lookup_participant", {
+    p_name: name,
+    p_birth: birth,
+    p_phone: phone,
+  });
+  if (error)
+    return { kind: "error", message: "확인 중 오류가 났어요. 잠시 후 다시 시도해주세요." };
+
+  const status = (data as { status?: string } | null)?.status ?? "error";
+  if (status === "found") return { kind: "found", name, birth, phone };
+  if (status === "already_requested") redirect("/my");
+
+  const m = MESSAGES[status] ?? { message: "확인에 실패했어요. 운영진에 문의해주세요." };
+  return { kind: "error", ...m };
+}
+
+/** ② 본인이 맞다고 확인한 뒤 가입 요청을 보낸다 */
+export async function requestAction(
+  _prev: RequestResult | null,
+  formData: FormData
+): Promise<RequestResult> {
+  const supabase = await getSupabaseServer();
+  if (!supabase) return { kind: "error", message: "서버 설정 전이에요." };
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/");
+
+  const { name, birth, phone } = normalizeInput(formData);
+  if (!name || !birth || phone.length < 10)
+    return { kind: "error", message: "입력값을 다시 확인해주세요." };
 
   const { data, error } = await supabase.rpc("bind_participant", {
     p_name: name,
     p_birth: birth,
-    p_phone_last4: phone4Raw || null,
+    p_phone: phone,
   });
-
   if (error)
-    return {
-      status: "error",
-      message: "연결 중 오류가 났어요. 잠시 후 다시 시도해주세요.",
-    };
+    return { kind: "error", message: "요청 중 오류가 났어요. 잠시 후 다시 시도해주세요." };
 
   const status = (data as { status?: string } | null)?.status ?? "error";
-  if (status === "ok" || status === "already_bound_self") redirect("/#my");
+  if (status === "requested" || status === "already_requested") redirect("/my");
 
-  return (
-    MESSAGES[status] ?? {
-      status: "error",
-      message: "연결에 실패했어요. 체크인 데스크에 문의해주세요.",
-    }
-  );
+  const m = MESSAGES[status] ?? { message: "요청에 실패했어요. 운영진에 문의해주세요." };
+  return { kind: "error", ...m };
 }

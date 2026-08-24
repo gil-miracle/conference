@@ -1,9 +1,14 @@
+export type ParticipantStatus = "pending" | "approved" | "rejected";
+
 export type MySummary = {
   id: string;
   name: string;
   role: "member" | "admin";
+  /** 가입 승인 상태 — approved가 아니면 숙소·조·QR은 내려오지 않는다 */
+  status: ParticipantStatus;
+  reject_reason: string | null;
   checked_in_at: string | null;
-  checkin_token: string;
+  checkin_token: string | null;
   room: {
     building: string;
     room_no: string;
@@ -70,9 +75,29 @@ export type PersonLite = {
   team_id: string | null;
 };
 
+/** 관리자 승인 대기 목록 한 건 (사칭 판별용 소셜 프로필 포함) */
+export type JoinRequest = {
+  id: string;
+  name: string;
+  birth_date: string;
+  phone: string;
+  status: ParticipantStatus;
+  requested_at: string | null;
+  bound_provider: string | null;
+  /** 관리자가 미리 올린 명단에 있던 사람인지 */
+  matched: boolean;
+  social_name: string | null;
+  social_full_name: string | null;
+  social_avatar: string | null;
+  social_picture: string | null;
+  social_email: string | null;
+};
+
 export type AdminStats = {
   total: number;
   checked_in: number;
+  /** 승인 대기 건수 */
+  pending: number;
   rooms_total: number;
   rooms_used: number;
   guestbook: number;

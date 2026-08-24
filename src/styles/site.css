@@ -739,3 +739,9 @@ footer.site .rule::before {
 
 /* 세션 로드 전 인증 버튼 자리 예약 — 상태가 채워질 때 메뉴가 밀리지 않게 */
 .auth-slot { display: inline-flex; align-items: center; min-width: 48px; justify-content: flex-end; }
+
+/* 가입 요청 확인 카드 */
+.confirm-card { border: 1px solid var(--ink); background: var(--paper); padding: 24px 22px; margin-top: 26px; }
+.confirm-card h3 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.03em; margin: 8px 0 12px; }
+.confirm-card p { font-size: 0.9rem; line-height: 1.8; word-break: keep-all; }
+.confirm-card small { display: block; font-size: 0.78rem; color: var(--ink-60); margin-top: 12px; word-break: keep-all; }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminContext } from "@/lib/admin";
+import { getAdminContext, isAdminPreview } from "@/lib/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { demoAdminParticipants } from "@/lib/demo";
 
@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const q = new URL(request.url).searchParams.get("q")?.trim() ?? "";
 
   // 목업 단계 — 체크인 탭 미리보기용 데모 명단
-  if (!isSupabaseConfigured()) {
+  if (isAdminPreview() || !isSupabaseConfigured()) {
     const list = demoAdminParticipants().filter(
       (p) => !q || p.name.includes(q) || p.phone.includes(q)
     );

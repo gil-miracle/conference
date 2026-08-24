@@ -10,7 +10,7 @@ export async function GET() {
   return NextResponse.json(
     {
       authed: ctx.authed,
-      bound: Boolean(ctx.summary),
+      bound: ctx.summary?.status === "approved",
       isAdmin: ctx.summary?.role === "admin",
       banner: ctx.banner,
       demoMode: ctx.demoMode,
