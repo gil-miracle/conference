@@ -10,11 +10,15 @@ export const EVENT = {
   startsAt: "2026-09-11T16:00:00+09:00",
   dateLabel: "9.11 (금) — 13 (주일)",
   venue: "ACTS29 비전 빌리지",
-  venueSub: "경기 용인시 처인구 양지면 ○○로 123 · 양지 온누리교회",
+  venueSub: "경기 용인시 처인구 양지읍 추계로 62 · 양지 온누리교회",
+  address: "경기 용인시 처인구 양지읍 추계로 62",
+  /** 지도 좌표 — 카카오맵 마커 위치 */
+  lat: 37.2278,
+  lng: 127.2903,
   /** 참가 신청 폼 (구글폼 등) — 확정되면 교체 */
   applyUrl: "#",
-  naverMapUrl: "https://map.naver.com/p/search/ACTS29%20비전빌리지",
-  kakaoMapUrl: "https://map.kakao.com/?q=ACTS29%20비전빌리지",
+  naverMapUrl: "https://map.naver.com/p/search/Acts29%20비전빌리지",
+  kakaoMapUrl: "https://map.kakao.com/?q=Acts29%20비전빌리지",
   /** 홍보 영상 YouTube ID — 나오면 채우기 (예: "dQw4w9WgXcQ") */
   youtubeId: null as string | null,
 };

@@ -165,6 +165,16 @@ YouTube는 주소를 그대로 붙여넣어도 영상 ID만 추출해 저장한�
 스키마는 [supabase/migrations/0002_songs.sql](supabase/migrations/0002_songs.sql)이고,
 DB가 비어 있거나 Supabase 미설정이면 `content.ts`의 `SONG_SETS_FALLBACK`이 대신 보인다.
 
+### 지도
+
+About 페이지의 지도는 카카오맵 JavaScript SDK다. 좌표를 하드코딩하지 않고
+`EVENT.address`를 지오코더로 조회해 마커를 찍으므로, 주소만 고치면 지도도 따라온다.
+조회 실패 시 `EVENT.lat/lng`로, SDK 자체가 막히면 자리 표시로 단계적으로 물러난다.
+
+⚠️ **JS SDK 도메인은 [플랫폼 키] > [JavaScript 키] > [JavaScript SDK 도메인]에 등록**해야 한다.
+[제품 링크 관리] > [웹 도메인]은 카카오톡 공유용이라 지도에는 적용되지 않는다
+(등록하지 않으면 SDK가 401 `domain mismatched`로 거부된다).
+
 ### PWA
 
 홈 화면에 추가하면 앱처럼 실행된다(standalone). 매니페스트는 [src/app/manifest.ts](src/app/manifest.ts)에서
@@ -231,6 +241,7 @@ where name = '김예찬' and birth_date = '1994-01-01';
 | `NEXT_PUBLIC_SUPABASE_URL` | 공개 |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` 또는 `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 공개(브라우저 노출 정상) — 둘 중 하나만 |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | 공개 |
+| `NEXT_PUBLIC_KAKAO_MAP_KEY` | 공개 — 카카오맵 JavaScript 키 (도메인 제한이 보안 역할) |
 | `CLOUDINARY_API_KEY` | **비밀** |
 | `CLOUDINARY_API_SECRET` | **비밀** |
 

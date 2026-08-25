@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageHead from "@/components/PageHead";
 import VideoPlayer from "@/components/VideoPlayer";
+import KakaoMap from "@/components/KakaoMap";
 import { ABOUT_LEDE, EVENT, THEME_VERSE } from "@/lib/content";
 
 export const metadata: Metadata = { title: "주제 및 장소 — MIRACLE 2026" };
@@ -19,7 +20,12 @@ export default function AboutPage() {
         </div>
 
         <div className="place reveal">
-          <div className="map-ph">MAP — 약도 영역</div>
+          <KakaoMap
+            address={EVENT.address}
+            label={EVENT.venue}
+            fallbackLat={EVENT.lat}
+            fallbackLng={EVENT.lng}
+          />
           <div className="in">
             <b>{EVENT.venue}</b>
             <p>{EVENT.venueSub}</p>
