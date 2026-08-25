@@ -8,12 +8,20 @@ import ServiceWorker from "@/components/ServiceWorker";
  * 잘못돼도 빌드가 죽지 않도록 방어한다 — `??`는 빈 문자열을 통과시킨다.
  */
 function resolveSiteUrl(): URL {
-  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (raw) {
+  // 직접 지정한 값이 있으면 그것을, 없으면 Vercel이 자동으로 주는 프로덕션 도메인을 쓴다.
+  // VERCEL_PROJECT_PRODUCTION_URL은 프리뷰 배포에서도 항상 프로덕션 주소를 가리켜
+  // OG 이미지 링크를 만들기에 적합하다 (프로토콜은 포함되지 않는다).
+  const candidates = [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  ];
+  for (const raw of candidates) {
+    const value = raw?.trim();
+    if (!value) continue;
     try {
-      return new URL(raw.startsWith("http") ? raw : `https://${raw}`);
+      return new URL(value.startsWith("http") ? value : `https://${value}`);
     } catch {
-      // 형식 오류 — 아래 기본값으로 폴백
+      // 형식 오류 — 다음 후보로
     }
   }
   return new URL("http://localhost:3000");
