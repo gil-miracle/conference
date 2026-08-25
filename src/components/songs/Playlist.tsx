@@ -61,10 +61,7 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
         <div className="pl-now">
           <div className="eyebrow">NOW PLAYING</div>
           <b>{current.song.title}</b>
-          <small>
-            {current.setName}
-            {current.song.songKey ? ` · KEY ${current.song.songKey}` : ""}
-          </small>
+          <small>{current.setName}</small>
         </div>
       )}
 
@@ -107,7 +104,6 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
               <span className="info">
                 <b>{song.title}</b>
               </span>
-              {song.songKey && <span className="key">{song.songKey}</span>}
               {!song.youtubeId && <span className="soon">SOON</span>}
             </button>
           </li>

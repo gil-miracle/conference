@@ -17,7 +17,6 @@ export default function SongItem({
 }) {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(song.title);
-  const [songKey, setSongKey] = useState(song.songKey ?? "");
   const [youtube, setYoutube] = useState(song.youtubeId ?? "");
   const [pending, startTransition] = useTransition();
   const router = useRouter();
@@ -34,12 +33,6 @@ export default function SongItem({
         <div className="edit-grid">
           <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="곡 제목" />
           <input
-            value={songKey}
-            onChange={(e) => setSongKey(e.target.value)}
-            placeholder="키"
-            style={{ maxWidth: 64 }}
-          />
-          <input
             value={youtube}
             onChange={(e) => setYoutube(e.target.value)}
             placeholder="YouTube 주소 또는 ID"
@@ -51,7 +44,7 @@ export default function SongItem({
             disabled={pending}
             onClick={() =>
               run(async () => {
-                await updateSong(song.id, { title, song_key: songKey, youtube });
+                await updateSong(song.id, { title, youtube });
                 setEditing(false);
               })
             }
@@ -71,10 +64,7 @@ export default function SongItem({
       <span className="no">{String(index + 1).padStart(2, "0")}</span>
       <div className="info">
         <b>{song.title}</b>
-        <small>
-          {song.songKey ? `KEY ${song.songKey}` : "NO KEY"}
-          {song.youtubeId ? ` · ${song.youtubeId}` : " · NO VIDEO"}
-        </small>
+        <small>{song.youtubeId ?? "NO VIDEO"}</small>
       </div>
       {!demo && (
         <div className="acts">

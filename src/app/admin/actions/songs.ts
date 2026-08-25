@@ -63,7 +63,6 @@ export async function createSong(setId: string, formData: FormData) {
   if (!ctx) return;
   const title = String(formData.get("title") ?? "").trim();
   if (!title) return;
-  const song_key = String(formData.get("song_key") ?? "").trim() || null;
   const youtube_id = extractYoutubeId(String(formData.get("youtube") ?? ""));
 
   const { data: last } = await ctx.supabase
@@ -77,7 +76,6 @@ export async function createSong(setId: string, formData: FormData) {
   await ctx.supabase.from("songs").insert({
     set_id: setId,
     title,
-    song_key,
     youtube_id,
     sort_order: (last?.sort_order ?? 0) + 1,
   });
@@ -86,13 +84,12 @@ export async function createSong(setId: string, formData: FormData) {
 
 export async function updateSong(
   songId: string,
-  patch: { title?: string; song_key?: string | null; youtube?: string }
+  patch: { title?: string; youtube?: string }
 ) {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false };
   const update: Record<string, unknown> = {};
   if (patch.title !== undefined) update.title = patch.title.trim();
-  if (patch.song_key !== undefined) update.song_key = patch.song_key?.trim() || null;
   if (patch.youtube !== undefined) update.youtube_id = extractYoutubeId(patch.youtube);
 
   const { error } = await ctx.supabase.from("songs").update(update).eq("id", songId);

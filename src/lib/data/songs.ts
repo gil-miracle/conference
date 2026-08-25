@@ -4,7 +4,6 @@ import { SONG_SETS_FALLBACK, type SongSet } from "@/lib/content";
 type SongRow = {
   id: string;
   title: string;
-  song_key: string | null;
   youtube_id: string | null;
   sort_order: number;
 };
@@ -28,7 +27,7 @@ export async function getSongSets(): Promise<SongSet[]> {
 
   const { data, error } = await supabase
     .from("song_sets")
-    .select("id,name,day_label,time_label,sort_order,songs(id,title,song_key,youtube_id,sort_order)")
+    .select("id,name,day_label,time_label,sort_order,songs(id,title,youtube_id,sort_order)")
     .order("sort_order");
 
   if (error || !data || data.length === 0) return SONG_SETS_FALLBACK;
@@ -43,7 +42,6 @@ export async function getSongSets(): Promise<SongSet[]> {
       .map((song) => ({
         id: song.id,
         title: song.title,
-        songKey: song.song_key,
         youtubeId: song.youtube_id,
       })),
   }));

@@ -36,7 +36,6 @@ export default function SongSetCard({
       {!demo && (
         <form className="inline-form" action={createSongForSet}>
           <input name="title" placeholder="곡 제목" required />
-          <input name="song_key" placeholder="키" style={{ maxWidth: 64 }} />
           <input name="youtube" placeholder="YouTube 주소 또는 ID" style={{ minWidth: 150 }} />
           <button className="btn sm ghost">곡 추가</button>
         </form>

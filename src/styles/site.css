@@ -633,7 +633,7 @@ footer.site .rule::before {
 
 .pl-list { list-style: none; margin-top: 22px; border-top: 1px solid var(--ink); }
 .pl-item {
-  display: grid; grid-template-columns: 34px 1fr auto auto; align-items: center; gap: 14px;
+  display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 14px;
   width: 100%; padding: 15px 8px; background: transparent; border: none;
   border-bottom: 1px solid var(--hair); text-align: left; transition: 0.15s;
 }

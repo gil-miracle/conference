@@ -160,7 +160,7 @@ App Router 기본 동작에 맡긴다.
 ### 송리스트 관리
 
 집회(세트) 단위로 곡을 묶는다. 집회별 6~7곡 기준이며 관리자 **찬양** 탭에서
-집회 추가·삭제, 곡 추가·수정·삭제·순서 이동을 할 수 있다.
+집회 추가·삭제, 곡 추가·수정·삭제·순서 이동을 할 수 있다. 원키는 쓰지 않는다.
 YouTube는 주소를 그대로 붙여넣어도 영상 ID만 추출해 저장한다([src/lib/youtube.ts](src/lib/youtube.ts)).
 스키마는 [supabase/migrations/0002_songs.sql](supabase/migrations/0002_songs.sql)이고,
 DB가 비어 있거나 Supabase 미설정이면 `content.ts`의 `SONG_SETS_FALLBACK`이 대신 보인다.
