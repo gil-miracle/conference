@@ -3,13 +3,15 @@
 import { createContext, useContext } from "react";
 import useSWR from "swr";
 import { jsonFetcher } from "@/lib/fetcher";
-import type { BannerSetting } from "@/lib/types";
+import type { BannerSetting, MenuVisibility } from "@/lib/types";
+import { DEFAULT_MENUS } from "@/lib/settings";
 
 export type SessionInfo = {
   authed: boolean;
   bound: boolean;
   isAdmin: boolean;
   banner: BannerSetting | null;
+  menus: MenuVisibility;
   demoMode: boolean;
 };
 
@@ -18,6 +20,7 @@ const EMPTY: SessionInfo = {
   bound: false,
   isAdmin: false,
   banner: null,
+  menus: DEFAULT_MENUS,
   demoMode: false,
 };
 

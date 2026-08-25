@@ -13,7 +13,7 @@ export default function NavLinks() {
 
   return (
     <div className="nav-links">
-      {NAV_ROUTES.map((r) => (
+      {NAV_ROUTES.filter((r) => session.menus[r.key]).map((r) => (
         <Link key={r.href} className={`lnk${isOn(r.href) ? " on" : ""}`} href={r.href}>
           {r.label}
         </Link>
@@ -21,12 +21,14 @@ export default function NavLinks() {
       <Link className={`lnk${session.authed ? "" : " lock"}${isOn("/my") ? " on" : ""}`} href="/my">
         {!session.authed && <LockIcon />}My
       </Link>
-      <Link
-        className={`lnk${session.authed ? "" : " lock"}${isOn("/gallery") ? " on" : ""}`}
-        href="/gallery"
-      >
-        {!session.authed && <LockIcon />}갤러리
-      </Link>
+      {session.menus.gallery && (
+        <Link
+          className={`lnk${session.authed ? "" : " lock"}${isOn("/gallery") ? " on" : ""}`}
+          href="/gallery"
+        >
+          {!session.authed && <LockIcon />}갤러리
+        </Link>
+      )}
     </div>
   );
 }

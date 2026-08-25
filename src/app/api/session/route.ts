@@ -13,6 +13,7 @@ export async function GET() {
       bound: ctx.summary?.status === "approved",
       isAdmin: ctx.summary?.role === "admin",
       banner: ctx.banner,
+      menus: ctx.menus,
       demoMode: ctx.demoMode,
     },
     { headers: { "Cache-Control": "no-store" } }

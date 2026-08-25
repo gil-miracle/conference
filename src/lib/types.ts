@@ -6,6 +6,8 @@ export type MySummary = {
   role: "member" | "admin";
   /** 가입 승인 상태 — approved가 아니면 숙소·조·QR은 내려오지 않는다 */
   status: ParticipantStatus;
+  /** 숙소·조 배정이 공개된 상태인지 */
+  rooms_open?: boolean;
   reject_reason: string | null;
   checked_in_at: string | null;
   checkin_token: string | null;
@@ -107,3 +109,7 @@ export type AdminStats = {
 };
 
 export type BannerSetting = { text: string; visible: boolean };
+
+/** 사이트 메뉴 노출 — 관리자 설정에서 항목별로 켜고 끈다 */
+export type MenuKey = "about" | "speakers" | "timetable" | "songs" | "guestbook" | "gallery";
+export type MenuVisibility = Record<MenuKey, boolean>;

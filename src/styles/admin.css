@@ -358,3 +358,13 @@
   margin-top: 14px; font-family: var(--mono); font-size: 0.6rem;
   letter-spacing: 0.14em; color: var(--green);
 }
+
+/* 메뉴 노출 토글 목록 */
+.menu-toggles { margin-top: 14px; border-top: 1px solid var(--hair); }
+.menu-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; padding: 11px 0; border-bottom: 1px solid var(--hair);
+}
+.menu-row:last-child { border-bottom: none; }
+.menu-row b { font-size: 0.88rem; font-weight: 600; }
+.menu-row small { display: block; font-size: 0.74rem; color: var(--ink-60); margin-top: 2px; }

@@ -1,8 +1,9 @@
 import { requireAdmin } from "@/lib/admin";
-import { parseSiteSettings, type SiteSettings } from "@/lib/settings";
+import { parseSiteSettings, DEFAULT_MENUS, type SiteSettings } from "@/lib/settings";
 import BannerSettingCard from "./BannerSettingCard";
 import ToggleSettingCard from "./ToggleSettingCard";
 import CsvUpload from "./CsvUpload";
+import MenuVisibilityCard from "./MenuVisibilityCard";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,8 @@ const DEMO_SETTINGS: SiteSettings = {
   banner: { text: "", visible: false },
   galleryOpen: false,
   guestbookOpen: true,
+  roomsOpen: false,
+  menus: DEFAULT_MENUS,
 };
 
 export default async function AdminSettingsPage() {
@@ -25,6 +28,13 @@ export default async function AdminSettingsPage() {
     <>
       <BannerSettingCard banner={settings.banner} demo={ctx.demo} />
       <ToggleSettingCard
+        settingKey="rooms_open"
+        title="숙소·조 공개"
+        description="배정이 끝나면 켜세요. 끄면 참가자 My에서 숙소·조가 보이지 않습니다"
+        initialOn={settings.roomsOpen}
+        demo={ctx.demo}
+      />
+      <ToggleSettingCard
         settingKey="gallery_open"
         title="갤러리 오픈"
         description="참가자 사진 업로드·열람 허용 (행사 후 켜기)"
@@ -38,6 +48,7 @@ export default async function AdminSettingsPage() {
         initialOn={settings.guestbookOpen}
         demo={ctx.demo}
       />
+      <MenuVisibilityCard menus={settings.menus} demo={ctx.demo} />
       <CsvUpload demo={ctx.demo} />
     </>
   );

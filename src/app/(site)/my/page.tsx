@@ -37,8 +37,12 @@ export default async function MyPage({
           <div className="reveal">
             <WordCard name={summary.name} />
             <WordcardSave name={summary.name} />
-            <RoomCard room={summary.room} mates={summary.mates} />
-            <TeamCard team={summary.team} />
+            {summary.rooms_open && (
+              <>
+                <RoomCard room={summary.room} mates={summary.mates} />
+                <TeamCard team={summary.team} />
+              </>
+            )}
             {summary.checkin_token && (
               <QrCard
                 token={summary.checkin_token}

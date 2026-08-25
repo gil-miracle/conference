@@ -1,10 +1,10 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { getSupabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
-import { parseSiteSettings } from "@/lib/settings";
+import { parseSiteSettings, DEFAULT_MENUS } from "@/lib/settings";
 import { GUESTBOOK_FALLBACK } from "@/lib/content";
 import { DEMO_COOKIE, DEMO_SUMMARY } from "@/lib/demo";
-import type { BannerSetting, GuestbookEntry, MySummary, Photo } from "@/lib/types";
+import type { BannerSetting, GuestbookEntry, MenuVisibility, MySummary, Photo } from "@/lib/types";
 
 /** 모든 사이트 페이지가 공유하는 세션·설정 컨텍스트 */
 export type SiteContext = {
@@ -13,6 +13,8 @@ export type SiteContext = {
   banner: BannerSetting | null;
   galleryOpen: boolean;
   guestbookOpen: boolean;
+  /** 항목별 메뉴 노출 */
+  menus: MenuVisibility;
   /** Supabase 미설정 + 미리보기 쿠키/쿼리 → 가짜 세션 */
   demoMode: boolean;
 };
@@ -35,6 +37,7 @@ const loadContext = cache(async (): Promise<SiteContext> => {
     banner: null,
     galleryOpen: false,
     guestbookOpen: true,
+    menus: DEFAULT_MENUS,
     demoMode: false,
   };
 
@@ -62,6 +65,7 @@ const loadContext = cache(async (): Promise<SiteContext> => {
   ctx.banner = settings.banner.visible ? settings.banner : null;
   ctx.galleryOpen = settings.galleryOpen;
   ctx.guestbookOpen = settings.guestbookOpen;
+  ctx.menus = settings.menus;
 
   if (user) {
     const { data: summary } = await supabase.rpc("get_my_summary");

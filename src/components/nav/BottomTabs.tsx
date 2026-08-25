@@ -13,7 +13,7 @@ export default function BottomTabs() {
 
   return (
     <nav className="tabbar" aria-label="주요 메뉴">
-      {TAB_ROUTES.map((tab) => {
+      {TAB_ROUTES.filter((tab) => !tab.key || session.menus[tab.key]).map((tab) => {
         const on =
           tab.href === "/"
             ? pathname === "/"
