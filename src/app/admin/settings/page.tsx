@@ -36,7 +36,7 @@ export default async function AdminSettingsPage() {
       <ToggleSettingCard
         settingKey="gallery_open"
         title="갤러리 오픈"
-        description="참가자 사진 업로드·열람 허용 (행사 후 켜기)"
+        description="참가자 사진 업로드·열람 허용 (컨퍼런스 시작할 때 켜기)"
         initialOn={settings.galleryOpen}
       />
       <ToggleSettingCard

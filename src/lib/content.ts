@@ -9,11 +9,12 @@ import type {
   Speaker,
   TimetableItem,
   TimetableDay,
+  Qt,
   Song,
   SongSet,
 } from "./types";
 
-export type { Speaker, TimetableItem, TimetableDay, Song, SongSet };
+export type { Speaker, TimetableItem, TimetableDay, Qt, Song, SongSet };
 
 export const EVENT = {
   title: "MIRACLE",
@@ -60,7 +61,7 @@ export const ABOUT_LEDE =
 
 // 설교자 3인. 사진은 public/speakers/ 아래 파일명으로 연결된다.
 // 예배 순서대로 나열한다 (MIRACLE 1 → 4 → 6).
-// ⚠️ bio(약력)는 아직 확인 전이라 비워 뒀다 — 채우면 상세 페이지에 나온다.
+// ⚠️ bio는 형식을 보여주기 위한 예시다. 본인 확인을 거쳐 실제 약력으로 교체할 것.
 export const SPEAKERS: Speaker[] = [
   {
     id: "cho-youngchan",
@@ -68,7 +69,8 @@ export const SPEAKERS: Speaker[] = [
     org: "온누리교회 GIL 청년부",
     tag: "FRI · MIRACLE 1",
     img: "cho-youngchan.jpg",
-    bio: "",
+    bio:
+      "(예시) 온누리교회 GIL 청년부에서 청년들과 함께 예배하며 말씀을 나누고 있습니다. 이번 컨퍼런스에서는 첫 저녁 예배를 맡아, 사흘의 문을 여는 자리에 섭니다.",
     sessions: [
       { day: "금 11", time: "21:00–23:00", title: "MIRACLE 1 — 저녁 예배" },
     ],
@@ -79,7 +81,8 @@ export const SPEAKERS: Speaker[] = [
     org: "온누리교회 위임목사",
     tag: "SAT · MIRACLE 4",
     img: "lee-jaehoon.jpg",
-    bio: "",
+    bio:
+      "(예시) 온누리교회 위임목사로 섬기고 있습니다. 이번 컨퍼런스에서는 둘째 날 저녁 예배를 맡습니다.",
     sessions: [
       { day: "토 12", time: "20:00–23:00", title: "MIRACLE 4 — 저녁 예배" },
     ],
@@ -90,7 +93,8 @@ export const SPEAKERS: Speaker[] = [
     org: "온누리교회 GIL 청년부",
     tag: "SUN · MIRACLE 6",
     img: "choi-jaeyoon.jpg",
-    bio: "",
+    bio:
+      "(예시) 온누리교회 GIL 청년부에서 청년들과 함께하고 있습니다. 이번 컨퍼런스에서는 마지막 주일 예배를 맡아, 흩어지는 자리를 함께합니다.",
     sessions: [
       { day: "주일 13", time: "14:00–16:00", title: "MIRACLE 6 — 주일 예배" },
     ],
@@ -99,6 +103,29 @@ export const SPEAKERS: Speaker[] = [
 
 export function getSpeaker(id: string) {
   return SPEAKERS.find((s) => s.id === id) ?? null;
+}
+
+/** QT가 있는 날 (금요일은 저녁 시작이라 없다) */
+export function getQtDays() {
+  return TIMETABLE.filter((d) => d.qt);
+}
+
+/** 날짜 id로 QT 찾기 */
+export function getQtDay(day: string) {
+  return TIMETABLE.find((d) => d.day === day && d.qt) ?? null;
+}
+
+/**
+ * 설교자가 맡은 일정 — 어느 날, 어떤 순서인지.
+ * 강사 상세에서 "그 사람이 있는 날짜 탭"으로 보내는 데 쓴다.
+ * 배정은 TIMETABLE의 speakerId 하나로만 관리한다(두 곳에 적지 않는다).
+ */
+export function getSpeakerSession(speakerId: string) {
+  for (const day of TIMETABLE) {
+    const item = day.items.find((i) => i.speakerId === speakerId);
+    if (item) return { day, item };
+  }
+  return null;
 }
 
 export const TIMETABLE: TimetableDay[] = [
@@ -114,6 +141,19 @@ export const TIMETABLE: TimetableDay[] = [
         speakerId: "cho-youngchan",
         title: "저녁 예배",
         sermon: "성령의 불을 받으십시오",
+        verse: "사도행전 2:3–4",
+        verseText: [
+          {
+            n: 3,
+            text: "그리고 불꽃같이 갈라지는 혀들이 나타나 그들 각 사람 위에 내려앉았습니다.",
+          },
+          {
+            n: 4,
+            text:
+              "그러자 그들은 모두 성령으로 충만해져서 성령께서 말하게 하시는 대로 " +
+              "다른 언어들로 말하기 시작했습니다.",
+          },
+        ],
         main: true,
       },
     ],
@@ -122,8 +162,32 @@ export const TIMETABLE: TimetableDay[] = [
     day: "2",
     label: "9.12 (토)",
     date: "9.12 (토)",
+    // ⚠️ QT 본문·묵상·기도는 형식을 보여주기 위한 예시다. 확정본으로 교체할 것.
+    qt: {
+      passage: "시편 42:1~2",
+      verses: [
+        {
+          n: 1,
+          text: "하나님이여, 사슴이 시냇물을 찾아 헐떡이듯 내 영혼이 주를 찾아 헐떡입니다.",
+        },
+        {
+          n: 2,
+          text:
+            "내 영혼이 하나님, 곧 살아 계신 하나님을 갈망합니다. " +
+            "내가 언제 나아가 하나님의 얼굴을 뵐 수 있을까요?",
+        },
+      ],
+      reflect: [
+        "지난 한 해 내 영혼이 가장 목말랐던 순간은 언제였나요?",
+        "무엇으로 그 목마름을 채우려 해 왔나요?",
+        "오늘 이곳에서 하나님께 구하고 싶은 한 가지는 무엇인가요?",
+      ],
+      pray:
+        "주님, 제 영혼이 주를 찾게 하소서. 다른 것으로 채우려 했던 자리를 " +
+        "오늘 주님으로 채워 주소서.",
+    },
     items: [
-      { time: "07:00–09:00", title: "QT 및 아침식사" },
+      { time: "07:00–09:00", title: "QT 및 아침식사", href: "/qt/2" },
       {
         time: "09:00–12:00",
         badge: "MIRACLE 2",
@@ -139,6 +203,15 @@ export const TIMETABLE: TimetableDay[] = [
         speakerId: "lee-jaehoon",
         title: "저녁 예배",
         sermon: "깊은 곳까지 물이 이르러",
+        verse: "에스겔 47:5",
+        verseText: [
+          {
+            n: 5,
+            text:
+              "그가 또 1,000규빗을 재었는데 내가 건널 수 없는 강이 됐습니다. " +
+              "물이 불어나 헤엄쳐야 할 만큼 깊어져서 건너갈 수 없는 강이 된 것입니다.",
+          },
+        ],
         main: true,
       },
     ],
@@ -147,8 +220,30 @@ export const TIMETABLE: TimetableDay[] = [
     day: "3",
     label: "9.13 (주일)",
     date: "9.13 (주일)",
+    // ⚠️ QT 본문·묵상·기도는 형식을 보여주기 위한 예시다. 확정본으로 교체할 것.
+    qt: {
+      passage: "시편 121:1~2",
+      verses: [
+        {
+          n: 1,
+          text: "내가 산들을 향해 눈을 들리라. 내 도움이 어디서 올까?",
+        },
+        {
+          n: 2,
+          text: "내 도움은 하늘과 땅을 만드신 여호와께로부터 옵니다.",
+        },
+      ],
+      reflect: [
+        "이 사흘 동안 하나님이 나에게 하신 말씀은 무엇인가요?",
+        "돌아가서 가장 먼저 바꾸고 싶은 것 하나는 무엇인가요?",
+        "그 자리에서 나를 도우실 분이 누구인지 다시 새겨 봅시다.",
+      ],
+      pray:
+        "주님, 여기서 받은 것을 돌아가는 자리에서도 붙들게 하소서. " +
+        "제 힘이 아니라 주님의 도우심으로 걷게 하소서.",
+    },
     items: [
-      { time: "07:00–09:00", title: "QT 및 아침식사" },
+      { time: "07:00–09:00", title: "QT 및 아침식사", href: "/qt/3" },
       { time: "09:00–10:00", title: "출발" },
       { time: "10:00–12:00", badge: "MIRACLE 5", title: "프로그램", main: true },
       { time: "12:00–14:00", title: "점심식사" },
@@ -158,6 +253,13 @@ export const TIMETABLE: TimetableDay[] = [
         speakerId: "choi-jaeyoon",
         title: "주일 예배",
         sermon: "일어나 빛을 발하라",
+        verse: "이사야 60:1",
+        verseText: [
+          {
+            n: 1,
+            text: "일어나 빛을 발하여라. 네 빛이 왔고 여호와의 영광이 네 위에 떠올랐다.",
+          },
+        ],
         main: true,
       },
     ],

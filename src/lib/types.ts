@@ -28,6 +28,24 @@ export type TimetableItem = {
   speakerId?: string;
   /** 설교 제목 — 예배 순서에만 붙는다 */
   sermon?: string;
+  /** 본문 말씀 출처. 설교자마다 다를 수 있어 순서별로 적는다 */
+  verse?: string;
+  /** 본문 말씀 전문 (우리말성경) — 절 번호와 함께 담는다 */
+  verseText?: { n: number; text: string }[];
+  /** 누르면 갈 곳. 설교자가 붙은 순서는 자동으로 설교자 상세로 간다 */
+  href?: string;
+};
+
+/** 아침 QT — 하루에 하나 */
+export type Qt = {
+  /** 성경 범위. 예: "시편 42:1~5" */
+  passage: string;
+  /** 본문 전문 (우리말성경) */
+  verses: { n: number; text: string }[];
+  /** 묵상 질문 — 조별 나눔에 그대로 쓴다 */
+  reflect: string[];
+  /** 기도 */
+  pray: string;
 };
 
 /** 하루치 일정 */
@@ -39,6 +57,8 @@ export type TimetableDay = {
   /** 헤더에 쓰는 날짜. 예: "9.11 (금)" */
   date: string;
   items: TimetableItem[];
+  /** 그날 아침 QT — 없는 날(금요일)은 비워 둔다 */
+  qt?: Qt;
 };
 
 export type Song = {
