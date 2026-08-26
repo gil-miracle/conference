@@ -38,7 +38,7 @@ export default async function QtPage({ params }: Props) {
         <PageHead
           title={`${found.date} QT`}
           action={
-            <Link className="head-action" href="/nanum">
+            <Link className="head-action" href={`/nanum?from=${found.day}`}>
               나눔 순서
             </Link>
           }
