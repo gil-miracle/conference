@@ -13,7 +13,7 @@ export default function TimetablePage() {
         <PageHead
           title="타임테이블"
           idx="TIMETABLE"
-          lede="모든 시간은 임시입니다. 확정되면 업데이트돼요."
+          lede="금요일 저녁 등록으로 시작해 주일 예배 후 귀가합니다. 세부 프로그램은 확정되는 대로 업데이트돼요."
         />
         <TimetableTabs />
       </div>

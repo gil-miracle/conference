@@ -127,9 +127,8 @@ nav.site {
 /* ── About ── */
 .verse {
   border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
-  padding: 36px 0;
-  margin: 44px 0;
+  padding: 34px 0 0;
+  margin: 34px 0 0;
 }
 .verse p {
   font-size: 1.06rem;
@@ -508,13 +507,21 @@ nav.site {
 .bind-wrap h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-top: 10px; }
 .bind-wrap .sub { font-size: 0.86rem; color: var(--ink-60); margin-top: 8px; word-break: keep-all; }
 
-footer.site { background: var(--deep); color: var(--cream); padding: 60px 0 78px; font-size: 0.78rem; }
+footer.site {
+  background: var(--deep);
+  color: var(--cream);
+  padding: 28px 0;
+  font-size: 0.78rem;
+  /* 아래 .rule::before가 좌우로 흘러나가므로 여기서 잘라낸다 */
+  overflow: hidden;
+}
 footer.site .disp { color: var(--pink); font-size: 1.05rem; letter-spacing: 0.1em; margin-bottom: 16px; }
 footer.site p { color: rgba(250, 246, 238, 0.45); line-height: 1.95; }
 footer.site .rule {
   /* 선은 화면 전체로 긋고 글자만 컨테이너 안에 둔다 */
   position: relative;
-  margin: 22px 0;
+  /* 아래 여백은 푸터 패딩 하나로만 정한다 (위아래를 같게 맞추기 위해) */
+  margin: 22px 0 0;
   padding-top: 18px;
   font-family: var(--mono);
   font-size: 0.58rem;
@@ -525,8 +532,10 @@ footer.site .rule::before {
   content: "";
   position: absolute;
   top: 0;
-  left: calc(50% - 50vw);
-  width: 100vw;
+  /* 100vw는 세로 스크롤바 폭까지 포함해 문서를 넓히고 가로 스크롤바를 만든다.
+     좌우로 넉넉히 흘려보내고 footer의 overflow로 자른다. */
+  left: -50vw;
+  right: -50vw;
   border-top: 1px solid rgba(250, 246, 238, 0.18);
 }
 
@@ -539,11 +548,42 @@ footer.site .rule::before {
 }
 /* 하단 탭바 높이만큼 여백 (모바일) */
 @media (max-width: 767px) {
-  footer.site { padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
+  footer.site { padding-bottom: calc(28px + 60px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* 상세 페이지는 히어로가 없으므로 상단 여백 축소 */
 .site-main > section { padding: 56px 0 90px; }
+
+/* 메인 흐름 섹션 — 얇은 선으로 나누고 이탤릭 세리프 제목을 얹는다.
+   위아래 여백을 같은 값으로 둬 구분선 간격이 일정하게 보이게 한다. */
+.site-main > section.flow { padding: 40px 0; border-top: 1px solid var(--hair); }
+.site-main > section.flow:last-of-type { padding-bottom: 40px; }
+
+.flow-head { display: flex; align-items: center; gap: 20px; margin-bottom: 40px; }
+/* 다른 화면의 섹션 제목(.sec-head h2)과 같은 폰트·굵기·자간 */
+.flow-head h2 {
+  font-size: clamp(1.5rem, 5.4vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.flow-head .rule { flex: 1; height: 1px; background: var(--hair); }
+
+/* 제목이 흐름을 잡아주므로 각 날짜 블록의 첫 여백은 덜어낸다 */
+.flow .day-block:first-child .day-head { padding-top: 4px; }
+
+/* 홍보 영상 — 본문 폭에 맞춰 꽉 차게 */
+.teaser {
+  display: block;
+  width: 100%;
+  margin-bottom: 30px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
 
 .sub-head { margin: 44px 0 16px; border-bottom: 1px solid var(--hair); padding-bottom: 10px; }
 .sub-head h3 { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -710,10 +750,10 @@ footer.site .rule::before {
   opacity: 0.75;
 }
 
-/* ── 모바일: 포스터처럼 블록을 화면 끝까지 (하단 탭바 구간) ── */
+/* ── 모바일: 포스터처럼 블록을 화면 끝까지 (하단 탭바 구간) ──
+   강사 그리드는 여기서 뺐다 — 사진 격자가 본문보다 좌우로 튀어나와
+   혼자 어긋나 보인다. 타임테이블(.tt-list)·방명록(.gb)처럼 본문 폭에 맞춘다. */
 @media (max-width: 767px) {
-  .spk-grid,
-  .place,
   .info-grid,
   .day-tabs,
   .pl-stage,
@@ -729,7 +769,7 @@ footer.site .rule::before {
     margin-right: calc(var(--gutter) * -1);
   }
   /* 좌우 테두리는 화면 밖으로 나가므로 지워 이중선처럼 보이지 않게 */
-  .spk-grid, .place, .info-grid, .day-tabs, .my-card, .wcard, .locked {
+  .info-grid, .day-tabs, .my-card, .wcard, .locked {
     border-left: none;
     border-right: none;
   }
@@ -747,4 +787,176 @@ footer.site .rule::before {
 .confirm-card small { display: block; font-size: 0.78rem; color: var(--ink-60); margin-top: 12px; word-break: keep-all; }
 
 /* 카카오맵 캔버스 — 약도 자리와 같은 높이 */
-.map-canvas { height: 220px; border-bottom: 1px solid var(--ink); background: #f1eadd; }
+/* overflow: hidden 없으면 카카오맵 타일이 컨테이너 밖으로 나가
+   문서 폭을 늘리고 가로 스크롤바가 생긴다 */
+.map-canvas {
+  height: 220px;
+  border-bottom: 1px solid var(--ink);
+  background: #f1eadd;
+  overflow: hidden;
+}
+
+/* ── 인라인 style 대체 클래스 ────────────────────────────────────
+   같은 값이 여러 컴포넌트에 흩어져 있던 것을 의미 있는 이름으로 모았다. */
+.bind-eyebrow { margin-top: 46px; }
+.btn-plain.underline { text-decoration: underline; }
+.eyebrow.alert { color: var(--coral); }
+.my-card.room-card { margin-top: 16px; }
+.pending-note { display: block; color: var(--ink-60); margin-bottom: 22px; }
+.note.note-left { text-align: left; margin-top: 10px; }
+.lede.empty-note { padding: 10px 0 4px; }
+.gb-write:disabled { opacity: 0.4; }
+.nav-auth .signout-form { display: flex; }
+.nav-auth .admin-lnk { color: var(--coral); }
+
+/* 집회는 정해졌는데 곡이 아직인 상태 */
+.pl-empty-row {
+  padding: 22px 18px;
+  font-size: 0.82rem;
+  color: var(--ink-60);
+  border: 1px solid var(--hair);
+  border-top: none;
+  word-break: keep-all;
+}
+
+/* ══ 일정 블록 — DAY 타이틀 + 세션 행 ═══════════════════════════
+   포스터 팔레트(크림·코랄·Anton)는 그대로 두고 구조만 바꿨다.
+   주요 세션은 왼쪽 코랄 블록으로 세우고, 식사·이동은 담백한 줄로 남긴다. */
+
+/* <section>이라 전역 section 여백을 물려받는다 — 블록 자체 간격만 쓴다 */
+.day-block { padding: 0; }
+.day-block + .day-block { margin-top: 54px; }
+
+.day-head { text-align: center; padding: 0 0 22px; }
+.day-head .date {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  color: var(--coral);
+  margin-bottom: 6px;
+}
+.day-head .day-no {
+  font-family: "Anton", sans-serif;
+  font-weight: 400;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+
+.ss-list { border: 1px solid var(--ink); background: var(--ink); display: grid; gap: 1px; }
+
+/* ── 일반 순서 (식사·이동·등록) ── */
+.ss-row {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  align-items: center;
+  gap: 14px;
+  background: var(--paper);
+  padding: 15px 18px;
+}
+.ss-time {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-60);
+  white-space: nowrap;
+}
+.ss-body b { font-size: 0.94rem; font-weight: 700; letter-spacing: -0.01em; display: block; }
+.ss-body small { display: block; font-size: 0.75rem; color: var(--ink-60); margin-top: 2px; }
+
+/* ── 주요 세션 (MIRACLE 1~6) ── */
+.ss-row.main { grid-template-columns: 104px 1fr; gap: 0; padding: 0; align-items: stretch; }
+
+/* MIRACLE 1~6 — 포스터를 위에서 아래로 훑는 순서로 색을 놓는다.
+   노을(핑크·코랄·오렌지) → 산(피치·라벤더) → 잔디(그린).
+   밝은 배경에는 잉크, 어두운 배경에는 크림을 얹어 여섯 개 모두 읽히게 했다. */
+.ss-badge[data-n="1"] { background: var(--pink); color: var(--ink); }
+.ss-badge[data-n="2"] { background: var(--coral); color: var(--cream); }
+.ss-badge[data-n="3"] { background: var(--orange); color: var(--ink); }
+.ss-badge[data-n="4"] { background: var(--peach); color: var(--ink); }
+.ss-badge[data-n="5"] { background: var(--lavender); color: var(--ink); }
+.ss-badge[data-n="6"] { background: var(--green); color: var(--cream); }
+
+.ss-badge {
+  background: var(--coral);
+  color: var(--cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 10px;
+  text-align: center;
+}
+.ss-badge .w {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.18em;
+  opacity: 0.85;
+}
+.ss-badge .n {
+  font-family: "Anton", sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.ss-main-body { background: var(--paper); padding: 18px 20px; display: flex; flex-direction: column; justify-content: center; }
+
+/* 설교자 사진 — 오른쪽 칸에 여백을 두고 정사각으로. 누르면 강사 상세로 */
+.ss-row.main.has-speaker { grid-template-columns: 104px 1fr 132px; }
+.ss-row.main.no-badge.has-speaker { grid-template-columns: 1fr 132px; }
+.ss-speaker {
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+.ss-speaker img,
+.ss-speaker .ph-fallback {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  background: #e8dfd2;
+  filter: saturate(0.92);
+}
+.ss-speaker .ph-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-60);
+}
+/* 설교자 이름은 본문에 — '설교' 라벨과 이름을 같은 크기로 읽히게 */
+/* '설교' 라벨만 띄우고, 이름과 소속은 글줄처럼 붙여 읽힌다 */
+.ss-main-body .preacher { display: flex; align-items: baseline; gap: 0; }
+.ss-main-body .preacher .role { margin-right: 9px; }
+.ss-main-body .preacher .role {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  color: var(--coral);
+}
+/* 소속은 이름 뒤에 한 톤 낮춰 — 이름이 먼저 읽히게 */
+ .ss-main-body .preacher .org { color: var(--ink-60); }
+.ss-main-body .preacher .sep { color: var(--hair); margin: 0 6px; }
+.ss-main-body .ss-time { display: block; margin-bottom: 6px; color: var(--coral); }
+.ss-main-body b { font-size: 1.12rem; font-weight: 700; letter-spacing: -0.02em; display: block; }
+.ss-main-body small { display: block; font-size: 0.76rem; color: var(--ink-60); margin-top: 5px; }
+
+@media (max-width: 420px) {
+  .ss-row, .ss-row.main { grid-template-columns: 84px 1fr; }
+  .ss-row.main.has-speaker { grid-template-columns: 72px 1fr 108px; }
+  .ss-speaker { padding: 11px; }
+  .ss-badge .n { font-size: 1.7rem; }
+  .ss-badge .w { font-size: 0.5rem; }
+  .ss-main-body { padding: 16px 14px; }
+}
+
+/* 배지 없는 주요 행 (강사 상세의 담당 세션) — 왼쪽 칸을 비우지 않는다 */
+.ss-row.main.no-badge { grid-template-columns: 1fr; }

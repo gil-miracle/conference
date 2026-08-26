@@ -10,6 +10,10 @@ type KakaoNS = {
     LatLng: new (lat: number, lng: number) => LatLngLike;
     Map: new (el: HTMLElement, opts: Record<string, unknown>) => {
       setCenter: (pos: LatLngLike) => void;
+      /** 휠 줌 허용 여부 */
+      setZoomable: (on: boolean) => void;
+      /** 드래그 이동 허용 여부 */
+      setDraggable: (on: boolean) => void;
     };
     Marker: new (opts: Record<string, unknown>) => { setMap: (m: unknown) => void };
     services: {
@@ -96,6 +100,12 @@ export default function KakaoMap({
           if (cancelled || !ref.current) return;
           const center = new kakao.maps.LatLng(lat, lng);
           const map = new kakao.maps.Map(ref.current, { center, level: 4 });
+          // 위치만 보여주는 고정 지도. 휠 줌·드래그를 모두 끈다 —
+          // 켜두면 페이지 스크롤이 지도에 먹혀 화면이 안 내려가고,
+          // 모바일에서는 스와이프가 지도 이동으로 새어 나간다.
+          // 자세히 볼 사람은 아래 네이버지도·카카오맵 링크로 간다.
+          map.setZoomable(false);
+          map.setDraggable(false);
           new kakao.maps.Marker({ position: center }).setMap(map);
         };
 

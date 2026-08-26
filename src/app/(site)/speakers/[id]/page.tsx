@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import BackLink from "@/components/BackLink";
+import MoreLink from "@/components/MoreLink";
+import SpeakerPhoto from "@/components/SpeakerPhoto";
+import SessionRow from "@/components/timetable/SessionRow";
 import { SPEAKERS, getSpeaker } from "@/lib/content";
 
 type Props = { params: Promise<{ id: string }> };
@@ -23,56 +26,45 @@ export default async function SpeakerDetailPage({ params }: Props) {
   return (
     <section>
       <div className="container">
-        <Link className="back-link" href="/speakers">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M15 6l-6 6 6 6" />
-          </svg>
-          강사 목록
-        </Link>
+        <BackLink href="/speakers">강사 목록</BackLink>
 
         <div className="spk-detail reveal">
           <div className="ph">
-            {speaker.img ? (
-              <img src={`/speakers/${speaker.img}`} alt={speaker.name} />
-            ) : (
-              <div className="ph-fallback">PHOTO</div>
-            )}
+            <SpeakerPhoto speaker={speaker} />
           </div>
           <div className="meta">
-            <span className="tag">{speaker.tag}</span>
+            {speaker.tag && <span className="tag">{speaker.tag}</span>}
             <h2>{speaker.name}</h2>
-            <p className="org">{speaker.org}</p>
+            {speaker.org && <p className="org">{speaker.org}</p>}
           </div>
         </div>
 
-        <div className="sub-head reveal">
-          <h3>약력</h3>
-        </div>
-        <p className="body-text reveal">{speaker.bio}</p>
-
-        <div className="sub-head reveal">
-          <h3>담당 세션</h3>
-        </div>
-        <div className="tt-list reveal">
-          {speaker.sessions.map((s) => (
-            <div className="tt main" key={`${s.day}-${s.time}`}>
-              <time>
-                {s.day}
-                <br />
-                {s.time}
-              </time>
-              <div>
-                <b>{s.title}</b>
-              </div>
+        {/* 약력·담당 세션은 확정된 것만 보여준다 (빈 제목만 남지 않게) */}
+        {speaker.bio && (
+          <>
+            <div className="sub-head reveal">
+              <h3>약력</h3>
             </div>
-          ))}
-        </div>
-        <Link className="more-link reveal" href="/timetable">
-          전체 타임테이블 보기
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 6l6 6-6 6" />
-          </svg>
-        </Link>
+            <p className="body-text reveal">{speaker.bio}</p>
+          </>
+        )}
+
+        {speaker.sessions.length > 0 && (
+          <>
+            <div className="sub-head reveal">
+              <h3>담당 세션</h3>
+            </div>
+            <div className="ss-list reveal">
+              {speaker.sessions.map((s) => (
+                <SessionRow
+                  key={`${s.day}-${s.time}`}
+                  item={{ time: `${s.day} · ${s.time}`, title: s.title, main: true }}
+                />
+              ))}
+            </div>
+          </>
+        )}
+        <MoreLink href="/timetable">전체 타임테이블 보기</MoreLink>
       </div>
     </section>
   );

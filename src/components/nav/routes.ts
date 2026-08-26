@@ -3,7 +3,6 @@ import type { MenuKey } from "@/lib/types";
 /** 사이트 내비게이션 라우트 — 상단 메뉴와 하단 탭바가 공유.
  *  key는 관리자 설정의 메뉴 노출 토글과 연결된다. */
 export const NAV_ROUTES = [
-  { href: "/about", label: "About", short: "소개", key: "about" },
   { href: "/speakers", label: "Speakers", short: "강사", key: "speakers" },
   { href: "/timetable", label: "Timetable", short: "일정", key: "timetable" },
   { href: "/songs", label: "Songs", short: "찬양", key: "songs" },
