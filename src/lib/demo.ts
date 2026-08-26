@@ -156,3 +156,31 @@ export function demoBoardGuestbook() {
     },
   ];
 }
+
+// ── /my 미리보기 (비로그인) ──────────────────────────────────────
+
+/**
+ * 로그인 전 방문자에게 보여주는 My 화면 미리보기.
+ * "로그인하면 무엇이 보이는지"를 알려주는 용도라 전부 가짜 데이터다.
+ *
+ * 실제 참가자 이름을 쓰지 않고, checkin_token도 null로 둔다 —
+ * 미리보기에서 스캔 가능한 QR을 만들면 체크인 데스크에서 혼선이 생긴다.
+ */
+export const MY_PREVIEW: MySummary = {
+  id: "preview",
+  name: "홍길동",
+  role: "member",
+  status: "approved",
+  rooms_open: true,
+  reject_reason: null,
+  checked_in_at: null,
+  checkin_token: null,
+  room: {
+    building: "비전관",
+    room_no: "203",
+    capacity: 4,
+    note: "본관에서 도보 2분 · 4인실",
+  },
+  mates: ["강믿음", "박소망", "이사랑", "홍길동"],
+  team: { name: "오렌지조", leader: "이사랑", note: "토 14:00 잔디마당 집합" },
+};
