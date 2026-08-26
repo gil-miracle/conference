@@ -11,6 +11,13 @@ export function TabIcon({ name }: { name: IconName }) {
     strokeLinejoin: "round" as const,
   };
   switch (name) {
+    case "home":
+      return (
+        <svg {...common}>
+          <path d="M3 10.5 12 3l9 7.5" />
+          <path d="M5.5 9.5V21h13V9.5" />
+        </svg>
+      );
     case "clock":
       return (
         <svg {...common}>

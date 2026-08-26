@@ -13,7 +13,7 @@ export type MenuItem = {
   locked?: boolean;
 };
 
-export type TabIcon = "clock" | "user" | "music" | "pen" | "camera" | "qr";
+export type TabIcon = "home" | "clock" | "user" | "music" | "pen" | "camera" | "qr";
 
 /**
  * 사이트 메뉴 — **상단 내비와 하단 탭바가 같은 목록을 쓴다.**
@@ -23,9 +23,21 @@ export type TabIcon = "clock" | "user" | "music" | "pen" | "camera" | "qr";
  */
 export const MENU: readonly MenuItem[] = [
   { href: "/timetable", label: "일정표", short: "일정표", icon: "clock", key: "timetable" },
-  { href: "/speakers", label: "설교자", short: "설교자", icon: "user", key: "speakers" },
   { href: "/songs", label: "찬양리스트", short: "찬양", icon: "music", key: "songs" },
   { href: "/guestbook", label: "방명록", short: "방명록", icon: "pen", key: "guestbook" },
   { href: "/gallery", label: "갤러리", short: "갤러리", icon: "camera", key: "gallery", locked: true },
   { href: "/my", label: "My", short: "My", icon: "qr", key: null, locked: true },
+];
+
+/**
+ * 하단 탭바 — 상단 메뉴에서 자주 쓰는 것만 다섯 개로 추린다.
+ * 여섯 개를 넘기면 좁은 화면에서 글자가 뭉개지고, 엄지로 짚기도 어렵다.
+ * 상단은 로고가 홈 역할을 하지만 여기는 없으므로 홈을 넣는다.
+ */
+export const TABS: readonly MenuItem[] = [
+  { href: "/", label: "홈", short: "홈", icon: "home", key: null },
+  { href: "/timetable", label: "일정표", short: "일정", icon: "clock", key: "timetable" },
+  { href: "/songs", label: "찬양", short: "찬양", icon: "music", key: "songs" },
+  { href: "/gallery", label: "갤러리", short: "갤러리", icon: "camera", key: "gallery" },
+  { href: "/my", label: "내정보", short: "내정보", icon: "qr", key: null },
 ];
