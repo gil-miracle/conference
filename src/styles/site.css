@@ -597,8 +597,6 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .flow-head .rule { flex: 1; height: 1px; background: var(--hair); }
 
-/* 제목이 흐름을 잡아주므로 각 날짜 블록의 첫 여백은 덜어낸다 */
-.flow .day-block:first-child .day-head { padding-top: 4px; }
 
 /* 홍보 영상 — 본문 폭에 맞춰 꽉 차게 */
 .teaser {
@@ -853,7 +851,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .day-block { padding: 0; }
 .day-block + .day-block { margin-top: 54px; }
 
-.day-head { text-align: center; padding: 0 0 22px; }
+.day-head { text-align: center; padding: 0 0 40px; }
 .day-head .date {
   display: block;
   font-family: var(--mono);
@@ -976,7 +974,10 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
    flex로 두면 좁은 폭에서 아이템마다 줄바꿈이 생겨 글자 단위로 쪼개진다.
    인라인으로 흘리고 keep-all로 낱말을 지킨다. */
 .ss-main-body .preacher { display: block; word-break: keep-all; }
+/* '설교'·'말씀' 라벨 폭을 맞춰 두 줄의 이름·본문이 같은 x에서 시작하게 */
 .ss-main-body .preacher .role {
+  display: inline-block;
+  min-width: 2.4em;
   font-family: var(--mono);
   font-size: 0.76rem;
   letter-spacing: 0.08em;
@@ -984,6 +985,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   margin-right: 9px;
   white-space: nowrap;
 }
+.ss-main-body .preacher + .preacher { margin-top: 2px; }
 /* 소속은 이름 뒤에 한 톤 낮춰 — 이름이 먼저 읽히게 */
 .ss-main-body .preacher .org { color: var(--ink-60); white-space: nowrap; }
 .ss-main-body .preacher .sep { color: var(--hair); margin: 0 5px; }
@@ -1034,3 +1036,318 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   letter-spacing: -0.02em;
   word-break: keep-all;
 }
+
+/* 비로그인 My 미리보기 안내 — 아래 카드가 예시라는 걸 먼저 알린다 */
+.my-preview {
+  border: 1px solid var(--coral);
+  padding: 20px 22px 24px;
+  margin-bottom: 18px;
+}
+.my-preview .eyebrow { color: var(--coral); }
+.my-preview p { font-size: 0.88rem; margin: 10px 0 18px; word-break: keep-all; }
+.my-preview .btn { width: 100%; }
+
+/* 설교자가 있는 행은 통째로 링크 — 표적을 넓히고, 눌린다는 걸 드러낸다 */
+a.ss-row.linked { color: inherit; text-decoration: none; }
+a.ss-row.linked .ss-main-body,
+a.ss-row.linked .ss-speaker { transition: background-color 0.18s ease; }
+a.ss-row.linked:hover .ss-main-body,
+a.ss-row.linked:hover .ss-speaker { background: var(--cream); }
+a.ss-row.linked:hover .ss-main-body b { text-decoration: underline; text-underline-offset: 3px; }
+a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+
+/* ── 설교자 상세 — 사람 → 약력 → 말씀 순서 ─────────────────── */
+
+/* 본문 말씀 — 말씀은 명조로, 화면 어디서나 같은 규칙 */
+.spk-verse {
+  margin: 24px 0;
+  padding: 30px 24px;
+  border-top: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+}
+.spk-verse p {
+  font-family: "Nanum Myeongjo", Georgia, serif;
+  font-size: 1.02rem;
+  line-height: 2;
+  word-break: keep-all;
+}
+/* 절 단위 매달린 들여쓰기 — 번호와 본문을 각각의 칸에 둬
+   첫 줄과 접힌 줄이 정확히 같은 선에서 시작하게 한다 */
+.spk-verse p.v { display: grid; grid-template-columns: 1.5em 1fr; }
+.spk-verse p.v + p.v { margin-top: 10px; }
+.spk-verse cite {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  color: var(--coral);
+}
+
+/* 사람은 말씀 뒤에 — 위쪽 진한 밑줄은 걷어낸다 */
+.spk-detail { border-bottom: none; padding-bottom: 0; }
+.body-text { margin-top: 24px; }
+
+/* 절 번호 — 본문보다 작고 코랄로, 읽는 흐름을 끊지 않게 */
+.spk-verse .vn {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: var(--coral);
+  /* 본문 첫 줄의 기준선에 맞춘다 — line-height로 맞추면 글자 크기가 바뀔 때 어긋난다.
+     기준선을 맞춰도 모노 숫자는 국문보다 살짝 떠 보여, 자형 차이만큼 내려준다. */
+  align-self: baseline;
+  transform: translateY(0.3em);
+}
+
+/* ── 아침 QT ────────────────────────────────────────────────── */
+.qt-head { margin-bottom: 24px; }
+.qt-head h3 {
+  font-family: "Nanum Myeongjo", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* 묵상 질문 — 조 모임에서 하나씩 읽어 내려간다 */
+/* 말씀 블록과 같은 좌우 여백 — 세 블록의 글자가 같은 선에서 시작한다 */
+.qt-reflect { list-style: none; counter-reset: q; margin-top: 4px; padding: 0 24px; }
+/* 말씀·기도와 같은 명조로 — QT 한 화면 안에서 얼굴이 갈리면 산만하다 */
+.qt-reflect li {
+  counter-increment: q;
+  display: grid;
+  grid-template-columns: 1.7em 1fr;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hair);
+  word-break: keep-all;
+  font-family: "Nanum Myeongjo", Georgia, serif;
+  font-size: 0.98rem;
+  line-height: 1.9;
+}
+.qt-reflect li::before {
+  content: counter(q);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--coral);
+  align-self: baseline;
+  transform: translateY(0.3em);
+}
+.qt-pray {
+  margin-top: 4px;
+  padding: 0 24px;
+  font-family: "Nanum Myeongjo", Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.95;
+  word-break: keep-all;
+}
+
+/* ── 제목 줄 오른쪽 버튼 ────────────────────────────────────── */
+.flow-head .head-action {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--coral);
+  border: 1px solid var(--coral);
+  padding: 7px 12px;
+  white-space: nowrap;
+}
+.flow-head .head-action:hover { background: var(--coral); color: var(--cream); }
+
+/* ── 나눔 순서 정하기 ───────────────────────────────────────── */
+.nanum-add { display: flex; gap: 8px; margin-bottom: 16px; }
+.nanum-add input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+.nanum-add input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip-x {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  padding: 7px 11px;
+  font-size: 0.84rem;
+  font-family: inherit;
+}
+.chip-x i { font-style: normal; font-size: 0.66rem; color: var(--ink-60); }
+.chip-x:hover { border-color: var(--coral); color: var(--coral); }
+.nanum-clear {
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-60);
+  text-decoration: underline;
+}
+
+/* 게임 고르기 */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--hair);
+  border: 1px solid var(--hair);
+  margin-top: 26px;
+}
+.game-card {
+  background: var(--paper);
+  border: none;
+  padding: 18px 10px 16px;
+  text-align: center;
+  font-family: inherit;
+}
+.game-card .ico { display: block; font-size: 1.2rem; color: var(--coral); line-height: 1; }
+.game-card b { display: block; font-size: 0.86rem; font-weight: 700; margin-top: 8px; }
+.game-card small { display: block; font-size: 0.66rem; color: var(--ink-60); margin-top: 3px; }
+.game-card.on { background: var(--ink); color: var(--cream); }
+.game-card.on small { color: rgba(250, 246, 238, 0.55); }
+
+/* 게임 공통 배치 — [시각 영역] → [실행 버튼] → [결과·안내].
+   게임마다 버튼이 위에 있다 아래에 있다 하면 누를 곳을 매번 찾게 된다. */
+.game { margin-top: 26px; }
+.game > .btn { margin-top: 18px; }
+.game > .order-list,
+.game > .lots,
+.game > .ladder-names:first-child { margin-top: 0; }
+.game-hint { font-size: 0.78rem; color: var(--ink-60); margin-top: 12px; word-break: keep-all; }
+.game-result {
+  margin-top: 16px;
+  text-align: center;
+  font-family: "Nanum Myeongjo", Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--coral);
+}
+
+/* 순서 목록 */
+.order-list { list-style: none; margin-top: 18px; border-top: 1px solid var(--hair); }
+.order-list li {
+  display: grid;
+  grid-template-columns: 3em 1fr;
+  align-items: center;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--hair);
+}
+.order-list .no { font-family: var(--mono); font-size: 0.66rem; color: var(--coral); }
+.order-list b { font-size: 0.98rem; font-weight: 700; }
+.order-list.spinning { opacity: 0.5; }
+
+/* 사다리 */
+.ladder-names { display: flex; margin-top: 20px; }
+.ladder-names > * { flex: 1; min-width: 0; text-align: center; }
+.lname {
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  padding: 9px 2px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lname.on { background: var(--coral); color: var(--cream); border-color: var(--coral); }
+.ladder { width: 100%; height: 200px; display: block; }
+.ladder .rail { stroke: var(--hair); stroke-width: 0.5; vector-effect: non-scaling-stroke; }
+.ladder .rung { stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+/* 내려가는 선 — pathLength=1로 정규화해 viewBox가 늘어나도 고르게 그려진다 */
+.ladder .trace {
+  fill: none;
+  stroke: var(--coral);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trace-down 1.2s ease-out forwards;
+}
+@keyframes trace-down {
+  to { stroke-dashoffset: 0; }
+}
+.ladder-names.results .lprize {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--ink-60);
+  padding: 9px 2px;
+}
+.ladder-names.results .lprize.on { color: var(--coral); font-weight: 500; }
+
+/* 룰렛 */
+.wheel-wrap { position: relative; width: min(280px, 78vw); margin: 8px auto 22px; }
+.wheel { width: 100%; display: block; border-radius: 50%; transition: transform 3s cubic-bezier(0.15, 0.9, 0.2, 1); }
+.wheel text {
+  font-size: 0.11px;
+  font-family: "Pretendard Variable", sans-serif;
+  font-weight: 700;
+  fill: var(--ink);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+.needle {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 16px solid var(--ink);
+  z-index: 2;
+}
+
+/* 조건 뽑기 */
+.pick-card {
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  padding: 44px 20px;
+  text-align: center;
+  min-height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pick-card b {
+  font-family: "Nanum Myeongjo", Georgia, serif;
+  font-size: 1.24rem;
+  font-weight: 700;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.pick-card span { color: var(--ink-60); font-size: 0.88rem; }
+.pick-card.flipping { border-color: var(--coral); }
+.pick-card.flipping b { color: var(--coral); }
+
+/* 제비뽑기 */
+.lots { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; margin-top: 18px; }
+.lot {
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--mono);
+  font-size: 1rem;
+}
+.lot.open { background: var(--paper); color: var(--coral); }
+.lot b { font-size: 1.4rem; }
+.lot:disabled { opacity: 0.3; }
+
+/* 폭탄 돌리기 */
+.bomb {
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  padding: 40px 16px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.bomb b { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+.bomb.running { border-color: var(--coral); }
+.bomb.running b { color: var(--coral); }
