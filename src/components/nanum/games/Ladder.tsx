@@ -11,12 +11,14 @@ type Rung = { row: number; left: number };
 /**
  * 사다리타기.
  *
- * 가로줄을 무작위로 놓고 위에서 내려오며 만나는 가로줄마다 옆 칸으로 옮긴다.
- * 같은 행에 이웃한 가로줄은 두지 않는다(경로가 갈라지지 않게).
+ * 한 번 누른 이름은 열린 채로 잠긴다 — 결과를 보고 다시 눌러 바꿀 수 있으면
+ * 뽑기가 아니다. 다른 사람이 이어서 자기 이름을 누르면 그 선이 새로 그려지고,
+ * 앞서 나온 결과는 그대로 남는다.
  */
 export default function Ladder({ names }: { names: string[] }) {
   const [seed, setSeed] = useState(0);
-  const [revealed, setRevealed] = useState<number | null>(null);
+  const [opened, setOpened] = useState<number[]>([]);
+  const [last, setLast] = useState<number | null>(null);
   const [tracing, setTracing] = useState(false);
 
   const cols = names.length;
@@ -30,6 +32,7 @@ export default function Ladder({ names }: { names: string[] }) {
     for (let row = 0; row < ROWS; row++) {
       const used = new Set<number>();
       for (let left = 0; left < cols - 1; left++) {
+        // 같은 행에 이웃한 가로줄을 두지 않는다 (경로가 갈라지지 않게)
         if (used.has(left - 1)) continue;
         if (Math.random() < 0.45) {
           list.push({ row, left });
@@ -66,9 +69,9 @@ export default function Ladder({ names }: { names: string[] }) {
 
   /** 출발 칸에서 내려오는 실제 경로 — 꺾이는 지점을 모두 담는다 */
   const trace = useMemo(() => {
-    if (revealed === null) return null;
-    const pts: [number, number][] = [[colX(revealed), 0]];
-    let at = revealed;
+    if (last === null) return null;
+    const pts: [number, number][] = [[colX(last), 0]];
+    let at = last;
     for (let row = 0; row < ROWS; row++) {
       const y = rowY(row);
       if (rungs.some((r) => r.row === row && r.left === at)) {
@@ -82,20 +85,29 @@ export default function Ladder({ names }: { names: string[] }) {
     pts.push([colX(at), H]);
     return pts.map(([x, y], i) => `${i ? "L" : "M"}${x} ${y}`).join(" ");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [revealed, rungs, cols]);
+  }, [last, rungs, cols]);
 
   // 선이 다 내려온 뒤에 번호를 보여준다 — 결과가 먼저 뜨면 볼 이유가 없다
   useEffect(() => {
-    if (revealed === null) return;
+    if (last === null) return;
     setTracing(true);
     const id = setTimeout(() => setTracing(false), TRACE_MS);
     return () => clearTimeout(id);
-  }, [revealed]);
+  }, [last]);
+
+  const open = (i: number) => {
+    if (opened.includes(i) || tracing) return;
+    setOpened((prev) => [...prev, i]);
+    setLast(i);
+  };
 
   const reset = () => {
-    setRevealed(null);
+    setOpened([]);
+    setLast(null);
     setSeed((s) => s + 1);
   };
+
+  const left = names.length - opened.length;
 
   return (
     <div className="game">
@@ -103,8 +115,9 @@ export default function Ladder({ names }: { names: string[] }) {
         {names.map((n, i) => (
           <button
             key={n}
-            className={`lname${revealed === i ? " on" : ""}`}
-            onClick={() => setRevealed(revealed === i ? null : i)}
+            className={`lname${opened.includes(i) ? " on" : ""}`}
+            disabled={opened.includes(i) || tracing}
+            onClick={() => open(i)}
           >
             {n}
           </button>
@@ -128,13 +141,14 @@ export default function Ladder({ names }: { names: string[] }) {
         {trace && (
           // key로 다시 그리게 해 누를 때마다 애니메이션이 처음부터 돈다.
           // pathLength=1로 정규화해야 viewBox가 늘어나도 선이 고르게 그려진다.
-          <path key={`${seed}-${revealed}`} className="trace" d={trace} pathLength={1} />
+          <path key={`${seed}-${last}`} className="trace" d={trace} pathLength={1} />
         )}
       </svg>
 
       <div className="ladder-names results">
         {names.map((_, i) => {
-          const show = revealed !== null && !tracing && result[revealed] === i;
+          const owner = opened.find((o) => result[o] === i);
+          const show = owner !== undefined && !(tracing && owner === last);
           return (
             <span key={i} className={`lprize${show ? " on" : ""}`}>
               {show ? `${prizes[i]}번` : "?"}
@@ -143,10 +157,15 @@ export default function Ladder({ names }: { names: string[] }) {
         })}
       </div>
 
-      <p className="game-hint">이름을 누르면 선을 따라 내려가 순서가 나와요.</p>
       <button className="btn ghost full-w" onClick={reset}>
         사다리 다시 놓기
       </button>
+
+      <p className="game-hint">
+        {left > 0
+          ? `이름을 누르면 선을 따라 내려가 순서가 나와요. ${left}명 남았어요.`
+          : "모두 확인했어요."}
+      </p>
     </div>
   );
 }

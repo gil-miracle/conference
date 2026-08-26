@@ -44,7 +44,7 @@ export default function PickCard() {
 
   return (
     <div className="game">
-      <div className={`pick-card${flipping ? " flipping" : ""}`}>
+      <div className={`stage${flipping ? " active" : ""}`}>
         {card ? <b>{card}</b> : <span>조건을 뽑아 보세요</span>}
       </div>
 

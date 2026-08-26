@@ -45,7 +45,7 @@ export default function Bomb({ names }: { names: string[] }) {
 
   return (
     <div className="game">
-      <div className={`bomb${running ? " running" : ""}`}>
+      <div className={`stage${running ? " active" : ""}`}>
         <b>{picked ?? names[at]}</b>
       </div>
 
