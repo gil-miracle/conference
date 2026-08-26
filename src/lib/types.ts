@@ -26,6 +26,8 @@ export type TimetableItem = {
   badge?: string;
   /** 설교자 — SPEAKERS의 id. 있으면 행 오른쪽에 사진이 붙는다 */
   speakerId?: string;
+  /** 설교 제목 — 예배 순서에만 붙는다 */
+  sermon?: string;
 };
 
 /** 하루치 일정 */

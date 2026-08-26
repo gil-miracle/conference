@@ -43,7 +43,11 @@ export default function SessionRow({ item }: { item: TimetableItem }) {
       )}
       <div className="ss-main-body">
         <time className="ss-time">{item.time}</time>
-        <b>{item.title}</b>
+        {/* 설교 제목이 있으면 그게 본문이다 — 순서명(저녁 예배)은
+            왼쪽 배지와 시각으로 이미 드러나 한 줄을 더 쓸 이유가 없다 */}
+        <b className={item.sermon ? "sermon" : undefined}>
+          {item.sermon ?? item.title}
+        </b>
         {speaker ? (
           <small className="preacher">
             <span className="role">설교</span>

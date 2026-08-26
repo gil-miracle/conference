@@ -44,7 +44,7 @@ export const EVENT = {
 };
 
 export const THEME_VERSE = {
-  ref: "PSALM 135:6–7",
+  ref: "시편 135:6–7",
   refShort: "PSALM 135:6",
   text: "여호와께서는 하늘과 땅에서, 바다와 모든 깊은 곳에서 기뻐하시는 일이라면 무엇이든 하신다. 여호와께서는 땅끝에서 안개를 일으키고 비와 함께 번개를 보내시며 그 창고에서 바람을 내보내신다.",
   /** 말씀카드용 (볼드 구간 분리) */
@@ -113,6 +113,7 @@ export const TIMETABLE: TimetableDay[] = [
         badge: "MIRACLE 1",
         speakerId: "cho-youngchan",
         title: "저녁 예배",
+        sermon: "성령의 ‘불’을 받으십시오",
         main: true,
       },
     ],
@@ -137,6 +138,7 @@ export const TIMETABLE: TimetableDay[] = [
         badge: "MIRACLE 4",
         speakerId: "lee-jaehoon",
         title: "저녁 예배",
+        sermon: "‘물’이 바다 덮음같이",
         main: true,
       },
     ],
@@ -155,6 +157,7 @@ export const TIMETABLE: TimetableDay[] = [
         badge: "MIRACLE 6",
         speakerId: "choi-jaeyoon",
         title: "주일 예배",
+        sermon: "어둠 속에서 더 밝게 빛나는 ‘빛’",
         main: true,
       },
     ],

@@ -983,3 +983,13 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .pl-nav button svg { width: 17px; height: 17px; }
 .pl-nav button:hover:not(:disabled) { background: var(--ink); color: var(--cream); }
 .pl-nav button:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* 설교 제목 — 예배 순서에서는 이게 곧 제목이다 (순서명 대신 들어간다) */
+.ss-main-body b.sermon {
+  font-family: "Nanum Myeongjo", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.08rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+}
