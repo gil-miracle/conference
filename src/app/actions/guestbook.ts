@@ -42,9 +42,22 @@ export async function addGuestbookEntry(
   return { status: "ok", message: "방명록이 등록됐어요." };
 }
 
+/**
+ * 본인 글 삭제. 권한은 RLS(`participant_id = my_participant_id() or is_admin()`)가 판단하며,
+ * 막히면 오류 없이 0행이 지워진다 — 삭제된 행 수를 확인해야 성공/실패를 구분할 수 있다.
+ */
 export async function deleteGuestbookEntry(id: string) {
   const supabase = await getSupabaseServer();
-  if (!supabase) return;
-  await supabase.from("guestbook").delete().eq("id", id);
+  if (!supabase) return { ok: false as const };
+
+  const { data, error } = await supabase
+    .from("guestbook")
+    .delete()
+    .eq("id", id)
+    .select("id");
+  if (error || !data || data.length === 0) return { ok: false as const };
+
   revalidatePath("/");
+  revalidatePath("/guestbook");
+  return { ok: true as const };
 }

@@ -9,6 +9,8 @@ import { DEFAULT_MENUS } from "@/lib/settings";
 export type SessionInfo = {
   authed: boolean;
   bound: boolean;
+  /** 승인된 참가자의 본인 id — 소유자 판정용. 그 외에는 null */
+  participantId: string | null;
   isAdmin: boolean;
   banner: BannerSetting | null;
   menus: MenuVisibility;
@@ -18,6 +20,7 @@ export type SessionInfo = {
 const EMPTY: SessionInfo = {
   authed: false,
   bound: false,
+  participantId: null,
   isAdmin: false,
   banner: null,
   menus: DEFAULT_MENUS,
