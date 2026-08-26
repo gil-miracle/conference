@@ -211,7 +211,7 @@ nav.site {
 
 /* ── Timetable ── */
 #timetable { border-top: 1px solid var(--hair); }
-.day-tabs { display: flex; margin: 34px 0 0; border: 1px solid var(--ink); }
+.day-tabs { display: flex; margin: 34px 0; border: 1px solid var(--ink); }
 .day-tabs button {
   flex: 1;
   padding: 13px 0;
@@ -552,7 +552,7 @@ footer.site .rule::before {
 }
 
 /* 상세 페이지는 히어로가 없으므로 상단 여백 축소 */
-.site-main > section { padding: 56px 0 90px; }
+.site-main > section { padding: 56px 0 64px; }
 
 /* 메인 흐름 섹션 — 얇은 선으로 나누고 이탤릭 세리프 제목을 얹는다.
    위아래 여백을 같은 값으로 둬 구분선 간격이 일정하게 보이게 한다. */
