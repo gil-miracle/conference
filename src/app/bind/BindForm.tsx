@@ -49,7 +49,7 @@ export default function BindForm({ defaultName }: { defaultName: string }) {
 
         {request?.kind === "error" && <p className="msg err">{request.message}</p>}
 
-        <button className="btn accent full" style={{ marginTop: 22 }} disabled={requesting}>
+        <button className="btn accent full mt-22" disabled={requesting}>
           {requesting ? "보내는 중…" : "가입 요청 보내기"}
         </button>
         <p className="note">
@@ -109,8 +109,7 @@ export default function BindForm({ defaultName }: { defaultName: string }) {
       {lookup?.kind === "error" && <p className="msg err">{lookup.message}</p>}
       {lookup?.kind === "error" && lookup.showApply && EVENT.applyUrl !== "#" && (
         <a
-          className="btn ghost full"
-          style={{ marginTop: 14 }}
+          className="btn ghost full mt-14"
           href={EVENT.applyUrl}
           target="_blank"
           rel="noreferrer"
@@ -119,7 +118,7 @@ export default function BindForm({ defaultName }: { defaultName: string }) {
         </a>
       )}
 
-      <button className="btn accent full" style={{ marginTop: 30 }} disabled={looking}>
+      <button className="btn accent full mt-30" disabled={looking}>
         {looking ? "확인 중…" : "신청 내역 확인"}
       </button>
       <p className="note">
@@ -133,13 +132,7 @@ function SignOutLink() {
   return (
     <button
       type="button"
-      style={{
-        background: "none",
-        border: "none",
-        color: "inherit",
-        fontSize: "inherit",
-        padding: 0,
-      }}
+      className="btn-plain underline"
       onClick={async () => {
         await fetch("/auth/signout", { method: "POST" });
         location.href = "/";

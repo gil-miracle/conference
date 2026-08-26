@@ -11,7 +11,7 @@ export default function GuestbookWriteCta() {
 
   if (!loaded) {
     return (
-      <button className="gb-write" disabled style={{ opacity: 0.4 }}>
+      <button className="gb-write" disabled>
         불러오는 중…
       </button>
     );
@@ -26,7 +26,7 @@ export default function GuestbookWriteCta() {
 
   if (!session.bound)
     return (
-      <Link className="gb-write" href="/bind" style={{ display: "block", textAlign: "center" }}>
+      <Link className="gb-write block center" href="/bind">
         방명록 남기기 — 신청 명단 연결 후 작성할 수 있어요
       </Link>
     );

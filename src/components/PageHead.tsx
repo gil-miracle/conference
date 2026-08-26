@@ -1,4 +1,6 @@
-/** 상세 페이지 상단 타이틀 블록 */
+import SectionHead from "./SectionHead";
+
+/** 상세 페이지 상단 타이틀 블록 — 섹션 헤더 + 리드 문단 */
 export default function PageHead({
   title,
   idx,
@@ -10,10 +12,7 @@ export default function PageHead({
 }) {
   return (
     <>
-      <div className="sec-head reveal">
-        <h2>{title}</h2>
-        <span className="idx">{idx}</span>
-      </div>
+      <SectionHead title={title} idx={idx} />
       {lede && <p className="lede reveal">{lede}</p>}
     </>
   );

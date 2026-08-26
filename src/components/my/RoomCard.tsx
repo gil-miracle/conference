@@ -8,7 +8,7 @@ export default function RoomCard({
   mates: string[];
 }) {
   return (
-    <div className="my-card" style={{ marginTop: 16 }}>
+    <div className="my-card room-card">
       <div className="eyebrow">MY ROOM</div>
       {room ? (
         <>

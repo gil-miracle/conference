@@ -90,11 +90,11 @@ export default function GalleryGrid({
         </div>
       )}
       {hasMore && (
-        <button className="btn ghost full" style={{ marginTop: 14 }} onClick={loadMore}>
+        <button className="btn ghost full mt-14" onClick={loadMore}>
           더 보기
         </button>
       )}
-      <div style={{ textAlign: "center", marginTop: 30 }}>
+      <div className="center mt-30">
         <input
           ref={fileRef}
           type="file"
@@ -111,7 +111,7 @@ export default function GalleryGrid({
           {uploading ?? "사진 올리기"}
         </button>
         {!cloudName && (
-          <p className="msg err" style={{ marginTop: 14 }}>
+          <p className="msg err mt-14">
             Cloudinary 설정 전이라 업로드가 꺼져 있어요.
           </p>
         )}

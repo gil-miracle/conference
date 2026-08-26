@@ -15,13 +15,11 @@ export default async function QrCard({
 }) {
   if (checkedInAt) {
     return (
-      <div className="my-card" style={{ textAlign: "center" }}>
+      <div className="my-card center">
         <div className="eyebrow">CHECK-IN</div>
         <h3>체크인 완료</h3>
         <span className="chip-in">✓ {fmtDateTime(checkedInAt)}</span>
-        <small style={{ display: "block", marginTop: 10 }}>
-          잘 오셨어요. 즐거운 3일 되세요!
-        </small>
+        <small className="block mt-10">잘 오셨어요. 즐거운 3일 되세요!</small>
       </div>
     );
   }
@@ -33,7 +31,7 @@ export default async function QrCard({
   });
 
   return (
-    <div className="my-card" style={{ textAlign: "center" }}>
+    <div className="my-card center">
       <div className="eyebrow">CHECK-IN QR</div>
       <div
         className="qr"

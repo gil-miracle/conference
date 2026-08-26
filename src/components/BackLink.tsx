@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ChevronIcon } from "@/components/icons";
 
-/** 요약 섹션·상세 페이지 하단의 '전체 보기' 링크 */
-export default function MoreLink({
+/** 상세 → 목록 되돌아가기 링크 */
+export default function BackLink({
   href,
   children,
 }: {
@@ -10,9 +10,9 @@ export default function MoreLink({
   children: React.ReactNode;
 }) {
   return (
-    <Link className="more-link reveal" href={href}>
+    <Link className="back-link" href={href}>
+      <ChevronIcon dir="left" />
       {children}
-      <ChevronIcon />
     </Link>
   );
 }

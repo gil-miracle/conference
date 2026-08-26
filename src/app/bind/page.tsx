@@ -28,12 +28,10 @@ export default async function BindPage() {
 
   return (
     <div className="bind-wrap">
-      <Link href="/" className="nav-logo" style={{ fontFamily: "Anton" }}>
+      <Link href="/" className="nav-logo disp">
         MIRACLE
       </Link>
-      <div className="eyebrow" style={{ marginTop: 46 }}>
-        PARTICIPANT LINK
-      </div>
+      <div className="eyebrow bind-eyebrow">PARTICIPANT LINK</div>
       <h2>신청 명단과 연결하기</h2>
       <p className="sub">
         처음 한 번만 하면 돼요. 참가 신청 때 적은 이름과 생년월일을 입력하면 이

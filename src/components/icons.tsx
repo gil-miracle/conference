@@ -18,6 +18,15 @@ export function CameraIcon() {
   );
 }
 
+/** 방향 표시 꺾쇠 — 더보기 링크(right)와 뒤로가기(left)에 함께 쓴다 */
+export function ChevronIcon({ dir = "right" }: { dir?: "left" | "right" }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d={dir === "right" ? "M9 6l6 6-6 6" : "M15 6l-6 6 6 6"} />
+    </svg>
+  );
+}
+
 export function PlayIcon() {
   return (
     <svg viewBox="0 0 10 12" fill="currentColor">

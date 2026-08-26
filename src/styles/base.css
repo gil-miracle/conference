@@ -134,3 +134,40 @@ textarea.f-input { resize: vertical; min-height: 96px; line-height: 1.7; }
   text-align: center;
 }
 .toast.err { background: var(--coral); }
+
+/* ── 레이아웃 유틸 ────────────────────────────────────────────────
+   목업 클래스명 체계를 건드리지 않으면서, 컴포넌트마다 흩어져 있던
+   인라인 style을 대체한다. 값은 실제로 쓰이던 것만 남겼다. */
+.mt-8 { margin-top: 8px; }
+.mt-10 { margin-top: 10px; }
+.mt-12 { margin-top: 12px; }
+.mt-14 { margin-top: 14px; }
+.mt-18 { margin-top: 18px; }
+.mt-20 { margin-top: 20px; }
+.mt-22 { margin-top: 22px; }
+.mt-30 { margin-top: 30px; }
+.mt-38 { margin-top: 38px; }
+.block { display: block; }
+.full-w { width: 100%; }
+.center { text-align: center; }
+.w-70 { max-width: 70px; }
+.w-90 { max-width: 90px; }
+
+/* 버튼을 나란히 채우는 행 — 자식이 같은 폭을 나눠 가진다 */
+.btn-row { display: flex; gap: 8px; }
+.btn-row > * { flex: 1; text-align: center; }
+
+/* 링크·아이콘처럼 보이는 버튼의 기본 스타일 제거
+   (button 요소를 유지해야 키보드·스크린리더 접근성이 산다) */
+.btn-plain {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+.btn-plain:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.hint-sm { font-size: 0.8rem; color: var(--ink-60); margin-top: 8px; }

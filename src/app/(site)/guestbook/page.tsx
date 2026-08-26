@@ -21,9 +21,7 @@ export default async function GuestbookPage() {
         />
         <div className="reveal">
           {entries.length === 0 && (
-            <p className="lede" style={{ padding: "10px 0 4px" }}>
-              첫 번째 인사를 남겨주세요.
-            </p>
+            <p className="lede empty-note">첫 번째 인사를 남겨주세요.</p>
           )}
           {entries.map((entry) => (
             <div className="gb" key={entry.id}>

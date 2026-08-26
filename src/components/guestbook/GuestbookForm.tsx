@@ -59,8 +59,8 @@ export default function GuestbookForm() {
         required
       />
       {state.status === "error" && <p className="msg err">{state.message}</p>}
-      <div style={{ display: "flex", gap: 8, marginTop: 22 }}>
-        <button className="btn accent" style={{ flex: 1 }} disabled={pending}>
+      <div className="btn-row mt-22">
+        <button className="btn accent" disabled={pending}>
           {pending ? "등록 중…" : "등록하기"}
         </button>
         <button

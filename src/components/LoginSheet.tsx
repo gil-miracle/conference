@@ -112,7 +112,7 @@ export default function LoginSheet() {
               <GoogleIcon />
               구글로 로그인 — 외부 브라우저로 열기
             </button>
-            <p className="note" style={{ textAlign: "left", marginTop: 10 }}>
+            <p className="note note-left">
               {IN_APP_LABEL[inApp!]} 안에서는 구글 정책상 로그인이 막혀 있어요.
               카카오 로그인을 쓰시거나, 위 버튼으로 외부 브라우저에서 열어주세요.
             </p>
@@ -133,7 +133,7 @@ export default function LoginSheet() {
               아직 서버(Supabase) 설정 전이라 소셜 로그인은 꺼져 있어요.
               미리보기로 로그인 후 화면을 둘러볼 수 있어요.
             </p>
-            <button className="btn accent full" style={{ marginTop: 14 }} onClick={demoLogin}>
+            <button className="btn accent full mt-14" onClick={demoLogin}>
               미리보기로 로그인 (데모)
             </button>
           </>
