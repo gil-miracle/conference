@@ -7,13 +7,15 @@ import FlowHead from "./FlowHead";
 export default function PageHead({
   title,
   lede,
+  action,
 }: {
   title: string;
   lede?: string;
+  action?: React.ReactNode;
 }) {
   return (
     <>
-      <FlowHead title={title} />
+      <FlowHead title={title} action={action} />
       {lede && <p className="lede reveal">{lede}</p>}
     </>
   );

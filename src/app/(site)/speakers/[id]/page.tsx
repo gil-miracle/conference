@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
-import MoreLink from "@/components/MoreLink";
 import SpeakerPhoto from "@/components/SpeakerPhoto";
-import SessionRow from "@/components/timetable/SessionRow";
-import { SPEAKERS, getSpeaker } from "@/lib/content";
+import { SPEAKERS, getSpeaker, getSpeakerSession } from "@/lib/content";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -18,15 +16,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: speaker ? `${speaker.name} — MIRACLE 2026` : "설교자" };
 }
 
+/**
+ * 설교자 상세.
+ *
+ * 사람 → 약력 → 본문 말씀 순서다. 시각·설교 제목은 일정표가 이미 보여주므로
+ * 여기서는 되풀이하지 않고, 그 사람이 어떤 말씀을 여는지로 마무리한다.
+ */
 export default async function SpeakerDetailPage({ params }: Props) {
   const { id } = await params;
   const speaker = getSpeaker(id);
   if (!speaker) notFound();
 
+  // 목록 페이지가 없으므로 일정표로 되돌아간다 — 그것도 이 사람이 있는 날짜 탭으로.
+  const placed = getSpeakerSession(speaker.id);
+  const backHref = placed ? `/timetable?day=${placed.day.day}` : "/timetable";
+
   return (
     <section>
       <div className="container">
-        <BackLink href="/speakers">설교자 목록</BackLink>
+        <BackLink href={backHref}>
+          {placed ? `${placed.day.label} 일정` : "일정표"}
+        </BackLink>
 
         <div className="spk-detail reveal">
           <div className="ph">
@@ -39,32 +49,20 @@ export default async function SpeakerDetailPage({ params }: Props) {
           </div>
         </div>
 
-        {/* 약력·담당 세션은 확정된 것만 보여준다 (빈 제목만 남지 않게) */}
-        {speaker.bio && (
-          <>
-            <div className="sub-head reveal">
-              <h3>약력</h3>
-            </div>
-            <p className="body-text reveal">{speaker.bio}</p>
-          </>
-        )}
+        {speaker.bio && <p className="body-text reveal">{speaker.bio}</p>}
 
-        {speaker.sessions.length > 0 && (
-          <>
-            <div className="sub-head reveal">
-              <h3>담당 세션</h3>
-            </div>
-            <div className="ss-list reveal">
-              {speaker.sessions.map((s) => (
-                <SessionRow
-                  key={`${s.day}-${s.time}`}
-                  item={{ time: `${s.day} · ${s.time}`, title: s.title, main: true }}
-                />
-              ))}
-            </div>
-          </>
+        {placed?.item.verseText && (
+          <blockquote className="spk-verse reveal">
+            {/* 절마다 줄을 바꾸고, 접힌 줄은 번호 폭만큼 들여쓴다 */}
+            {placed.item.verseText.map((v) => (
+              <p className="v" key={v.n}>
+                <b className="vn">{v.n}</b>
+                {v.text}
+              </p>
+            ))}
+            <cite>{placed.item.verse} · 우리말성경</cite>
+          </blockquote>
         )}
-        <MoreLink href="/timetable">전체 일정표 보기</MoreLink>
       </div>
     </section>
   );
