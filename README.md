@@ -16,16 +16,25 @@ npm install
 npm run dev
 ```
 
+검증은 셋 다 통과해야 한다.
+
+```bash
+npm test && npm run lint && npm run build
+```
+
 `.env` 없이 실행하면 **목업 모드**로 뜬다: 공개 섹션 전부 + 데모 방명록이 보이고 소셜 로그인은 꺼진다.
 
 **미리보기(데모) 로그인** — 목업 모드 한정:
 
 - 참가자: 로그인 시트의 "미리보기로 로그인" 버튼, 또는 `/?demo=1`
   → My(말씀카드·숙소·조·QR)와 갤러리의 로그인 후 화면을 데모 데이터로 보여준다
-- 관리자: `/admin` 접속만 하면 6개 탭(대시보드·체크인·숙소·찬양·게시판·설정)이 데모 데이터로 렌더된다 (변경은 저장되지 않음)
+- 관리자: `/admin` 접속만 하면 7개 탭(대시보드·승인·체크인·숙소·찬양·게시판·설정)이 데모 데이터로 렌더된다 (변경은 저장되지 않음)
 - Supabase env가 설정되면 데모 경로는 전부 비활성화되고 실제 인증·권한만 동작한다
 
 콘텐츠(강사·타임테이블·송리스트·링크)는 전부 [src/lib/content.ts](src/lib/content.ts) 한 파일에서 고친다.
+
+> 기능이 **어떻게 동작하는지**는 [docs/features/](docs/features/)에 기능별로 정리해 뒀다 —
+> 소셜 로그인, 가입 승인, 체크인, 갤러리, 보안 모델 등 14편.
 
 ## 레포 구조
 
@@ -37,11 +46,11 @@ npm run dev
 │  ├─ icons/                  #   PWA 아이콘 (192·512·maskable·apple-touch)
 │  └─ sw.js                   #   서비스 워커
 ├─ supabase/
-│  ├─ migrations/0001_init.sql  # 스키마 + RLS + RPC (SQL Editor에 붙여넣기)
-│  ├─ migrations/0002_songs.sql # 송리스트(집회 세트 + 곡) + 초기 데이터
+│  ├─ migrations/              # 0001 스키마·RLS·RPC → 0006 노출 제어 (순서대로 실행)
 │  └─ seed.sql                  # 개발용 데모 데이터
 ├─ docs/
-│  └─ site-design.md          # 설계서 (IA·인증·DB·관리자·말씀카드 스펙)
+│  ├─ site-design.md          # 설계서 (IA·인증·DB·관리자·말씀카드 스펙)
+│  └─ features/               # 기능별 상세 문서 14편 (로그인·승인·체크인·보안 …)
 └─ design/                    # 배포에 포함되지 않음 (.vercelignore)
    ├─ mockups/                #   participant-mockup-v10.html(최종) · admin-mockup.html · archive/
    └─ wordcards/              #   rendered/(5x7·square·phone × 10구절) · samples/ · drafts/ · gallery.html
@@ -90,7 +99,7 @@ src/
 │  ├─ guestbook/              # GuestbookForm·GuestbookWriteCta·GuestbookDelete
 │  └─ (공용)                   # Banner·Toast·LoginSheet·LoginButton·SectionHead
 │                             #   ·PageHead·MoreLink·icons·HeroDday·TimetableTabs
-│                             #   ·SpeakerCard·VideoPlayer·RevealObserver·ServiceWorker
+│                             #   ·SpeakerCard·VideoPlayer·KakaoMap·ServiceWorker
 ├─ hooks/useToast.ts          # 토스트 상태 (타이머 정리 포함)
 └─ lib/
    ├─ content.ts              # ★ 사이트 콘텐츠 단일 소스 (+ 송리스트 폴백)
@@ -124,7 +133,7 @@ src/
 | `/my` | 말씀카드·숙소·조·체크인 QR (로그인) |
 | `/gallery` | 갤러리 (로그인, 행사 후 오픈) |
 | `/bind` | 소셜 계정 ↔ 신청 명단 연결 |
-| `/admin/*` | 운영진 — 대시보드·체크인·숙소·**찬양**·게시판·설정 |
+| `/admin/*` | 운영진 — 대시보드·**승인**·체크인·숙소·찬양·게시판·설정 |
 | `/offline` | PWA 오프라인 폴백 |
 
 ### 렌더링 전략
@@ -140,8 +149,16 @@ Link가 뷰포트에 들어오면 자동 prefetch되어 클릭 시 서버 왕복
 | `/speakers/[id]` | SSG (generateStaticParams) |
 | `/my` `/gallery` `/bind` `/admin/*` `/api/*` | 동적 (개인화·권한) |
 
-이를 위해 **레이아웃은 서버에서 세션을 조회하지 않는다.** 레이아웃이 세션을 읽으면
+이를 위한 규칙이 둘 있다.
+
+**① 레이아웃은 서버에서 세션을 조회하지 않는다.** 레이아웃이 세션을 읽으면
 하위 페이지가 전부 동적이 되어 prefetch가 막히고 이동마다 서버 왕복이 생긴다.
+
+**② 공개 데이터는 쿠키 없는 클라이언트로 읽는다**
+([lib/supabase/anon.ts](src/lib/supabase/anon.ts)). `getSupabaseServer()`는 세션을 붙이려
+`cookies()`를 호출하는데, 그 순간 Next가 해당 라우트를 동적으로 확정해 `revalidate`가
+통째로 무력해진다. 방명록·송리스트·사이트 설정은 RLS가 이미 공개로 열어둔 데이터라
+세션이 필요 없다. 개인화 조회(`/my`·`/gallery`)만 쿠키 클라이언트를 쓴다.
 세션·공지 배너는 `SessionProvider`가 `/api/session`에서 클라이언트로 받아오고,
 `loading.tsx`는 두지 않는다 — Suspense fallback이 페이지를 통째로 대체해
 본문이 사라지고 푸터가 튀기 때문이다. 대신 이전 페이지를 유지한 채 교체하는
@@ -187,8 +204,19 @@ About 페이지의 지도는 카카오맵 JavaScript SDK다. 좌표를 하드코
 
 ### 1. Supabase
 
-1. 프로젝트 생성 → SQL Editor에서 [supabase/migrations/0001_init.sql](supabase/migrations/0001_init.sql) →
-   [0002_songs.sql](supabase/migrations/0002_songs.sql) 순서로 실행
+1. 프로젝트 생성 → `supabase/migrations/`를 **번호 순서대로** 실행
+   (`supabase db push` 또는 SQL Editor에 차례로 붙여넣기)
+
+   | 파일 | 내용 |
+   |---|---|
+   | [0001_init.sql](supabase/migrations/0001_init.sql) | 스키마 · RLS · RPC |
+   | [0002_songs.sql](supabase/migrations/0002_songs.sql) | 송리스트(집회 세트 + 곡) + 초기 데이터 |
+   | [0003_approval.sql](supabase/migrations/0003_approval.sql) | 가입 승인 상태 · 승인/반려 RPC · 승인 대기 목록 |
+   | [0004_join_lookup.sql](supabase/migrations/0004_join_lookup.sql) | 명단 조회(`lookup`)와 요청(`bind`) 분리 |
+   | [0005_drop_song_key.sql](supabase/migrations/0005_drop_song_key.sql) | 송리스트 원키 컬럼 제거 |
+   | [0006_visibility.sql](supabase/migrations/0006_visibility.sql) | 메뉴 노출 토글 · 숙소 공개 여부 |
+   | [0007_song_leader.sql](supabase/migrations/0007_song_leader.sql) | 찬양 인도자 컬럼 + 확정된 집회 구성(MIRACLE 1·4·6) |
+
    (개발용 데모 데이터가 필요하면 `supabase/seed.sql` 추가 실행)
 2. **Authentication → Providers**에서 Kakao, Google 활성화
    - 카카오: [Kakao Developers](https://developers.kakao.com)에서 앱 생성 → REST API 키/시크릿 →
@@ -251,24 +279,31 @@ Supabase `service_role` 키는 사용하지 않는다 (전부 RLS + `security de
 
 | 시점 | 할 일 |
 |---|---|
-| 행사 전 | 설정 탭에서 명단 CSV 업로드 (`이름,생년월일,전화번호`) → 참가자들이 미리 로그인·명단 연결 |
-| 행사 당일 | 관리자 체크인 탭에서 QR 스캔(참가자 My 화면) 또는 이름 검색 수동 체크인. 대시보드 5초 갱신 |
+| 행사 전 | 설정 탭에서 명단 CSV 업로드 (`이름,생년월일,전화번호`) |
+| 〃 | 참가자가 로그인 → `/bind`에서 명단 조회 → 가입 요청 |
+| 〃 | **승인 탭에서 요청 승인** (소셜 프로필로 본인 확인, 일괄 승인 가능) |
+| 〃 | 숙소·조 배정 완료 후 설정 탭에서 **숙소·조 공개** 토글 |
+| 행사 당일 | 체크인 탭에서 QR 스캔(참가자 My 화면) 또는 이름 검색 수동 체크인. 대시보드 5초 갱신 |
 | 계정 분쟁 | 체크인 탭 "연결해제" → 본인이 다시 로그인해 재연결 |
 | 행사 후 | 설정 탭에서 갤러리 오픈 토글 → 참가자 사진 업로드 시작 |
 
 ## 설계 확정 사항
 
 - **구조**: 단일 사이트, 로그인 시 My·갤러리 메뉴 확장. 원페이지 앵커 내비, 모바일 퍼스트
-- **인증**: 카카오/구글 소셜 로그인 → `/bind`에서 이름+생년월일로 명단 매칭·바인딩
-  (동명이인 시 전화 뒷 4자리). 행사 전부터 가능, 미신청자는 신청 안내. PIN·문자인증 미사용
-  - 매칭 로직은 DB 함수 `bind_participant` (security definer) — RLS상 미바인딩 row가 안 보이기 때문
+- **인증**: 카카오/구글 소셜 로그인 → `/bind`에서 이름+생년월일+전화번호로 명단 매칭.
+  행사 전부터 가능, 미신청자는 신청 안내. PIN·문자인증 미사용
+  - **2단계**다 — ① `lookup_participant`로 명단에 있는지 조회만(없으면 아무것도 저장 안 함)
+    → ② 본인 확인 후 `bind_participant`로 요청 전송 → ③ 관리자 승인
+  - 둘 다 DB 함수(security definer) — RLS상 미연결 row가 안 보이기 때문
+  - 승인 전에는 `status='pending'`이라 숙소·조·QR이 서버에서 잘려 나가고 방명록·사진도 못 쓴다
 - **체크인**: My의 개인 QR(`checkin_token`)을 관리자가 스캔 → `admin_checkin_by_token` RPC.
   소셜 계정 없는 참가자는 수동 체크인
 - **방명록**: 읽기 공개, 작성 로그인. **갤러리**: 행사 후 오픈 토글, Cloudinary signed upload
 - **디자인**: 포스터 팔레트(코랄·오렌지·라벤더·그린·크림), 에디토리얼/각진 스타일,
   Anton + IBM Plex Mono + Pretendard + 나눔명조, 종이 그레인
-- **관리자**: 대시보드(실시간 체크인 현황) / 체크인 / 숙소·조 / 게시판 모더레이션 /
-  설정(공지 배너·갤러리 토글·명단 CSV). 갱신은 v1 폴링(SWR 5초) → 필요시 Supabase Realtime
+- **관리자**: 대시보드(실시간 체크인 현황) / 가입 승인 / 체크인 / 숙소·조 / 찬양 /
+  게시판 모더레이션 / 설정(공지 배너·메뉴 노출·숙소 공개·갤러리 토글·명단 CSV).
+  갱신은 v1 폴링(SWR 5초) → 필요시 Supabase Realtime
   - 화면은 데모여도 **모든 변경 경로(서버 액션·API)는 실제 admin 세션을 재확인**한다
 - **CSS**: 목업 v10 클래스명을 그대로 유지 — 목업과 diff 비교 가능.
   base/site/admin 3분할이라 관리자 스타일은 참가자 번들에 실리지 않는다

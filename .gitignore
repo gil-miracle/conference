@@ -10,3 +10,6 @@ next-env.d.ts
 
 # Supabase CLI 로컬 캐시 (프로젝트 ref 등)
 supabase/.temp/
+
+.vercel
+.env*
