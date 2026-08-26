@@ -211,7 +211,8 @@ nav.site {
 
 /* ── Timetable ── */
 #timetable { border-top: 1px solid var(--hair); }
-.day-tabs { display: flex; margin: 34px 0; border: 1px solid var(--ink); }
+/* 제목 아래 여백(40px)과 같은 값으로 — 리드 문단 위아래가 같게 보이도록 */
+.day-tabs { display: flex; margin: 40px 0; border: 1px solid var(--ink); }
 .day-tabs button {
   flex: 1;
   padding: 13px 0;
@@ -541,18 +542,22 @@ footer.site .rule::before {
 
 /* ════ 멀티페이지 구조 ════ */
 
-/* 페이지가 짧아도 푸터가 화면 중간으로 올라오지 않게 — 전환 시 위치가 튀는 것을 막는다 */
-.site-main { min-height: calc(100vh - 62px); }
-@media (max-width: 767px) {
-  .site-main { min-height: calc(100vh - 62px - 62px); }
-}
+/* 페이지가 짧아도 푸터가 화면 안으로 올라오지 않게 한다.
+   높이를 계산하지 않고 세로 플렉스로 밀어낸다 — 내비 높이가 CSS에 고정돼 있지 않아
+   `100vh - 62px` 같은 상수는 실제 높이(58px)와 어긋나 푸터가 몇 px씩 삐져나왔다. */
+body { min-height: 100vh; display: flex; flex-direction: column; }
+/* 본문이 최소 한 화면을 채우게 해 푸터가 첫 화면에 걸치지 않게 한다.
+   내비(sticky, 흐름 차지)가 위에 얹히므로 그 높이만큼 더 내려가고,
+   덕분에 `100vh - 내비높이` 같은 상수를 쓰지 않아도 된다. */
+.site-main { flex: 1 0 auto; min-height: 100vh; }
 /* 하단 탭바 높이만큼 여백 (모바일) */
 @media (max-width: 767px) {
   footer.site { padding-bottom: calc(28px + 60px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* 상세 페이지는 히어로가 없으므로 상단 여백 축소 */
-.site-main > section { padding: 56px 0 64px; }
+/* 상세 페이지도 메인 흐름 섹션과 같은 40px 리듬을 쓴다 */
+.site-main > section { padding: 40px 0; }
 
 /* 메인 흐름 섹션 — 얇은 선으로 나누고 이탤릭 세리프 제목을 얹는다.
    위아래 여백을 같은 값으로 둬 구분선 간격이 일정하게 보이게 한다. */

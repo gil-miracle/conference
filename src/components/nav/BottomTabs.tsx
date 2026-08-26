@@ -6,7 +6,7 @@ import { TAB_ROUTES } from "./routes";
 import { TabIcon } from "./TabIcons";
 import { useSession } from "@/components/SessionProvider";
 
-/** 모바일 하단 탭바 — 행사 당일 동선(일정·강사·찬양·QR) 기준 5개 */
+/** 모바일 하단 탭바 — 행사 당일 동선(일정표·설교자·찬양·QR) 기준 5개 */
 export default function BottomTabs() {
   const pathname = usePathname();
   const { session } = useSession();

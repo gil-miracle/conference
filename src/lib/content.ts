@@ -104,7 +104,7 @@ export function getSpeaker(id: string) {
 export const TIMETABLE: TimetableDay[] = [
   {
     day: "1",
-    label: "금 11",
+    label: "9.11 (금)",
     date: "9.11 (금)",
     items: [
       { time: "20:00–21:00", title: "등록", sub: "본관 로비 · 숙소 안내" },
@@ -119,7 +119,7 @@ export const TIMETABLE: TimetableDay[] = [
   },
   {
     day: "2",
-    label: "토 12",
+    label: "9.12 (토)",
     date: "9.12 (토)",
     items: [
       { time: "07:00–09:00", title: "QT 및 아침식사" },
@@ -143,7 +143,7 @@ export const TIMETABLE: TimetableDay[] = [
   },
   {
     day: "3",
-    label: "주일 13",
+    label: "9.13 (주일)",
     date: "9.13 (주일)",
     items: [
       { time: "07:00–09:00", title: "QT 및 아침식사" },

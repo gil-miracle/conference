@@ -21,7 +21,7 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       { name: "체크인 QR", short_name: "My", url: "/my" },
-      { name: "타임테이블", short_name: "일정", url: "/timetable" },
+      { name: "일정표", short_name: "일정표", url: "/timetable" },
       { name: "송리스트", short_name: "찬양", url: "/songs" },
     ],
   };

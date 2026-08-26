@@ -26,7 +26,7 @@ export default async function MyPage({
   return (
     <section id="my">
       <div className="container">
-        <PageHead title="내 정보" idx="MY — 참가자 전용" />
+        <PageHead title="내 정보" />
         {!ctx.authed ? (
           <MyLocked />
         ) : !summary ? (

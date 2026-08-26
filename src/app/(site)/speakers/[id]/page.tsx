@@ -15,7 +15,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const speaker = getSpeaker(id);
-  return { title: speaker ? `${speaker.name} — MIRACLE 2026` : "강사 소개" };
+  return { title: speaker ? `${speaker.name} — MIRACLE 2026` : "설교자" };
 }
 
 export default async function SpeakerDetailPage({ params }: Props) {
@@ -26,7 +26,7 @@ export default async function SpeakerDetailPage({ params }: Props) {
   return (
     <section>
       <div className="container">
-        <BackLink href="/speakers">강사 목록</BackLink>
+        <BackLink href="/speakers">설교자 목록</BackLink>
 
         <div className="spk-detail reveal">
           <div className="ph">
@@ -64,7 +64,7 @@ export default async function SpeakerDetailPage({ params }: Props) {
             </div>
           </>
         )}
-        <MoreLink href="/timetable">전체 타임테이블 보기</MoreLink>
+        <MoreLink href="/timetable">전체 일정표 보기</MoreLink>
       </div>
     </section>
   );

@@ -22,7 +22,7 @@ export default async function GalleryPage({
   return (
     <section id="gallery">
       <div className="container">
-        <PageHead title="우리의 순간들" idx="GALLERY — 참가자 전용" />
+        <PageHead title="우리의 순간들" />
         {!ctx.galleryOpen ? (
           <GalleryLocked showLogin={!ctx.authed}>
             컨퍼런스가 끝나면 사진을 올리고 볼 수 있어요.

@@ -16,7 +16,6 @@ export default async function GuestbookPage() {
       <div className="container">
         <PageHead
           title="방명록"
-          idx="GUESTBOOK"
           lede="함께 나누고 싶은 기대와 기도를 남겨주세요."
         />
         <div className="reveal">
