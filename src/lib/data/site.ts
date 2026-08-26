@@ -1,7 +1,8 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { getSupabaseServer, isSupabaseConfigured } from "@/lib/supabase/server";
-import { parseSiteSettings, DEFAULT_MENUS } from "@/lib/settings";
+import { getSupabaseAnon } from "@/lib/supabase/anon";
+import { parseSiteSettings, DEFAULT_MENUS, type SiteSettings } from "@/lib/settings";
 import { GUESTBOOK_FALLBACK } from "@/lib/content";
 import { DEMO_COOKIE, DEMO_SUMMARY } from "@/lib/demo";
 import type { BannerSetting, GuestbookEntry, MenuVisibility, MySummary, Photo } from "@/lib/types";
@@ -92,9 +93,23 @@ export async function getSiteContext(demoOverride = false): Promise<SiteContext>
   return ctx;
 }
 
-/** 방명록 목록 — limit으로 메인 요약(3개)과 전체 페이지(30개)를 겸한다 */
+/**
+ * 공개 사이트 설정 — 메뉴 노출 등. 세션과 무관하므로 쿠키 없이 읽는다.
+ * (쿠키를 건드리면 호출한 페이지가 동적이 되어 ISR·prefetch가 무력해진다)
+ */
+export async function getPublicSettings(): Promise<SiteSettings> {
+  const supabase = getSupabaseAnon();
+  if (!supabase) return parseSiteSettings(null);
+  const { data } = await supabase.from("site_settings").select("key,value");
+  return parseSiteSettings(data);
+}
+
+/**
+ * 방명록 목록 — limit으로 메인 요약(3개)과 전체 페이지(30개)를 겸한다.
+ * 공개 읽기라 쿠키 없는 클라이언트를 쓴다 (RLS가 숨김 글을 걸러준다).
+ */
 export async function getGuestbook(limit = 30): Promise<GuestbookEntry[]> {
-  const supabase = await getSupabaseServer();
+  const supabase = getSupabaseAnon();
   if (!supabase) return GUESTBOOK_FALLBACK.slice(0, limit);
 
   const { data } = await supabase
