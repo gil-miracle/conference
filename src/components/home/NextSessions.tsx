@@ -1,27 +1,15 @@
+import DaySchedule from "@/components/timetable/DaySchedule";
 import { TIMETABLE } from "@/lib/content";
 
-/** 메인 요약용 — 주요 집회(main)만 뽑아 3일 흐름을 한눈에 */
+/**
+ * 메인 요약 — 3일을 DAY 블록으로 한 번에 보여준다.
+ * 전체 일정 페이지와 같은 블록을 쓰므로 두 화면의 모양이 어긋나지 않는다.
+ */
 export default function NextSessions() {
-  const highlights = TIMETABLE.flatMap((day) =>
-    day.items
-      .filter((item) => item.main)
-      .map((item) => ({ ...item, dayLabel: day.label }))
-  );
-
   return (
-    <div className="tt-list reveal">
-      {highlights.map((item) => (
-        <div className="tt main" key={`${item.dayLabel}-${item.time}`}>
-          <time>
-            {item.dayLabel}
-            <br />
-            {item.time}
-          </time>
-          <div>
-            <b>{item.title}</b>
-            <small>{item.sub}</small>
-          </div>
-        </div>
+    <div className="reveal">
+      {TIMETABLE.map((day) => (
+        <DaySchedule key={day.day} day={day} />
       ))}
     </div>
   );

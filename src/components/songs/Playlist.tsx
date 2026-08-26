@@ -82,12 +82,22 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
       <div className="pl-set-name">
         <b>{shown.name}</b>
         <small>
-          {shown.timeLabel ? `${shown.timeLabel} · ` : ""}
-          {shown.songs.length} SONGS
+          {[
+            shown.timeLabel,
+            shown.leader ? `찬양 인도 ${shown.leader}` : null,
+            `${shown.songs.length} SONGS`,
+          ]
+            .filter(Boolean)
+            .join(" · ")}
         </small>
       </div>
 
       <ol className="pl-list">
+        {shown.songs.length === 0 && (
+          <li className="pl-empty-row">
+            곡이 아직 확정되지 않았어요. 정해지면 여기에 올라옵니다.
+          </li>
+        )}
         {shown.songs.map((song, i) => (
           <li key={song.id}>
             <button

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import DaySchedule from "@/components/timetable/DaySchedule";
 import { TIMETABLE } from "@/lib/content";
 
-/** 금/토/주일 탭 전환 — 목업 v10 day-tabs 동작 */
+/** 금/토/주일 탭 전환 — 고른 하루만 DAY 블록으로 보여준다 */
 export default function TimetableTabs() {
-  const [active, setActive] = useState("1");
+  const [active, setActive] = useState(TIMETABLE[0]?.day ?? "1");
+  const day = TIMETABLE.find((d) => d.day === active) ?? TIMETABLE[0];
 
   return (
     <div className="reveal">
@@ -14,28 +16,14 @@ export default function TimetableTabs() {
           <button
             key={d.day}
             className={active === d.day ? "on" : ""}
+            aria-pressed={active === d.day}
             onClick={() => setActive(d.day)}
           >
             {d.label}
           </button>
         ))}
       </div>
-      {TIMETABLE.map((d) => (
-        <div
-          key={d.day}
-          className={`tt-list${active === d.day ? "" : " hidden"}`}
-        >
-          {d.items.map((item) => (
-            <div key={item.time} className={`tt${item.main ? " main" : ""}`}>
-              <time>{item.time}</time>
-              <div>
-                <b>{item.title}</b>
-                <small>{item.sub}</small>
-              </div>
-            </div>
-          ))}
-        </div>
-      ))}
+      {day && <DaySchedule day={day} />}
     </div>
   );
 }
