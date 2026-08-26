@@ -14,7 +14,7 @@ export default async function AdminSongsPage() {
   return (
     <>
       <div className="sec-title">
-        <b>송리스트</b>
+        <b>찬양리스트</b>
         <span>
           {sets.length} SETS · {totalSongs} SONGS
         </span>

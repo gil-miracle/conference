@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { SongSet } from "@/lib/content";
-import { PlayIcon } from "@/components/icons";
+import { ChevronIcon, PlayIcon } from "@/components/icons";
 
 /**
  * 플레이리스트 — 상단 YouTube 플레이어 + 집회 탭 + 트랙 목록.
@@ -30,8 +30,26 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
     return null;
   }, [sets, currentId]);
 
+  // 앞뒤 곡 이동은 집회를 가로질러 전체 순서를 따른다 —
+  // 한 집회 끝에서 멈추지 않고 다음 집회로 이어 듣게 된다.
+  const flat = useMemo(
+    () => sets.flatMap((set, si) => set.songs.map((song) => ({ id: song.id, si }))),
+    [sets]
+  );
+  const at = flat.findIndex((f) => f.id === currentId);
+  const prev = at > 0 ? flat[at - 1] : null;
+  const next = at >= 0 && at < flat.length - 1 ? flat[at + 1] : null;
+
+  const goTo = (target: { id: string; si: number } | null) => {
+    if (!target) return;
+    setCurrentId(target.id);
+    setAutoplay(true);
+    // 재생 중인 곡이 보이는 목록과 어긋나지 않게 탭도 따라간다
+    setActiveSet(target.si);
+  };
+
   if (sets.length === 0) {
-    return <p className="msg">아직 등록된 송리스트가 없어요.</p>;
+    return <p className="msg">아직 등록된 찬양리스트가 없어요.</p>;
   }
 
   const shown = sets[activeSet] ?? sets[0];
@@ -59,9 +77,29 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
 
       {current && (
         <div className="pl-now">
-          <div className="eyebrow">NOW PLAYING</div>
-          <b>{current.song.title}</b>
-          <small>{current.setName}</small>
+          <div className="pl-now-info">
+            <div className="eyebrow">NOW PLAYING</div>
+            <b>{current.song.title}</b>
+            <small>{current.setName}</small>
+          </div>
+          {(prev || next) && (
+            <div className="pl-nav">
+              <button
+                aria-label="이전 곡"
+                disabled={!prev}
+                onClick={() => goTo(prev)}
+              >
+                <ChevronIcon dir="left" />
+              </button>
+              <button
+                aria-label="다음 곡"
+                disabled={!next}
+                onClick={() => goTo(next)}
+              >
+                <ChevronIcon />
+              </button>
+            </div>
+          )}
         </div>
       )}
 

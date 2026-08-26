@@ -10,7 +10,7 @@ const LABELS: { key: MenuKey; label: string; hint: string }[] = [
   { key: "about", label: "주제 · 장소", hint: "메인의 주제 말씀 · 지도 · 안내" },
   { key: "speakers", label: "설교자", hint: "설교자 소개" },
   { key: "timetable", label: "일정표", hint: "3일 일정" },
-  { key: "songs", label: "Songs", hint: "송리스트" },
+  { key: "songs", label: "찬양리스트", hint: "집회별 곡 목록" },
   { key: "guestbook", label: "방명록", hint: "인사 남기기" },
   { key: "gallery", label: "갤러리", hint: "행사 사진" },
 ];

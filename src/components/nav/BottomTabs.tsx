@@ -2,32 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TAB_ROUTES } from "./routes";
+import { MENU } from "./routes";
 import { TabIcon } from "./TabIcons";
 import { useSession } from "@/components/SessionProvider";
 
-/** 모바일 하단 탭바 — 행사 당일 동선(일정표·설교자·찬양·QR) 기준 5개 */
+/** 모바일 하단 탭바 — 상단 메뉴와 같은 MENU를 쓴다 */
 export default function BottomTabs() {
   const pathname = usePathname();
   const { session } = useSession();
 
   return (
     <nav className="tabbar" aria-label="주요 메뉴">
-      {TAB_ROUTES.filter((tab) => !tab.key || session.menus[tab.key]).map((tab) => {
-        const on =
-          tab.href === "/"
-            ? pathname === "/"
-            : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
+      {MENU.filter((m) => !m.key || session.menus[m.key]).map((m) => {
+        const on = pathname === m.href || pathname.startsWith(`${m.href}/`);
         return (
           <Link
-            key={tab.href}
-            href={tab.href}
+            key={m.href}
+            href={m.href}
             className={`tab${on ? " on" : ""}`}
             aria-current={on ? "page" : undefined}
           >
-            <TabIcon name={tab.icon} />
-            <span>{tab.label}</span>
-            {tab.href === "/my" && !session.authed && <i className="dot" aria-hidden="true" />}
+            <TabIcon name={m.icon} />
+            <span>{m.short}</span>
+            {m.href === "/my" && !session.authed && <i className="dot" aria-hidden="true" />}
           </Link>
         );
       })}

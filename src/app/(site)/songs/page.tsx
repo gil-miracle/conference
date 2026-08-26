@@ -3,7 +3,7 @@ import PageHead from "@/components/PageHead";
 import Playlist from "@/components/songs/Playlist";
 import { getSongSets } from "@/lib/data/songs";
 
-export const metadata: Metadata = { title: "송리스트 — MIRACLE 2026" };
+export const metadata: Metadata = { title: "찬양리스트 — MIRACLE 2026" };
 /** 관리자 수정 시 revalidatePath로 즉시 갱신되므로 짧게 캐시해도 안전 */
 export const revalidate = 60;
 
@@ -13,10 +13,7 @@ export default async function SongsPage() {
   return (
     <section>
       <div className="container">
-        <PageHead
-          title="송리스트"
-          lede="집회를 고르고 곡을 누르면 위에서 바로 재생돼요. 미리 듣고 오면 현장에서 더 깊이 예배할 수 있어요."
-        />
+        <PageHead title="찬양리스트" />
         <Playlist sets={sets} />
       </div>
     </section>

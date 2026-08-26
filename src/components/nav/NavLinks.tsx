@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NAV_ROUTES } from "./routes";
+import { MENU } from "./routes";
 import { LockIcon } from "@/components/icons";
 import { useSession } from "@/components/SessionProvider";
 
+/** 상단 가로 메뉴 (데스크톱) — 하단 탭바와 같은 MENU를 쓴다 */
 export default function NavLinks() {
   const pathname = usePathname();
   const { session } = useSession();
@@ -13,22 +14,19 @@ export default function NavLinks() {
 
   return (
     <div className="nav-links">
-      {NAV_ROUTES.filter((r) => session.menus[r.key]).map((r) => (
-        <Link key={r.href} className={`lnk${isOn(r.href) ? " on" : ""}`} href={r.href}>
-          {r.label}
-        </Link>
-      ))}
-      <Link className={`lnk${session.authed ? "" : " lock"}${isOn("/my") ? " on" : ""}`} href="/my">
-        {!session.authed && <LockIcon />}My
-      </Link>
-      {session.menus.gallery && (
-        <Link
-          className={`lnk${session.authed ? "" : " lock"}${isOn("/gallery") ? " on" : ""}`}
-          href="/gallery"
-        >
-          {!session.authed && <LockIcon />}갤러리
-        </Link>
-      )}
+      {MENU.filter((m) => !m.key || session.menus[m.key]).map((m) => {
+        const locked = m.locked && !session.authed;
+        return (
+          <Link
+            key={m.href}
+            className={`lnk${locked ? " lock" : ""}${isOn(m.href) ? " on" : ""}`}
+            href={m.href}
+          >
+            {locked && <LockIcon />}
+            {m.label}
+          </Link>
+        );
+      })}
     </div>
   );
 }
