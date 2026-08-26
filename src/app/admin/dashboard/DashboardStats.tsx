@@ -1,5 +1,4 @@
-"use client";
-
+import { fmtTime } from "@/lib/format";
 import type { AdminStats } from "@/lib/types";
 
 export default function DashboardStats({ stats }: { stats: AdminStats }) {
@@ -7,10 +6,8 @@ export default function DashboardStats({ stats }: { stats: AdminStats }) {
     stats.total > 0
       ? Math.round((stats.checked_in / stats.total) * 1000) / 10
       : 0;
-  const now = new Date();
-  const updated = `${String(now.getHours()).padStart(2, "0")}:${String(
-    now.getMinutes()
-  ).padStart(2, "0")}`;
+  // 운영진 기기 시간대와 무관하게 행사 시간대(KST)로 — 아래 피드 시각과 같은 기준
+  const updated = fmtTime(new Date().toISOString());
 
   return (
     <>

@@ -5,6 +5,7 @@ import useSWR from "swr";
 import Toast from "@/components/Toast";
 import { useToast } from "@/hooks/useToast";
 import { jsonFetcher } from "@/lib/fetcher";
+import { useAdminDemo } from "../AdminMode";
 import type { AdminParticipant } from "@/lib/types";
 import {
   setCheckin,
@@ -16,10 +17,11 @@ import QrScanner from "./QrScanner";
 
 const DEMO_MSG = "미리보기 모드 — 변경사항은 저장되지 않아요.";
 
-export default function CheckinPanel({ demo }: { demo: boolean }) {
+export default function CheckinPanel() {
   const [q, setQ] = useState("");
   const [scanning, setScanning] = useState(false);
   const { toast, showToast } = useToast();
+  const demo = useAdminDemo();
 
   const { data, mutate, isLoading } = useSWR<AdminParticipant[]>(
     `/api/admin/participants?q=${encodeURIComponent(q)}`,
@@ -70,8 +72,7 @@ export default function CheckinPanel({ demo }: { demo: boolean }) {
     <>
       <div className="qr-strip">
         <button
-          className="btn accent"
-          style={{ flex: 1 }}
+          className="btn accent qr-main"
           onClick={() => (demo ? showToast(DEMO_MSG) : setScanning(true))}
         >
           QR 스캔
@@ -115,14 +116,7 @@ export default function CheckinPanel({ demo }: { demo: boolean }) {
           />
         ))}
       </div>
-      <p
-        style={{
-          fontSize: ".76rem",
-          color: "var(--ink-60)",
-          marginTop: 12,
-          wordBreak: "keep-all",
-        }}
-      >
+      <p className="panel-hint">
         참가자의 My 화면 QR을 스캔하거나 이름으로 수동 체크인하세요. 소셜 계정이
         잘못 연결된 경우 연결해제 후 본인이 다시 로그인하면 돼요.
       </p>

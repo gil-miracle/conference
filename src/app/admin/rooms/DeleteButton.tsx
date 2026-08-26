@@ -1,7 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useServerAction } from "@/hooks/useServerAction";
 import { deleteRoom } from "../actions/rooms";
 import { deleteTeam } from "../actions/teams";
 
@@ -13,29 +12,18 @@ export default function DeleteButton({
   kind: "room" | "team";
   id: string;
 }) {
-  const [pending, startTransition] = useTransition();
-  const router = useRouter();
+  const { pending, run } = useServerAction();
+
   return (
     <button
+      className="btn-plain del-x"
+      aria-label={kind === "room" ? "방 삭제" : "조 삭제"}
       disabled={pending}
-      style={{
-        background: "none",
-        border: "none",
-        color: "var(--coral)",
-        fontFamily: "inherit",
-        fontSize: "inherit",
-        marginLeft: 8,
-        padding: 0,
-        letterSpacing: "inherit",
-      }}
-      onClick={() => {
-        if (!confirm("삭제할까요?")) return;
-        startTransition(async () => {
-          if (kind === "room") await deleteRoom(id);
-          else await deleteTeam(id);
-          router.refresh();
-        });
-      }}
+      onClick={() =>
+        run(() => (kind === "room" ? deleteRoom(id) : deleteTeam(id)), {
+          confirm: "삭제할까요?",
+        })
+      }
     >
       ✕
     </button>

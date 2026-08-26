@@ -1,31 +1,18 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { Song } from "@/lib/content";
+import { useServerAction } from "@/hooks/useServerAction";
+import { useAdminDemo } from "../AdminMode";
 import { deleteSong, moveSong, updateSong } from "../actions/songs";
 
 /** 곡 한 줄 — 탭하면 인라인 편집 */
-export default function SongItem({
-  song,
-  index,
-  demo,
-}: {
-  song: Song;
-  index: number;
-  demo: boolean;
-}) {
+export default function SongItem({ song, index }: { song: Song; index: number }) {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(song.title);
   const [youtube, setYoutube] = useState(song.youtubeId ?? "");
-  const [pending, startTransition] = useTransition();
-  const router = useRouter();
-
-  const run = (fn: () => Promise<unknown>) =>
-    startTransition(async () => {
-      await fn();
-      router.refresh();
-    });
+  const { pending, run } = useServerAction();
+  const demo = useAdminDemo();
 
   if (editing) {
     return (
@@ -91,9 +78,11 @@ export default function SongItem({
             className="icon-btn del"
             aria-label="삭제"
             disabled={pending}
-            onClick={() => {
-              if (confirm(`'${song.title}' 곡을 삭제할까요?`)) run(() => deleteSong(song.id));
-            }}
+            onClick={() =>
+              run(() => deleteSong(song.id), {
+                confirm: `'${song.title}' 곡을 삭제할까요?`,
+              })
+            }
           >
             ✕
           </button>

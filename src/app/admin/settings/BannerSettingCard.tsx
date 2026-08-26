@@ -1,22 +1,17 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { BannerSetting } from "@/lib/types";
+import { useServerAction } from "@/hooks/useServerAction";
+import { useAdminDemo } from "../AdminMode";
 import { saveSetting } from "../actions/settings";
 
-export default function BannerSettingCard({
-  banner,
-  demo,
-}: {
-  banner: BannerSetting;
-  demo: boolean;
-}) {
+export default function BannerSettingCard({ banner }: { banner: BannerSetting }) {
   const [text, setText] = useState(banner.text);
   const [visible, setVisible] = useState(banner.visible);
-  const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
-  const router = useRouter();
+  const { pending, run } = useServerAction();
+  const demo = useAdminDemo();
 
   return (
     <div className="set">
@@ -29,9 +24,8 @@ export default function BannerSettingCard({
           className="btn sm"
           disabled={pending || demo}
           onClick={() =>
-            startTransition(async () => {
+            run(async () => {
               await saveSetting("banner", { text: text.trim(), visible });
-              router.refresh();
               setSaved(true);
               setTimeout(() => setSaved(false), 2000);
             })
@@ -47,11 +41,12 @@ export default function BannerSettingCard({
         disabled={demo}
         onChange={(e) => setText(e.target.value)}
       />
-      <div className="row" style={{ marginTop: 14 }}>
+      <div className="row mt-14">
         <small>배너 노출</small>
         <button
           className={`toggle${visible ? " on" : ""}`}
           aria-label="배너 노출 토글"
+          aria-pressed={visible}
           disabled={demo}
           onClick={() => setVisible(!visible)}
         />

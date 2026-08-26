@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useServerAction } from "@/hooks/useServerAction";
+import { useAdminDemo } from "../AdminMode";
 import { saveSetting } from "../actions/settings";
 
 /** {"value": boolean} 형태 설정의 공용 토글 카드 */
@@ -10,17 +11,15 @@ export default function ToggleSettingCard({
   title,
   description,
   initialOn,
-  demo,
 }: {
   settingKey: string;
   title: string;
   description: string;
   initialOn: boolean;
-  demo: boolean;
 }) {
   const [on, setOn] = useState(initialOn);
-  const [pending, startTransition] = useTransition();
-  const router = useRouter();
+  const { pending, run } = useServerAction();
+  const demo = useAdminDemo();
 
   return (
     <div className="set">
@@ -32,14 +31,12 @@ export default function ToggleSettingCard({
         <button
           className={`toggle${on ? " on" : ""}`}
           aria-label={`${title} 토글`}
+          aria-pressed={on}
           disabled={pending || demo}
           onClick={() => {
             const next = !on;
             setOn(next);
-            startTransition(async () => {
-              await saveSetting(settingKey, { value: next });
-              router.refresh();
-            });
+            run(() => saveSetting(settingKey, { value: next }));
           }}
         />
       </div>

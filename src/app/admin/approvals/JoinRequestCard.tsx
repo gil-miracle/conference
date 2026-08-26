@@ -1,22 +1,17 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { JoinRequest } from "@/lib/types";
 import { fmtBirth, fmtDateTime, maskPhone } from "@/lib/format";
+import { useServerAction } from "@/hooks/useServerAction";
+import { useAdminDemo } from "../AdminMode";
 import { setParticipantStatus } from "../actions/approval";
 
 /** 가입 요청 한 건 — 사칭 판별을 위해 소셜 프로필을 함께 보여준다 */
-export default function JoinRequestCard({
-  request,
-  demo,
-}: {
-  request: JoinRequest;
-  demo: boolean;
-}) {
-  const [pending, startTransition] = useTransition();
+export default function JoinRequestCard({ request }: { request: JoinRequest }) {
   const [done, setDone] = useState<string | null>(null);
-  const router = useRouter();
+  const { pending, run } = useServerAction();
+  const demo = useAdminDemo();
 
   const socialName = request.social_name ?? request.social_full_name;
   const avatar = request.social_avatar ?? request.social_picture;
@@ -26,13 +21,15 @@ export default function JoinRequestCard({
       setDone("미리보기 모드 — 저장되지 않아요");
       return;
     }
-    if (status === "rejected" && !confirm(`${request.name} 님의 요청을 반려할까요?`))
-      return;
-    startTransition(async () => {
-      const res = await setParticipantStatus(request.id, status);
-      setDone(res.ok ? (status === "approved" ? "승인됨" : "반려됨") : res.message);
-      router.refresh();
-    });
+    run(
+      async () => {
+        const res = await setParticipantStatus(request.id, status);
+        setDone(res.ok ? (status === "approved" ? "승인됨" : "반려됨") : res.message);
+      },
+      status === "rejected"
+        ? { confirm: `${request.name} 님의 요청을 반려할까요?` }
+        : undefined
+    );
   };
 
   return (

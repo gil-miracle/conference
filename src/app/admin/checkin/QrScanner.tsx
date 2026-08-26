@@ -107,11 +107,7 @@ export default function QrScanner({
       <div className="hint">SCAN — CHECK-IN QR</div>
       <div className="scan-box" id="qr-reader" />
       <div className="scan-result">{status}</div>
-      <button
-        className="btn ghost"
-        style={{ borderColor: "rgba(250,246,238,.5)", color: "var(--cream)" }}
-        onClick={onClose}
-      >
+      <button className="btn ghost scan-close" onClick={onClose}>
         닫기
       </button>
     </div>

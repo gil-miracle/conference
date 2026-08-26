@@ -26,30 +26,27 @@ export default async function AdminSettingsPage() {
 
   return (
     <>
-      <BannerSettingCard banner={settings.banner} demo={ctx.demo} />
+      <BannerSettingCard banner={settings.banner} />
       <ToggleSettingCard
         settingKey="rooms_open"
         title="숙소·조 공개"
         description="배정이 끝나면 켜세요. 끄면 참가자 My에서 숙소·조가 보이지 않습니다"
         initialOn={settings.roomsOpen}
-        demo={ctx.demo}
       />
       <ToggleSettingCard
         settingKey="gallery_open"
         title="갤러리 오픈"
         description="참가자 사진 업로드·열람 허용 (행사 후 켜기)"
         initialOn={settings.galleryOpen}
-        demo={ctx.demo}
       />
       <ToggleSettingCard
         settingKey="guestbook_open"
         title="방명록 작성"
         description="로그인 참가자 작성 허용"
         initialOn={settings.guestbookOpen}
-        demo={ctx.demo}
       />
-      <MenuVisibilityCard menus={settings.menus} demo={ctx.demo} />
-      <CsvUpload demo={ctx.demo} />
+      <MenuVisibilityCard menus={settings.menus} />
+      <CsvUpload />
     </>
   );
 }

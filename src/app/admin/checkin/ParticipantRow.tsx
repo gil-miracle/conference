@@ -24,12 +24,7 @@ export default function ParticipantRow({
         </small>
       </div>
       {p.checked_in_at ? (
-        <button
-          className="done"
-          style={{ background: "none", border: "none", cursor: "pointer" }}
-          title="탭하면 체크인 취소"
-          onClick={onToggleCheckin}
-        >
+        <button className="done" title="탭하면 체크인 취소" onClick={onToggleCheckin}>
           ✓ {fmtTime(p.checked_in_at)}
         </button>
       ) : (

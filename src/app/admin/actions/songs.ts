@@ -18,6 +18,7 @@ export async function createSongSet(formData: FormData) {
   if (!name) return;
   const day_label = String(formData.get("day_label") ?? "").trim() || null;
   const time_label = String(formData.get("time_label") ?? "").trim() || null;
+  const leader = String(formData.get("leader") ?? "").trim() || null;
 
   const { data: last } = await ctx.supabase
     .from("song_sets")
@@ -30,6 +31,7 @@ export async function createSongSet(formData: FormData) {
     name,
     day_label,
     time_label,
+    leader,
     sort_order: (last?.sort_order ?? 0) + 1,
   });
   revalidateSongs();
@@ -44,7 +46,12 @@ export async function deleteSongSet(setId: string) {
 
 export async function updateSongSet(
   setId: string,
-  patch: { name?: string; day_label?: string | null; time_label?: string | null }
+  patch: {
+    name?: string;
+    day_label?: string | null;
+    time_label?: string | null;
+    leader?: string | null;
+  }
 ) {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false };

@@ -1,4 +1,5 @@
 import { autoAssignTeams, createTeam } from "../actions/teams";
+import { groupByAssignment } from "@/lib/assignment";
 import type { AdminTeam, PersonLite } from "@/lib/types";
 import AssignSelect from "./AssignSelect";
 import DeleteButton from "./DeleteButton";
@@ -11,12 +12,7 @@ export default function TeamsPanel({
   teams: AdminTeam[];
   people: PersonLite[];
 }) {
-  const byTeam = new Map<string, PersonLite[]>();
-  people.forEach((person) => {
-    if (person.team_id)
-      byTeam.set(person.team_id, [...(byTeam.get(person.team_id) ?? []), person]);
-  });
-  const unassigned = people.filter((person) => !person.team_id);
+  const { membersOf, unassigned } = groupByAssignment(people, "team_id");
   const teamOptions = teams.map((team) => ({
     value: team.id,
     label: team.name,
@@ -24,13 +20,13 @@ export default function TeamsPanel({
 
   return (
     <>
-      <div className="sec-title" style={{ marginTop: 38 }}>
+      <div className="sec-title mt-38">
         <b>게임 조 배정</b>
         <span>OPTIONAL</span>
       </div>
 
       {teams.map((team) => {
-        const members = byTeam.get(team.id) ?? [];
+        const members = membersOf(team.id);
         return (
           <div className="room" key={team.id}>
             <div className="top">
@@ -77,7 +73,7 @@ export default function TeamsPanel({
 
       {teams.length > 0 && (
         <form action={autoAssignTeams}>
-          <button className="btn" style={{ width: "100%", marginTop: 14 }}>
+          <button className="btn full-w mt-14">
             미배정 인원 자동 배정 ({unassigned.length}명)
           </button>
         </form>

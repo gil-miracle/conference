@@ -1,7 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useServerAction } from "@/hooks/useServerAction";
 import { assignRoom } from "../actions/rooms";
 import { assignTeam } from "../actions/teams";
 
@@ -15,8 +14,7 @@ export default function AssignSelect({
   participantId: string;
   options: { value: string; label: string }[];
 }) {
-  const [pending, startTransition] = useTransition();
-  const router = useRouter();
+  const { pending, run } = useServerAction();
 
   return (
     <select
@@ -24,11 +22,11 @@ export default function AssignSelect({
       disabled={pending}
       onChange={(e) => {
         const value = e.target.value || null;
-        startTransition(async () => {
-          if (kind === "room") await assignRoom(participantId, value);
-          else await assignTeam(participantId, value);
-          router.refresh();
-        });
+        run(() =>
+          kind === "room"
+            ? assignRoom(participantId, value)
+            : assignTeam(participantId, value)
+        );
       }}
     >
       <option value="">— 선택 —</option>

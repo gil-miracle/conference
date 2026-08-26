@@ -368,3 +368,18 @@
 .menu-row:last-child { border-bottom: none; }
 .menu-row b { font-size: 0.88rem; font-weight: 600; }
 .menu-row small { display: block; font-size: 0.74rem; color: var(--ink-60); margin-top: 2px; }
+
+/* ── 미리보기 모드 배너 ─────────────────────────────────────────── */
+.banner.demo-banner { background: var(--green); }
+
+/* ── 방·조 삭제 (인원 0일 때만 노출되는 ✕) ─────────────────────── */
+.del-x { color: var(--coral); margin-left: 8px; }
+
+/* 체크인 완료 표시는 누르면 취소되는 버튼이다 */
+.p-row button.done { background: none; border: none; padding: 0; cursor: pointer; }
+.qr-strip .qr-main { flex: 1; }
+.panel-hint { font-size: 0.76rem; color: var(--ink-60); margin-top: 12px; word-break: keep-all; }
+.scan-close { border-color: rgba(250, 246, 238, 0.5); color: var(--cream); }
+.inline-form .w-yt { min-width: 150px; }
+.inline-form .w-100 { max-width: 100px; }
+.inline-form .w-110 { max-width: 110px; }

@@ -1,4 +1,5 @@
 import { createRoom } from "../actions/rooms";
+import { groupByAssignment } from "@/lib/assignment";
 import type { AdminRoom, PersonLite } from "@/lib/types";
 import AssignSelect from "./AssignSelect";
 import DeleteButton from "./DeleteButton";
@@ -11,19 +12,12 @@ export default function RoomsPanel({
   rooms: AdminRoom[];
   people: PersonLite[];
 }) {
-  const byRoom = new Map<string, PersonLite[]>();
-  people.forEach((person) => {
-    if (person.room_id)
-      byRoom.set(person.room_id, [...(byRoom.get(person.room_id) ?? []), person]);
-  });
-  const unassigned = people.filter((person) => !person.room_id);
-  const usedCount = rooms.filter(
-    (room) => (byRoom.get(room.id) ?? []).length > 0
-  ).length;
+  const { membersOf, unassigned } = groupByAssignment(people, "room_id");
+  const usedCount = rooms.filter((room) => membersOf(room.id).length > 0).length;
 
   const roomOptions = rooms.map((room) => ({
     value: room.id,
-    label: `${room.building} ${room.room_no} (${(byRoom.get(room.id) ?? []).length}/${room.capacity})`,
+    label: `${room.building} ${room.room_no} (${membersOf(room.id).length}/${room.capacity})`,
   }));
 
   return (
@@ -36,7 +30,7 @@ export default function RoomsPanel({
       </div>
 
       {rooms.map((room) => {
-        const members = byRoom.get(room.id) ?? [];
+        const members = membersOf(room.id);
         const emptyCount = Math.max(0, room.capacity - members.length);
         return (
           <div className="room" key={room.id}>
@@ -69,30 +63,21 @@ export default function RoomsPanel({
 
       <form className="inline-form" action={createRoom}>
         <input name="building" placeholder="건물 (비전관)" required />
-        <input
-          name="room_no"
-          placeholder="호수 (203)"
-          required
-          style={{ maxWidth: 90 }}
-        />
+        <input name="room_no" placeholder="호수 (203)" required className="w-90" />
         <input
           name="capacity"
           placeholder="정원"
           type="number"
           min={1}
           defaultValue={4}
-          style={{ maxWidth: 70 }}
+          className="w-70"
         />
         <button className="btn sm ghost">방 추가</button>
       </form>
 
       <div className="unassigned">
         <div className="eyebrow">숙소 미배정 · {unassigned.length}명</div>
-        {unassigned.length === 0 && (
-          <p style={{ fontSize: ".8rem", color: "var(--ink-60)", marginTop: 8 }}>
-            전원 배정 완료.
-          </p>
-        )}
+        {unassigned.length === 0 && <p className="hint-sm">전원 배정 완료.</p>}
         {unassigned.map((person) => (
           <div className="assign-row" key={person.id}>
             <b>{person.name}</b>
@@ -105,12 +90,8 @@ export default function RoomsPanel({
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginTop: 20 }}>
-        <a
-          className="btn ghost"
-          style={{ flex: 1, textAlign: "center" }}
-          href="/api/admin/export"
-        >
+      <div className="btn-row mt-20">
+        <a className="btn ghost" href="/api/admin/export">
           명단 다운로드
         </a>
       </div>

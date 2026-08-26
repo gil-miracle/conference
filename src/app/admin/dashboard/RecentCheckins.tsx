@@ -1,5 +1,3 @@
-"use client";
-
 import { fmtTime } from "@/lib/format";
 import type { AdminStats } from "@/lib/types";
 

@@ -60,7 +60,7 @@ export default async function AdminApprovalsPage() {
       ) : (
         <>
           {pending.map((req) => (
-            <JoinRequestCard key={req.id} request={req} demo={ctx.demo} />
+            <JoinRequestCard key={req.id} request={req} />
           ))}
           {!ctx.demo && pending.length > 1 && (
             <ApproveAllButton count={pending.length} />

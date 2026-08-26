@@ -52,7 +52,7 @@ export default async function AdminBoardPage() {
         <GuestbookModItem key={entry.id} entry={entry} />
       ))}
 
-      <div className="sec-title" style={{ marginTop: 38 }}>
+      <div className="sec-title mt-38">
         <b>갤러리 관리</b>
         <span>
           {photos.length}장 · {galleryOpen ? "오픈됨" : "오픈 전"}
