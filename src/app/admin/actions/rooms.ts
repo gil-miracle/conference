@@ -11,6 +11,7 @@ export async function createRoom(formData: FormData) {
   const building = String(formData.get("building") ?? "").trim();
   const room_no = String(formData.get("room_no") ?? "").trim();
   const capacity = Number(formData.get("capacity") ?? 4) || 4;
+  const note = String(formData.get("note") ?? "").trim() || null;
   // 아는 값만 넣는다 — 모르는 값이 오면 DB 제약에 걸려 추가가 통째로 실패한다
   const raw = String(formData.get("gender") ?? "");
   const gender = (ROOM_GENDERS as readonly string[]).includes(raw)
@@ -21,7 +22,7 @@ export async function createRoom(formData: FormData) {
 
   const { error } = await ctx.supabase
     .from("rooms")
-    .insert({ building, room_no, capacity, gender });
+    .insert({ building, room_no, capacity, gender, note });
   // (건물, 호수)가 유니크라 같은 방을 두 번 만들 수 없다
   if (error)
     return {
@@ -90,6 +91,7 @@ export async function updateRoom(roomId: string, formData: FormData) {
   const building = String(formData.get("building") ?? "").trim();
   const room_no = String(formData.get("room_no") ?? "").trim();
   const capacity = Number(formData.get("capacity") ?? 4) || 4;
+  const note = String(formData.get("note") ?? "").trim() || null;
   const raw = String(formData.get("gender") ?? "");
   const gender = (ROOM_GENDERS as readonly string[]).includes(raw)
     ? (raw as RoomGender)
@@ -99,7 +101,7 @@ export async function updateRoom(roomId: string, formData: FormData) {
 
   const { error } = await ctx.supabase
     .from("rooms")
-    .update({ building, room_no, capacity, gender })
+    .update({ building, room_no, capacity, gender, note })
     .eq("id", roomId);
   if (error) return { ok: false as const, message: error.message };
 

@@ -131,6 +131,7 @@ export default function RoomsPanel({
           <div className="room" key={room.id}>
             {/* 제목을 누르면 방 정보를 고친다 — 삭제도 그 안에 있다 */}
             <RoomEditor room={room} memberCount={usedOf(room.id)} />
+            {room.note && <small className="room-note">{room.note}</small>}
             <div className="members">
               <RoomFill
                 roomId={room.id}

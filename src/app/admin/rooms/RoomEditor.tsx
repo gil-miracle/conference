@@ -160,6 +160,16 @@ export default function RoomEditor({
                   ))}
                 </select>
               </label>
+              <label>
+                {/* 참가자 내 정보에도 그대로 보인다 */}
+                <span>비고</span>
+                <input
+                  name="note"
+                  defaultValue={room?.note ?? ""}
+                  placeholder="본관에서 도보 2분"
+                  maxLength={60}
+                />
+              </label>
 
               <div className="pform-actions">
                 <button

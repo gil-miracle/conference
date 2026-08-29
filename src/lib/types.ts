@@ -179,6 +179,8 @@ export type AdminRoom = {
   room_no: string;
   capacity: number;
   gender: RoomGender;
+  /** 참가자 내 정보에도 그대로 보인다 — "본관에서 도보 2분" 같은 안내 */
+  note: string | null;
   /** 그 방 사람 중 하나 — 이름을 따로 적으면 명단을 고칠 때 어긋난다 */
   leader_id: string | null;
 };

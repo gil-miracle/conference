@@ -17,7 +17,7 @@ export default async function AdminRoomsPage() {
     const [roomsRes, peopleRes, holdsRes] = await Promise.all([
       ctx.supabase
         .from("rooms")
-        .select("id,building,room_no,capacity,gender,leader_id")
+        .select("id,building,room_no,capacity,gender,note,leader_id")
         .order("building")
         .order("room_no"),
       ctx.supabase

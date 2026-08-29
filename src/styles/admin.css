@@ -204,6 +204,14 @@
 .pdetail header .rg[data-g="남"] { color: #2f6fb0; }
 .room .rg[data-g="여"],
 .pdetail header .rg[data-g="여"] { color: var(--coral); }
+/* 비고 — 참가자 화면에도 그대로 나가는 안내다 */
+.room-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.76rem;
+  color: var(--ink-60);
+  word-break: keep-all;
+}
 .room .members { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .room .members .mchip,
 .room .members .empty,
