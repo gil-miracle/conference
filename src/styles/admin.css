@@ -44,6 +44,27 @@
   transition: 0.2s;
 }
 .admin .tabs a.on { color: var(--ink); border-color: var(--ink); }
+/* 명단 안쪽 갈래 — 위쪽 탭보다 한 단 작게 해서 층이 보이게 한다 */
+.admin .subtabs {
+  display: flex;
+  gap: 6px;
+  max-width: 640px;
+  margin: 18px auto -6px;
+  padding: 0 22px;
+}
+.admin .subtabs a {
+  padding: 6px 14px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ink-60);
+  border: 1px solid var(--hair);
+  transition: 0.2s;
+}
+.admin .subtabs a.on {
+  color: var(--cream);
+  background: var(--ink);
+  border-color: var(--ink);
+}
 .admin .container { max-width: 640px; margin: 0 auto; padding: 28px 22px 0; }
 .admin .sec-title { display: flex; justify-content: space-between; align-items: baseline; margin: 26px 0 14px; }
 .admin .sec-title b { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -436,6 +457,31 @@
 .pname:hover { text-decoration: underline; text-underline-offset: 3px; }
 .pname:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
 .tagit[data-g="관리자"] { color: var(--ink); background: rgba(33, 29, 25, 0.06); }
+/* 로그인 수단은 글자 대신 로고로 — 줄이 짧아지고 훑을 때 바로 구분된다 */
+.pmark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 7px;
+  border-radius: 50%;
+  vertical-align: 1px;
+}
+.pmark svg { width: 10px; height: 10px; }
+.pmark.kakao { background: #fee500; }
+.pmark.google { background: #fff; border: 1px solid var(--hair); }
+.pmark.google svg { width: 11px; height: 11px; }
+/* 모르는 수단이 생기면 이름 그대로 — 안 보이는 것보다 낫다 */
+.pmark.other {
+  width: auto;
+  padding: 1px 6px;
+  border-radius: 0;
+  border: 1px solid var(--hair);
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 500;
+}
 
 /* 참가자 상세 — 읽기 전용 */
 .pdetail {
@@ -472,6 +518,17 @@
   color: var(--ink-60);
 }
 .pdetail dd { margin: 0; font-size: 0.86rem; }
+/* 값과 버튼이 한 줄에 — 버튼은 오른쪽 끝으로 */
+.pdetail dd.dd-act {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+/* 첫 표식이라 이름 옆과 달리 왼쪽 여백이 필요 없다 */
+.pdetail dd .pmark { margin-left: 0; }
 .pdetail-note {
   display: block;
   margin-top: 14px;
@@ -511,6 +568,33 @@
 }
 .pdetail-edit select:focus-visible { outline: 2px solid var(--coral); outline-offset: 1px; }
 .pdetail-edit .btn.full { width: 100%; margin-top: 4px; }
+.pdetail-row2 { display: flex; gap: 8px; margin-top: 4px; }
+.pdetail-row2 .btn { flex: 1; }
+
+/* 신청 정보 수정 폼 — 상세와 같은 라벨 폭을 써서 읽던 자리에서 바로 고쳐진다 */
+.pform { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.pform label { display: flex; align-items: center; gap: 10px; }
+.pform label > span {
+  flex: none;
+  width: 5.5em;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-60);
+}
+.pform input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 0.84rem;
+  padding: 8px 10px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink);
+}
+.pform input:focus-visible { outline: 2px solid var(--coral); outline-offset: 1px; }
+.pform-actions { display: flex; gap: 8px; margin-top: 6px; }
+.pform-actions .btn { flex: 1; }
 
 /* 명단 필터 — 다락방·도착·숙박·권한 */
 .filters {

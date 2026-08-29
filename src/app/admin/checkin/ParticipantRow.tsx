@@ -1,5 +1,6 @@
 "use client";
 
+import { ProviderMark } from "@/components/icons";
 import { fmtBirth, fmtTime, groupTag, maskPhone } from "@/lib/format";
 import type { AdminParticipant } from "@/lib/types";
 
@@ -9,12 +10,10 @@ const short = (s: string | null) => (s ?? "").split("(")[0].trim();
 export default function ParticipantRow({
   participant,
   onToggleCheckin,
-  onUnbind,
   onOpen,
 }: {
   participant: AdminParticipant;
   onToggleCheckin: () => void;
-  onUnbind: () => void;
   onOpen: () => void;
 }) {
   const p = participant;
@@ -31,6 +30,8 @@ export default function ParticipantRow({
         {/* 이름을 누르면 상세 — 목록에 다 못 싣는 신청 정보를 여기서 본다 */}
         <button className="pname" onClick={onOpen}>
           {p.name}
+          {/* 로고는 이름 바로 옆 — 배지 뒤로 밀면 사람마다 위치가 달라져 못 찾는다 */}
+          {p.bound_provider && <ProviderMark provider={p.bound_provider} />}
           {tag && (
             <span className="tagit" data-g={tag}>
               {tag}
@@ -45,7 +46,6 @@ export default function ParticipantRow({
         <small>
           {fmtBirth(p.birth_date)} · {maskPhone(p.phone)} ·{" "}
           {p.rooms ? `${p.rooms.building} ${p.rooms.room_no}` : "미배정"}
-          {p.bound_provider ? ` · ${p.bound_provider}` : ""}
         </small>
         {/* 데스크에서 "이 사람 언제 어떻게 오는지"를 바로 보게 한다 */}
         {(arrive || p.tshirt || p.inviter) && (
@@ -63,11 +63,6 @@ export default function ParticipantRow({
       ) : (
         <button className="btn sm" onClick={onToggleCheckin}>
           체크인
-        </button>
-      )}
-      {p.auth_user_id && (
-        <button className="btn sm ghost" onClick={onUnbind}>
-          연결해제
         </button>
       )}
     </div>

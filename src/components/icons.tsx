@@ -43,6 +43,23 @@ export function KakaoIcon() {
   );
 }
 
+/**
+ * 이름 옆에 붙는 로그인 수단 표식.
+ *
+ * "kakao"라고 적어두면 다른 정보들과 같은 무게로 읽혀 잘 안 보인다.
+ * 브랜드 색이 있는 동그라미 하나면 훑을 때 바로 구분된다.
+ */
+export function ProviderMark({ provider }: { provider: string }) {
+  const p = provider.toLowerCase();
+  if (p !== "kakao" && p !== "google")
+    return <span className="pmark other">{provider}</span>;
+  return (
+    <span className={`pmark ${p}`} title={p === "kakao" ? "카카오로 로그인" : "구글로 로그인"}>
+      {p === "kakao" ? <KakaoIcon /> : <GoogleIcon />}
+    </span>
+  );
+}
+
 export function GoogleIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">

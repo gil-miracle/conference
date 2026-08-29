@@ -1,8 +1,8 @@
 import { autoAssignTeams, createTeam } from "../actions/teams";
 import { groupByAssignment } from "@/lib/assignment";
 import type { AdminTeam, PersonLite } from "@/lib/types";
-import AssignSelect from "./AssignSelect";
-import DeleteButton from "./DeleteButton";
+import AssignSelect from "../rooms/AssignSelect";
+import DeleteButton from "../rooms/DeleteButton";
 
 /** 게임 조 배정 — 조 목록 + 조 추가 + 미배정 배정 + 자동 배정 */
 export default function TeamsPanel({

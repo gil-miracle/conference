@@ -152,6 +152,8 @@ export type AdminParticipant = SignupInfo & {
   birth_date: string;
   phone: string;
   role: "member" | "admin";
+  /** sheet = 시트 동기화로 들어온 사람, manual = 화면에서 직접 넣은 사람 */
+  source: string;
   checked_in_at: string | null;
   auth_user_id: string | null;
   bound_at: string | null;

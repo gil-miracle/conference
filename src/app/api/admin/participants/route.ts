@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   let query = ctx.supabase
     .from("participants")
     .select(
-      "id,name,birth_date,phone,role,checked_in_at,auth_user_id,bound_at,bound_provider,room_id,team_id," +
+      "id,name,birth_date,phone,role,source,checked_in_at,auth_user_id,bound_at,bound_provider,room_id,team_id," +
         "applicant_type,cell_group,inviter,transport,arrive_day,arrive_time,stay,tshirt," +
         "rooms(building,room_no),teams(name)"
     )

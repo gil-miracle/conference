@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { DEMO_ROOMS, DEMO_TEAMS } from "@/lib/demo";
 import type { AdminRoom, AdminTeam } from "@/lib/types";
+import RosterTabs from "../RosterTabs";
 import CheckinPanel from "./CheckinPanel";
 
 export const dynamic = "force-dynamic";
@@ -26,5 +27,10 @@ export default async function AdminCheckinPage() {
     teams = (t.data as AdminTeam[]) ?? [];
   }
 
-  return <CheckinPanel rooms={rooms} teams={teams} />;
+  return (
+    <>
+      <RosterTabs />
+      <CheckinPanel rooms={rooms} teams={teams} />
+    </>
+  );
 }

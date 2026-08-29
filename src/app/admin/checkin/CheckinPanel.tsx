@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import Toast from "@/components/Toast";
 import { useConfirm } from "@/components/Confirm";
 import { useToast } from "@/hooks/useToast";
 import { jsonFetcher } from "@/lib/fetcher";
 import { INVITED, groupTag } from "@/lib/format";
+import { SIGNUP_FIELDS } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
 import type { AdminParticipant, AdminRoom, AdminTeam } from "@/lib/types";
 import {
@@ -16,6 +17,7 @@ import {
 } from "../actions/checkin";
 import ParticipantRow from "./ParticipantRow";
 import ParticipantDetail from "./ParticipantDetail";
+import AddParticipant from "./AddParticipant";
 import QrScanner from "./QrScanner";
 
 const DEMO_MSG = "미리보기 모드 — 변경사항은 저장되지 않아요.";
@@ -29,7 +31,8 @@ export default function CheckinPanel({
 }) {
   const [q, setQ] = useState("");
   const [scanning, setScanning] = useState(false);
-  const [detail, setDetail] = useState<AdminParticipant | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
   const [cell, setCell] = useState("");
   const [arrive, setArrive] = useState("");
   const [stay, setStay] = useState("");
@@ -43,6 +46,10 @@ export default function CheckinPanel({
     jsonFetcher<AdminParticipant[]>,
     { refreshInterval: 5000, keepPreviousData: true }
   );
+
+  /* 상세는 id로만 들고 목록에서 다시 찾는다 — 객체를 붙들고 있으면 저장·해제
+     뒤에도 옛 값을 보여주고, 지워진 사람이 계속 떠 있는다 */
+  const detail = (data ?? []).find((p) => p.id === detailId) ?? null;
 
   async function onToggleCheckin(p: AdminParticipant) {
     if (demo) return showToast(DEMO_MSG);
@@ -110,6 +117,17 @@ export default function CheckinPanel({
     ),
   ].sort();
 
+  /* 신청 항목은 자유 문구라 고정 선택지를 둘 수 없다 — 이미 쓰인 값을 폼에
+     후보로 넘겨 손으로 넣는 사람도 같은 문구를 쓰게 한다 */
+  const options = useMemo(() => {
+    const o: Record<string, string[]> = {};
+    for (const f of SIGNUP_FIELDS)
+      o[f.key] = [
+        ...new Set((data ?? []).map((p) => p[f.key]).filter(Boolean) as string[]),
+      ].sort();
+    return o;
+  }, [data]);
+
   const shown = (data ?? []).filter((p) => {
     if (cell && groupTag(p) !== cell) return false;
     if (arrive && p.arrive_day !== arrive) return false;
@@ -128,6 +146,9 @@ export default function CheckinPanel({
           onClick={() => (demo ? showToast(DEMO_MSG) : setScanning(true))}
         >
           QR 스캔
+        </button>
+        <button className="btn ghost" onClick={() => setAdding(true)}>
+          참가자 추가
         </button>
         <button className="btn ghost" onClick={() => mutate()}>
           새로고침
@@ -199,8 +220,7 @@ export default function CheckinPanel({
             key={participant.id}
             participant={participant}
             onToggleCheckin={() => onToggleCheckin(participant)}
-            onUnbind={() => onUnbind(participant)}
-            onOpen={() => setDetail(participant)}
+            onOpen={() => setDetailId(participant.id)}
           />
         ))}
       </div>
@@ -208,8 +228,25 @@ export default function CheckinPanel({
         participant={detail}
         rooms={rooms}
         teams={teams}
-        onClose={() => setDetail(null)}
+        options={options}
+        onClose={() => setDetailId(null)}
         onChanged={() => mutate()}
+        onUnbind={() => detail && onUnbind(detail)}
+        onDeleted={(message) => {
+          setDetailId(null);
+          showToast(message);
+          mutate();
+        }}
+      />
+      <AddParticipant
+        open={adding}
+        options={options}
+        onClose={() => setAdding(false)}
+        onAdded={(message) => {
+          setAdding(false);
+          showToast(message);
+          mutate();
+        }}
       />
       <p className="panel-hint">
         참가자의 My 화면 QR을 스캔하거나 이름으로 수동 체크인하세요. 소셜 계정이

@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useConfirm } from "@/components/Confirm";
 import { useServerAction } from "@/hooks/useServerAction";
 import { useAdminDemo } from "../AdminMode";
+import { removeParticipant } from "../actions/participant";
 import {
-  removeParticipant,
   syncParticipantsFromSheet,
   type SheetSyncResult,
 } from "../actions/sheet";
@@ -45,7 +45,7 @@ export default function SheetSync() {
       <div className="row">
         <div>
           <b>참가자 명단</b>
-          <small>구글 시트를 읽어 명단을 맞춥니다 (이름·생년월일·전화번호)</small>
+          <small>구글 시트를 읽어 새로 신청한 사람을 명단에 넣습니다</small>
         </div>
       </div>
 
@@ -126,9 +126,11 @@ export default function SheetSync() {
       )}
 
       <small className="mt-12">
-        시트가 원본입니다. 사람을 추가·수정하려면 시트를 고치고 이 버튼을
-        누르세요. 이름·생년월일·전화번호 셋으로 사람을 구분하므로, 셋 중 하나를
-        고치면 새 사람으로 들어오고 기존 행은 「시트에 없는 사람」에 나타납니다.
+        명단에 <b>없는 사람만</b> 새로 들어옵니다. 이미 있는 사람은 시트 쪽이
+        달라져도 건드리지 않아요 — 신청 정보는 명단 탭에서 고칠 수 있고, 그렇게
+        고친 값이 동기화에 덮이면 안 되니까요. 시트에 적힌 값으로 되돌리려면 그
+        사람을 지우고 다시 누르세요. 이름·생년월일·전화번호 셋으로 사람을
+        구분합니다.
       </small>
     </div>
   );

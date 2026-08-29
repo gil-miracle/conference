@@ -75,6 +75,7 @@ const p = (
   team_id: null,
   rooms: null,
   teams: null,
+  source: "sheet",
   applicant_type: null,
   cell_group: null,
   inviter: null,
@@ -128,6 +129,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
       teams: { name: "그린조" },
     }),
     p("d4", "이요셉", "1992-03-02", "010-2222-1234", {
+      bound_provider: "google",
       applicant_type: "초청 받은 지체",
       inviter: "김예찬",
       transport: "자차",
