@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { MySummary } from "@/lib/types";
 
 /** 가입 요청은 보냈지만 아직 승인 전 / 거절된 상태 */
-export default function MyPendingCard({ summary }: { summary: MySummary }) {
+export default function PendingCard({ summary }: { summary: MySummary }) {
   if (summary.status === "rejected") {
     return (
       <div className="locked reveal">

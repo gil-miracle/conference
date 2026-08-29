@@ -27,7 +27,7 @@ type GameKey = (typeof GAMES)[number]["key"];
  * 조 모임에서 "누가 먼저 하지"로 멈칫하는 시간을 없애려는 도구다.
  * 이름은 기기에만 남고 서버로 가지 않는다.
  */
-export default function NanumBoard() {
+export default function DrawBoard() {
   const { names, loaded, add, remove, clear } = useNames();
   const confirm = useConfirm();
   const [input, setInput] = useState("");
@@ -42,8 +42,8 @@ export default function NanumBoard() {
   const enough = names.length >= 2;
 
   return (
-    <div className="nanum">
-      <form className="nanum-add" onSubmit={submit}>
+    <div className="draw">
+      <form className="draw-add" onSubmit={submit}>
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -66,7 +66,7 @@ export default function NanumBoard() {
             ))}
           </div>
           <button
-            className="btn-plain nanum-clear"
+            className="btn-plain draw-clear"
             onClick={async () => {
               const ok = await confirm({
                 message: `명단 ${names.length}명이 모두 지워져요. 계속할까요?`,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import OrderList from "@/components/nanum/OrderList";
+import OrderList from "@/components/draw/OrderList";
 import { shortName } from "@/hooks/useNames";
 import { useOrderPicks } from "@/hooks/useOrderPicks";
 

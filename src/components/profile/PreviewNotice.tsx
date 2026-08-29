@@ -5,7 +5,7 @@ import LoginButton from "@/components/LoginButton";
  * 아래 카드가 예시라는 걸 먼저 못박아야 한다 —
  * 실제 배정으로 오해하면 엉뚱한 방을 찾아간다.
  */
-export default function MyPreviewNotice() {
+export default function PreviewNotice() {
   return (
     <div className="my-preview reveal">
       <div className="eyebrow">PREVIEW</div>

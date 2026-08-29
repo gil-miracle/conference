@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useConfirm } from "@/components/Confirm";
-import OrderList from "@/components/nanum/OrderList";
+import OrderList from "@/components/draw/OrderList";
 import { shuffle } from "@/hooks/useNames";
 
 /** 순서 섞기 — 한 번에 전체 순서를 정한다. 가장 빠른 방법. */

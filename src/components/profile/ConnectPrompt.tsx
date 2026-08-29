@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LockIcon } from "@/components/icons";
 
 /** 로그인은 했지만 신청 명단과 아직 연결 전인 상태 */
-export default function MyBindPrompt() {
+export default function ConnectPrompt() {
   return (
     <div className="locked reveal">
       <LockIcon strokeWidth={1.6} />

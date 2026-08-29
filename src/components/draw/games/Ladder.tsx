@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useConfirm } from "@/components/Confirm";
-import OrderList from "@/components/nanum/OrderList";
+import OrderList from "@/components/draw/OrderList";
 import { shortName, shuffle } from "@/hooks/useNames";
 import { LADDER_ROWS, buildGoodRungs, walk } from "@/lib/ladder";
 

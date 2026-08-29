@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import PageHead from "@/components/PageHead";
-import MyBindPrompt from "@/components/my/MyBindPrompt";
-import MyPendingCard from "@/components/my/MyPendingCard";
-import MyPreviewNotice from "@/components/my/MyPreviewNotice";
-import WordCard from "@/components/my/WordCard";
-import WordcardSave from "@/components/my/WordcardSave";
-import RoomCard from "@/components/my/RoomCard";
-import TeamCard from "@/components/my/TeamCard";
-import QrCard from "@/components/my/QrCard";
+import ConnectPrompt from "@/components/profile/ConnectPrompt";
+import PendingCard from "@/components/profile/PendingCard";
+import PreviewNotice from "@/components/profile/PreviewNotice";
+import WordCard from "@/components/profile/WordCard";
+import WordcardSave from "@/components/profile/WordcardSave";
+import RoomCard from "@/components/profile/RoomCard";
+import TeamCard from "@/components/profile/TeamCard";
+import QrCard from "@/components/profile/QrCard";
 import { MY_PREVIEW } from "@/lib/demo";
 import { getSiteContext } from "@/lib/data/site";
 
 export const metadata: Metadata = { title: "내 정보 — MIRACLE 2026" };
 export const dynamic = "force-dynamic";
 
-export default async function MyPage({
+export default async function ProfilePage({
   searchParams,
 }: {
   searchParams: Promise<{ demo?: string }>;
@@ -31,7 +31,7 @@ export default async function MyPage({
       <section id="my">
         <div className="container">
           <PageHead title="내 정보" />
-          <MyPreviewNotice />
+          <PreviewNotice />
           <div className="reveal" aria-hidden="true">
             <WordCard name={MY_PREVIEW.name} />
             <RoomCard room={MY_PREVIEW.room} mates={MY_PREVIEW.mates} />
@@ -47,9 +47,9 @@ export default async function MyPage({
       <div className="container">
         <PageHead title="내 정보" />
         {!summary ? (
-          <MyBindPrompt />
+          <ConnectPrompt />
         ) : summary.status !== "approved" ? (
-          <MyPendingCard summary={summary} />
+          <PendingCard summary={summary} />
         ) : (
           <div className="reveal">
             <WordCard name={summary.name} />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useConfirm } from "@/components/Confirm";
-import OrderList from "@/components/nanum/OrderList";
+import OrderList from "@/components/draw/OrderList";
 import { shortName, shuffle } from "@/hooks/useNames";
 
 /**
