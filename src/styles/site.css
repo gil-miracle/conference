@@ -1401,3 +1401,11 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 .lot:disabled { opacity: 0.3; }
 
 
+
+/* 로그인 방법 연결 (내 정보) */
+.link-acc { border: 1px solid var(--ink); background: var(--paper); padding: 22px 20px; margin-top: 18px; }
+.link-acc > b { font-size: 0.95rem; font-weight: 700; display: block; }
+.link-acc .sub { font-size: 0.81rem; color: var(--ink-60); margin: 6px 0 4px; word-break: keep-all; line-height: 1.7; }
+.link-acc .social-btn:first-of-type { margin-top: 16px; }
+.link-acc .note { font-size: 0.75rem; color: var(--ink-60); margin-top: 8px; word-break: keep-all; }
+.link-acc .note-left { text-align: left; }
