@@ -383,3 +383,22 @@
 .inline-form .w-yt { min-width: 150px; }
 .inline-form .w-100 { max-width: 100px; }
 .inline-form .w-110 { max-width: 110px; }
+
+/* 구글 시트 동기화 결과 — 건너뛴 행, 시트에서 사라진 사람 */
+.plain-list { list-style: none; font-size: 0.8rem; color: var(--ink-60); }
+.plain-list li { padding: 5px 0; border-bottom: 1px solid var(--hair); word-break: keep-all; }
+.plain-list li:last-child { border-bottom: none; }
+.miss-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--ink);
+}
+.miss-row small { display: block; font-size: 0.72rem; color: var(--ink-60); margin-top: 1px; }
+.set details summary {
+  font-size: 0.8rem;
+  color: var(--ink-60);
+  cursor: pointer;
+  padding: 4px 0;
+}

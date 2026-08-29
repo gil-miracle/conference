@@ -2,7 +2,7 @@ import { requireAdmin } from "@/lib/admin";
 import { parseSiteSettings, DEFAULT_MENUS, type SiteSettings } from "@/lib/settings";
 import BannerSettingCard from "./BannerSettingCard";
 import ToggleSettingCard from "./ToggleSettingCard";
-import CsvUpload from "./CsvUpload";
+import SheetSync from "./SheetSync";
 import MenuVisibilityCard from "./MenuVisibilityCard";
 
 export const dynamic = "force-dynamic";
@@ -46,7 +46,7 @@ export default async function AdminSettingsPage() {
         initialOn={settings.guestbookOpen}
       />
       <MenuVisibilityCard menus={settings.menus} />
-      <CsvUpload />
+      <SheetSync />
     </>
   );
 }
