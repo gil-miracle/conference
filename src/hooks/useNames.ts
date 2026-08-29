@@ -2,9 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-// 주소가 /draw로 바뀐 뒤에도 키는 그대로 둔다 — 바꾸면 이미 이름을
-// 넣어둔 사람의 목록이 조용히 사라진다
-const KEY = "miracle.nanum.names";
+const KEY = "miracle.draw.names";
 /** 이름 최대 길이 — 긴 이름 하나가 칩·카드·룰렛 조각을 다 밀어낸다 */
 export const MAX_NAME = 10;
 
