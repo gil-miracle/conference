@@ -45,7 +45,8 @@ export default function ParticipantRow({
           )}
         </button>
         <small>
-          {fmtBirth(p.birth_date)} · {maskPhone(p.phone)} ·{" "}
+          {fmtBirth(p.birth_date)}
+          {p.gender ? ` · ${p.gender}` : ""} · {maskPhone(p.phone)} ·{" "}
           {p.rooms ? `${p.rooms.building} ${p.rooms.room_no}` : "미배정"}
         </small>
         {/* 데스크에서 "이 사람 언제 어떻게 오는지"를 바로 보게 한다 */}

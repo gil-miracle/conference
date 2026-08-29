@@ -99,6 +99,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
   return [
     p("d1", "강바울", "1998-02-17", "010-8888-9012", {
       applicant_type: "길 공동체 지체",
+      gender: "남",
       cell_group: "BEGIN",
       transport: "공동체 버스",
       arrive_day: "9월 11일(금)",
@@ -116,6 +117,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
       rooms: { building: "비전관", room_no: "203", leader_id: "d4" },
       teams: { name: "오렌지조" },
       applicant_type: "길 공동체 지체",
+      gender: "남",
       cell_group: "BASIC",
       transport: "자차",
       arrive_day: "9월 11일(금)",
@@ -124,6 +126,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
     }),
     p("d3", "박다윗", "1996-07-11", "010-3333-7890", {
       applicant_type: "길 공동체 지체",
+      gender: "남",
       cell_group: "CORNERSTONE",
       transport: "대중교통(이천역 경강선으로 본부가 픽업할 예정)",
       arrive_day: "9월 11일(금)",
@@ -138,6 +141,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
     p("d4", "이요셉", "1992-03-02", "010-2222-1234", {
       bound_provider: "google",
       applicant_type: "초청 받은 지체",
+      gender: "남",
       inviter: "김예찬",
       transport: "자차",
       arrive_day: "9월 12일(토)",
@@ -149,11 +153,13 @@ export function demoAdminParticipants(): AdminParticipant[] {
       teams: { name: "오렌지조" },
     }),
     p("d5", "최마리아", "1995-12-25", "010-7777-5678", {
+      gender: "여",
       rooms: { building: "은혜관", room_no: "103", leader_id: null },
     }),
     p("d11", "이한별", "1985-04-09", "010-4545-1212", {
       source: "manual",
       applicant_type: "교역자",
+      gender: "남",
       stay: "9월 11일(금), 9월 12일(토)",
       tshirt: "XL",
     }),
@@ -180,20 +186,30 @@ const pl = (
   team_id: string | null,
   cell_group: string | null = null,
   inviter: string | null = null,
-  applicant_type: string | null = null
-): PersonLite => ({ id, name, room_id, team_id, cell_group, inviter, applicant_type });
+  applicant_type: string | null = null,
+  gender: string | null = null
+): PersonLite => ({
+  id,
+  name,
+  room_id,
+  team_id,
+  cell_group,
+  inviter,
+  applicant_type,
+  gender,
+});
 
 export const DEMO_PEOPLE: PersonLite[] = [
-  pl("d2", "김예찬", "r1", "t1", "BASIC"),
-  pl("d4", "이요셉", "r1", "t1", null, "김예찬"),
-  pl("d3", "박다윗", "r1", "t2", "CORNERSTONE"),
-  pl("d6", "정사무엘", "r1", "t2", "BASIC"),
-  pl("d7", "김한나", "r2", "t2", "BEGIN"),
-  pl("d8", "이레베카", "r2", "t1", "BEGIN"),
-  pl("d9", "윤에스더", "r2", null, "CORNERSTONE"),
-  pl("d5", "최마리아", "r3", "t1", null, "박다윗"),
-  pl("d1", "강바울", null, null, "BEGIN"),
-  pl("d10", "한느헤미야", null, null, null, null, "교역자"),
+  pl("d2", "김예찬", "r1", "t1", "BASIC", null, null, "남"),
+  pl("d4", "이요셉", "r1", "t1", null, "김예찬", null, "남"),
+  pl("d3", "박다윗", "r1", "t2", "CORNERSTONE", null, null, "남"),
+  pl("d6", "정사무엘", "r1", "t2", "BASIC", null, null, "남"),
+  pl("d7", "김한나", "r2", "t2", "BEGIN", null, null, "여"),
+  pl("d8", "이레베카", "r2", "t1", "BEGIN", null, null, "여"),
+  pl("d9", "윤에스더", "r2", null, "CORNERSTONE", null, null, "여"),
+  pl("d5", "최마리아", "r3", "t1", null, "박다윗", null, "여"),
+  pl("d1", "강바울", null, null, "BEGIN", null, null, "남"),
+  pl("d10", "한느헤미야", null, null, null, null, "교역자", "여"),
 ];
 
 /** 게시판 탭 방명록 */

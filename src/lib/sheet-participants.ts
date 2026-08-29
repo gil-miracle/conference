@@ -130,15 +130,18 @@ export function expandBirth(raw: string, year = new Date().getFullYear()): strin
 }
 
 /**
- * 성별 — 시트에 1/2로 들어온다.
+ * 성별 — 시트에 주민번호 뒷자리 첫 숫자로 들어온다.
+ *
+ * 1·3이 남자, 2·4가 여자다(1900년대생과 2000년대생). 2000년 이후 태어난
+ * 사람이 3·4로 들어오는데, 1·2만 보면 그 사람들이 통째로 비게 된다.
  *
  * 남/여를 그대로 적어 넣는 사람도 있을 수 있어 그 경우도 받는다. 아는 값이
  * 아니면 비운다 — 모르는 값을 넣으면 DB 제약에 걸려 그 사람이 통째로 빠진다.
  */
 function readGender(raw: string): string | undefined {
   const v = (raw ?? "").trim();
-  if (v === "1" || v.startsWith("남")) return "남";
-  if (v === "2" || v.startsWith("여")) return "여";
+  if (v === "1" || v === "3" || v.startsWith("남")) return "남";
+  if (v === "2" || v === "4" || v.startsWith("여")) return "여";
   return undefined;
 }
 

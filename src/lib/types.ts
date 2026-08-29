@@ -188,7 +188,7 @@ export type PersonLite = {
   name: string;
   room_id: string | null;
   team_id: string | null;
-} & Pick<SignupInfo, "cell_group" | "inviter" | "applicant_type">;
+} & Pick<SignupInfo, "cell_group" | "inviter" | "applicant_type" | "gender">;
 
 /** 관리자 승인 대기 목록 한 건 (사칭 판별용 소셜 프로필 포함) */
 export type JoinRequest = {

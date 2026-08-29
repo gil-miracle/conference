@@ -25,7 +25,7 @@ describe("시트 머리글 찾기", () => {
     ]);
   });
 
-  it("성별은 1/2로 들어와도 남/여로 편다", () => {
+  it("성별은 주민번호 뒷자리 첫 숫자로 들어온다 (1·3 남, 2·4 여)", () => {
     const rowsOf = (g: string) =>
       parseSheetParticipants([
         ["이름", "생년월일", "휴대폰 번호", "성별"],
@@ -33,9 +33,12 @@ describe("시트 머리글 찾기", () => {
       ]).rows;
     expect(rowsOf("1")[0].gender).toBe("남");
     expect(rowsOf("2")[0].gender).toBe("여");
+    // 2000년대생 — 1·2만 보면 이 사람들이 통째로 빈다
+    expect(rowsOf("3")[0].gender).toBe("남");
+    expect(rowsOf("4")[0].gender).toBe("여");
     expect(rowsOf("여자")[0].gender).toBe("여");
     // 모르는 값은 비운다 — DB 제약에 걸리면 그 사람이 통째로 빠진다
-    expect(rowsOf("3")[0].gender).toBeUndefined();
+    expect(rowsOf("9")[0].gender).toBeUndefined();
     expect(rowsOf("")[0].gender).toBeUndefined();
   });
 

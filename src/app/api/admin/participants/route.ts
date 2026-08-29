@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     .select(
       "id,name,birth_date,phone,role,source,checked_in_at,auth_user_id,bound_at,bound_provider,room_id,team_id," +
         "applicant_type,gender,cell_group,inviter,transport,arrive_day,arrive_time,stay,tshirt," +
-        "rooms(building,room_no,leader_id),teams(name)"
+        "rooms!participants_room_id_fkey(building,room_no,leader_id),teams(name)"
     )
     .order("name")
     .limit(300);
@@ -31,6 +31,7 @@ export async function GET(request: Request) {
   if (safe) query = query.or(`name.ilike.%${safe}%,phone.ilike.%${safe}%`);
 
   const { data, error } = await query;
-  if (error) return NextResponse.json({ error: "failed" }, { status: 500 });
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
 }

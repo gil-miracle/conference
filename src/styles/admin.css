@@ -268,6 +268,15 @@
   transition: 0.16s;
 }
 .lead-pick:disabled { opacity: 0.3; cursor: default; }
+/* 고를 때도 성별이 보여야 한다 */
+.fill-row .fg {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+}
+.fill-row .fg[data-g="남"] { color: #2f6fb0; }
+.fill-row .fg[data-g="여"] { color: #c2557a; }
 .lead-pick.on { color: var(--cream); background: var(--coral); border-color: var(--coral); }
 .room-add { display: block; margin: 0 0 16px auto; background: var(--paper); }
 /* 방 제목 줄 전체가 방 정보를 여는 버튼이다 */
@@ -286,11 +295,14 @@
   cursor: pointer;
 }
 .room-open:hover b { text-decoration: underline; text-underline-offset: 3px; }
-/* 이름 칩 — 누르면 방 배정 모달이 열린다 */
+/* 이름 칩 — 누르면 방 배정 모달이 열린다.
+   성별로 색을 갈라 남자 방에 여자가 섞이면 눈에 띄게 한다 */
 .room .members .mchip { cursor: pointer; transition: 0.16s; }
-.room .members .mchip:hover { border-color: var(--green); }
-/* 방장은 맨 앞에 오고 색이 다르다 — 연락할 사람을 한눈에 */
-.room .members .mchip.lead { color: var(--coral); border-color: var(--coral); font-weight: 700; }
+.room .members .mchip:hover { border-color: currentColor; }
+.room .members .mchip[data-g="남"] { color: #2f6fb0; }
+.room .members .mchip[data-g="여"] { color: #c2557a; }
+/* 방장은 맨 앞에 오고 테두리가 진하다 — 색은 성별이 쓰고 있어 무게로 가른다 */
+.room .members .mchip.lead { border-color: currentColor; font-weight: 700; }
 .room .members .mchip.lead i {
   font-style: normal;
   font-family: var(--mono);
@@ -310,6 +322,9 @@
   margin-bottom: 6px;
 }
 .un-group .members { display: flex; flex-wrap: wrap; gap: 6px; }
+/* 미배정도 방 안과 같은 색 규칙 — 어느 방에 넣을지 눈으로 갈린다 */
+.un-group .members span[data-g="남"] { color: #2f6fb0; }
+.un-group .members span[data-g="여"] { color: #c2557a; }
 
 .assign-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--hair); }
 .assign-row:last-child { border: 0; }

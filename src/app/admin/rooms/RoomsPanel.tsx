@@ -58,6 +58,12 @@ export default function RoomsPanel({
     return space === "open" ? left > 0 : left <= 0;
   });
 
+  /* 성별 조건은 미배정 목록에도 건다 — "여자 방 채우는 중"이면 아래도 여자만
+     보여야 한다. 기타 방은 남녀를 다 받으므로 아래도 가리지 않는다 */
+  const left = unassigned.filter(
+    (p) => !gender || gender === "기타" || p.gender === gender
+  );
+
   return (
     <>
       <div className="sec-title">
@@ -102,6 +108,7 @@ export default function RoomsPanel({
               <RoomFill
                 roomId={room.id}
                 roomLabel={`${room.building} ${room.room_no} · ${room.gender}`}
+                roomGender={room.gender}
                 capacity={room.capacity}
                 people={unassigned}
                 members={members}
@@ -113,18 +120,25 @@ export default function RoomsPanel({
       })}
 
       <div className="unassigned">
-        <div className="eyebrow">숙소 미배정 · {unassigned.length}명</div>
-        {unassigned.length === 0 ? (
-          <p className="hint-sm">전원 배정 완료.</p>
+        <div className="eyebrow">
+          숙소 미배정 · {left.length}명
+          {gender && unassigned.length !== left.length && ` (전체 ${unassigned.length}명)`}
+        </div>
+        {left.length === 0 ? (
+          <p className="hint-sm">
+            {unassigned.length === 0 ? "전원 배정 완료." : "조건에 맞는 사람이 없어요."}
+          </p>
         ) : (
-          byGroup(unassigned).map(([group, list]) => (
+          byGroup(left).map(([group, list]) => (
             <div className="un-group" key={group}>
               <small>
                 {group} · {list.length}명
               </small>
               <div className="members">
                 {list.map((person) => (
-                  <span key={person.id}>{person.name}</span>
+                  <span key={person.id} data-g={person.gender ?? ""}>
+                    {person.name}
+                  </span>
                 ))}
               </div>
             </div>

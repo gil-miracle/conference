@@ -17,10 +17,14 @@ import type { PersonLite } from "@/lib/types";
  *
  * 체크는 "이 방에 있을 사람"이다. 풀면 미배정으로 돌아간다 — 넣기만 되고
  * 빼기가 안 되면 잘못 넣었을 때 손쓸 방법이 없다.
+ *
+ * 후보는 방 성별에 맞는 사람만 보인다. 성별을 모르는 사람은 어느 방에나
+ * 보인다 — 걸러내면 시트에 성별이 비어 있는 사람은 영영 배정할 수 없다.
  */
 export default function RoomFill({
   roomId,
   roomLabel,
+  roomGender,
   capacity,
   people,
   members,
@@ -28,6 +32,7 @@ export default function RoomFill({
 }: {
   roomId: string;
   roomLabel: string;
+  roomGender: string;
   capacity: number;
   /** 아직 어느 방에도 없는 사람 */
   people: PersonLite[];
@@ -91,8 +96,13 @@ export default function RoomFill({
     router.refresh();
   };
 
-  /* 지금 이 방 사람이 위, 미배정이 아래 */
-  const rows = [...members, ...people].filter((p) => !q || p.name.includes(q));
+  /* 지금 이 방 사람이 위, 미배정이 아래.
+     기타 방은 가리지 않고, 남/여 방은 그 성별과 성별 미상만 후보로 둔다 */
+  const fits = (p: PersonLite) =>
+    roomGender === "기타" || !p.gender || p.gender === roomGender;
+  const rows = [...members, ...people.filter(fits)].filter(
+    (p) => !q || p.name.includes(q)
+  );
   // 방장이 맨 앞 — 연락할 사람을 목록 위에서 바로 찾게 한다
   const sorted = [...members].sort((a, b) =>
     a.id === leaderId ? -1 : b.id === leaderId ? 1 : 0
@@ -105,6 +115,7 @@ export default function RoomFill({
         <button
           type="button"
           className={`mchip${m.id === leaderId ? " lead" : ""}`}
+          data-g={m.gender ?? ""}
           key={m.id}
           onClick={() => setOpen(true)}
         >
@@ -168,6 +179,11 @@ export default function RoomFill({
                         onChange={() => toggle(p.id)}
                       />
                       <span>{p.name}</span>
+                      {p.gender && (
+                        <i className="fg" data-g={p.gender}>
+                          {p.gender}
+                        </i>
+                      )}
                     </label>
                     {/* 방장은 이 방에 있게 될 사람 중에서만 고른다 */}
                     <button

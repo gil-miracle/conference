@@ -21,7 +21,7 @@ export default async function AdminRoomsPage() {
         .order("room_no"),
       ctx.supabase
         .from("participants")
-        .select("id,name,room_id,team_id,cell_group,inviter,applicant_type")
+        .select("id,name,room_id,team_id,cell_group,inviter,applicant_type,gender")
         .order("name"),
     ]);
     rooms = (roomsRes.data ?? []) as AdminRoom[];
