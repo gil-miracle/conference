@@ -27,7 +27,6 @@ export default function BottomTabs() {
           >
             <TabIcon name={m.icon} />
             <span>{m.short}</span>
-            {m.href === "/my" && !session.authed && <i className="dot" aria-hidden="true" />}
           </Link>
         );
       })}

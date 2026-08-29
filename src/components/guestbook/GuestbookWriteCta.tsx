@@ -26,7 +26,7 @@ export default function GuestbookWriteCta() {
 
   if (!session.bound)
     return (
-      <Link className="gb-write block center" href="/bind">
+      <Link className="gb-write block center" href="/connect">
         방명록 남기기 — 신청 명단 연결 후 작성할 수 있어요
       </Link>
     );

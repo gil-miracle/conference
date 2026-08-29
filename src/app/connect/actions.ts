@@ -72,7 +72,7 @@ export async function lookupAction(
 
   const status = (data as { status?: string } | null)?.status ?? "error";
   if (status === "found") return { kind: "found", name, birth, phone };
-  if (status === "already_requested") redirect("/my");
+  if (status === "already_requested") redirect("/profile");
 
   const m = MESSAGES[status] ?? { message: "확인에 실패했어요. 운영진에 문의해주세요." };
   return { kind: "error", ...m };
@@ -104,7 +104,7 @@ export async function requestAction(
     return { kind: "error", message: "요청 중 오류가 났어요. 잠시 후 다시 시도해주세요." };
 
   const status = (data as { status?: string } | null)?.status ?? "error";
-  if (status === "requested" || status === "already_requested") redirect("/my");
+  if (status === "requested" || status === "already_requested") redirect("/profile");
 
   const m = MESSAGES[status] ?? { message: "요청에 실패했어요. 운영진에 문의해주세요." };
   return { kind: "error", ...m };

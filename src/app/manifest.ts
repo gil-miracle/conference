@@ -20,7 +20,7 @@ export default function manifest(): MetadataRoute.Manifest {
       { src: "/icons/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
     shortcuts: [
-      { name: "체크인 QR", short_name: "My", url: "/my" },
+      { name: "체크인 QR", short_name: "내 정보", url: "/profile" },
       { name: "일정표", short_name: "일정표", url: "/timetable" },
       { name: "찬양리스트", short_name: "찬양", url: "/songs" },
     ],

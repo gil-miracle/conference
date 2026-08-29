@@ -74,7 +74,8 @@ export async function renderWordcardPng(name: string): Promise<Blob> {
   setSpacing(0);
 
   // 구절 (공백 단위 자동 줄바꿈, 볼드 혼합)
-  const verseSize = 30;
+  // 940(inner)의 5.5% — 화면 카드의 5.5cqw와 같은 값
+  const verseSize = 52;
   const lineH = Math.round(verseSize * 2.1);
   const fontOf = (b: boolean) =>
     `${b ? 700 : 400} ${verseSize}px "Nanum Myeongjo", serif`;

@@ -17,7 +17,7 @@ export default async function BindPage() {
   if (!user) redirect("/");
 
   const { data: summary } = await supabase.rpc("get_my_summary");
-  if (summary) redirect("/my");
+  if (summary) redirect("/profile");
 
   // 소셜 프로필 이름을 미리 채워 입력 부담을 줄인다 (수정 가능)
   const meta = user.user_metadata ?? {};

@@ -11,7 +11,7 @@ export default function MyBindPrompt() {
         <br />
         이름과 생년월일로 한 번만 연결하면 숙소·조·QR이 보여요.
       </p>
-      <Link className="btn accent" href="/bind">
+      <Link className="btn accent" href="/connect">
         신청 명단과 연결하기
       </Link>
     </div>

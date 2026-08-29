@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       const { data } = await supabase.rpc("get_my_summary");
-      if (!data) return NextResponse.redirect(`${origin}/bind`);
+      if (!data) return NextResponse.redirect(`${origin}/connect`);
       return NextResponse.redirect(`${origin}${next}`);
     }
   }

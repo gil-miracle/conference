@@ -72,7 +72,7 @@ export default function NavAuth() {
 
       {open && (
         <div className="acct-menu" role="menu">
-          <Link href="/my" role="menuitem">
+          <Link href="/profile" role="menuitem">
             내 정보
           </Link>
           <form action="/auth/signout" method="post">

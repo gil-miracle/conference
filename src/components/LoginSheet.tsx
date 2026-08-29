@@ -51,7 +51,7 @@ export default function LoginSheet() {
       provider,
       options: {
         redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(
-          "/my"
+          "/profile"
         )}`,
         // 카카오는 콘솔에 설정한 동의항목만 요청해야 한다.
         // 기본값에 account_email이 섞이면 KOE205(설정되지 않은 동의항목)로 막힌다.

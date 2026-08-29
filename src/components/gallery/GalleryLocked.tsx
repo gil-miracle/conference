@@ -17,7 +17,7 @@ export default function GalleryLocked({
       <p>{children}</p>
       {showLogin && <LoginButton>로그인</LoginButton>}
       {showBind && (
-        <Link className="btn accent" href="/bind">
+        <Link className="btn accent" href="/connect">
           신청 명단과 연결하기
         </Link>
       )}

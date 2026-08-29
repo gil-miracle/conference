@@ -456,7 +456,7 @@ nav.site {
 .wcard .wc-verse {
   font-family: "Nanum Myeongjo", serif;
   font-weight: 400;
-  font-size: max(0.86rem, 3.19cqw);
+  font-size: max(0.86rem, 5.5cqw);
   line-height: 2.1;
   /* 위아래 남는 자리를 반씩 나눠 갖는다 — 구절을 라벨 밑에 붙여두면 줄 수가
      적을 때 아래로 커다란 구멍이 남는다 */
