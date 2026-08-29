@@ -1,3 +1,5 @@
+import type { AdminParticipant } from "./types";
+
 /** 010-****-1234 형태로 마스킹 */
 export function maskPhone(phone: string) {
   const d = phone.replace(/\D/g, "");
@@ -58,4 +60,21 @@ export function normalizePhone(raw: string) {
   if (d.length === 11) return `${d.slice(0, 3)}-${d.slice(3, 7)}-${d.slice(7)}`;
   if (d.length === 10) return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`;
   return raw.trim();
+}
+
+/** 다락방이 없는 사람은 초청 받아 온 지체다 */
+export const INVITED = "초청자";
+
+/**
+ * 명단 한 줄에 붙는 소속 배지.
+ *
+ * 다락방이 있으면 다락방, 없으면서 초청 흔적이 있으면 "초청자".
+ * 목록과 필터가 같은 판단을 쓰도록 여기 한 곳에 둔다 — 갈라지면
+ * 초청자로 걸렀는데 배지 없는 사람이 섞여 나오는 일이 생긴다.
+ */
+export function groupTag(
+  p: Pick<AdminParticipant, "cell_group" | "inviter" | "applicant_type">
+): string | null {
+  if (p.cell_group) return p.cell_group;
+  return p.inviter || p.applicant_type?.includes("초청") ? INVITED : null;
 }

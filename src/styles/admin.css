@@ -418,3 +418,133 @@
   cursor: pointer;
   padding: 4px 0;
 }
+
+/* 이름 버튼 — 눌러서 상세를 연다. 버튼처럼 보이되 목록의 결을 깨지 않게 */
+.pname {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: inherit;
+  cursor: pointer;
+}
+.pname:hover { text-decoration: underline; text-underline-offset: 3px; }
+.pname:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
+.tagit[data-g="관리자"] { color: var(--ink); background: rgba(33, 29, 25, 0.06); }
+
+/* 참가자 상세 — 읽기 전용 */
+.pdetail {
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0;
+  width: min(400px, calc(100vw - 32px));
+  margin: auto;
+}
+.pdetail::backdrop { background: rgba(33, 29, 25, 0.42); }
+.pdetail-in { padding: 20px 22px 18px; }
+.pdetail-in header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink);
+}
+.pdetail-in header b { font-size: 1.08rem; font-weight: 700; }
+.pdetail dl { display: grid; grid-template-columns: 5.5em 1fr; gap: 0; margin-top: 4px; }
+.pdetail dl > div { display: contents; }
+.pdetail dt,
+.pdetail dd {
+  padding: 9px 0;
+  border-bottom: 1px solid var(--hair);
+  word-break: keep-all;
+}
+.pdetail dt {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-60);
+}
+.pdetail dd { margin: 0; font-size: 0.86rem; }
+.pdetail-note {
+  display: block;
+  margin-top: 14px;
+  font-size: 0.72rem;
+  color: var(--ink-60);
+  word-break: keep-all;
+  line-height: 1.6;
+}
+
+/* 상세 안에서 바꿀 수 있는 것 — 앱이 주인인 값만 */
+.pdetail-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ink);
+}
+.pdetail-edit label { display: flex; align-items: center; gap: 10px; }
+.pdetail-edit label > span {
+  flex: none;
+  width: 5.5em;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-60);
+}
+.pdetail-edit select {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 0.84rem;
+  padding: 8px 10px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink);
+}
+.pdetail-edit select:focus-visible { outline: 2px solid var(--coral); outline-offset: 1px; }
+.pdetail-edit .btn.full { width: 100%; margin-top: 4px; }
+
+/* 명단 필터 — 다락방·도착·숙박·권한 */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 0 0 12px;
+}
+.filters select {
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 7px 9px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 12em;
+}
+.filters select:focus-visible { outline: 2px solid var(--coral); outline-offset: 1px; }
+.chip-toggle {
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 7px 12px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink-60);
+  cursor: pointer;
+}
+.chip-toggle.on { background: var(--ink); border-color: var(--ink); color: var(--cream); }
+.fcount {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-60);
+  white-space: nowrap;
+}

@@ -1,12 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  fmtBirth,
-  fmtDateTime,
-  fmtTime,
-  maskPhone,
-  normalizePhone,
-  parseBirth8,
-} from "./format";
+import { fmtBirth, fmtDateTime, fmtTime, groupTag, maskPhone, normalizePhone, parseBirth8 } from "./format";
 
 describe("parseBirth8", () => {
   it("8자리를 ISO 날짜로 바꾼다", () => {
@@ -95,5 +88,30 @@ describe("KST 고정 표시", () => {
   it("자정은 00:00 (24:00이 아니다)", () => {
     // UTC 15:00 = KST 00:00
     expect(fmtTime("2026-09-11T15:00:00Z")).toBe("00:00");
+  });
+});
+
+describe("groupTag", () => {
+  const p = (o: Partial<Parameters<typeof groupTag>[0]>) => ({
+    cell_group: null,
+    inviter: null,
+    applicant_type: null,
+    ...o,
+  });
+
+  it("다락방이 있으면 다락방 이름을 쓴다", () => {
+    expect(groupTag(p({ cell_group: "BASIC", inviter: "김예찬" }))).toBe("BASIC");
+  });
+
+  it("다락방이 없고 초청자가 적혀 있으면 초청자", () => {
+    expect(groupTag(p({ inviter: "김예찬" }))).toBe("초청자");
+  });
+
+  it("초청 받은 지체 유형만 있어도 초청자", () => {
+    expect(groupTag(p({ applicant_type: "초청 받은 지체" }))).toBe("초청자");
+  });
+
+  it("아무 단서도 없으면 배지를 달지 않는다", () => {
+    expect(groupTag(p({ applicant_type: "길 공동체 지체" }))).toBeNull();
   });
 });
