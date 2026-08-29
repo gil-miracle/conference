@@ -5,14 +5,21 @@ import { getSpeaker, type TimetableItem } from "@/lib/content";
 /**
  * 일정 한 줄.
  *
- * 주요 세션(MIRACLE 1~6)은 왼쪽에 세션 라벨 블록이 붙고, 나머지 순서는
- * 시각 + 제목만 있는 담백한 줄로 남는다 — 하루를 훑을 때 "예배가 언제인지"가
- * 먼저 눈에 들어오게 하려는 것.
+ * 곁순서(식사·이동)는 시각 + 제목만 있는 담백한 줄로 남는다 — 하루를 훑을 때
+ * "예배가 언제인지"가 먼저 눈에 들어오게 하려는 것.
+ * 주요 순서는 왼쪽 라벨 칸을 [[SessionBlock]]이 갖고, 여기서는 본문과 사진만 그린다.
  *
  * 설교자가 연결된 세션은 **행 전체**가 그 사람의 소개로 가는 링크다.
  * 사진만 누르게 두면 표적이 작고, 사진이 없는 설교자는 누를 곳이 없어진다.
  */
-export default function SessionRow({ item }: { item: TimetableItem }) {
+export default function SessionRow({
+  item,
+  inlineTime,
+}: {
+  item: TimetableItem;
+  /** 본문 위에 시각을 적을지 — 블록 왼쪽 칸이 배지면 true, 시각이면 false */
+  inlineTime?: boolean;
+}) {
   if (!item.main) {
     const plain = (
       <>
@@ -34,19 +41,12 @@ export default function SessionRow({ item }: { item: TimetableItem }) {
   }
 
   const speaker = item.speakerId ? getSpeaker(item.speakerId) : null;
-  const badgeNo = item.badge?.match(/\d+$/)?.[0];
+  const role = item.role ?? "설교";
 
   const inner = (
     <>
-      {item.badge && (
-        <div className="ss-badge" data-n={badgeNo}>
-          {/* MIRACLE / 1 을 두 줄로 — 숫자가 크게 읽히도록 */}
-          <span className="w">{item.badge.replace(/\s*\d+$/, "")}</span>
-          <span className="n">{badgeNo}</span>
-        </div>
-      )}
       <div className="ss-main-body">
-        <time className="ss-time">{item.time}</time>
+        {inlineTime && <time className="ss-time">{item.time}</time>}
         {/* 설교 제목이 있으면 그게 본문이다 — 순서명(저녁 예배)은
             왼쪽 배지와 시각으로 이미 드러나 한 줄을 더 쓸 이유가 없다 */}
         <b className={item.sermon ? "sermon" : undefined}>
@@ -54,7 +54,7 @@ export default function SessionRow({ item }: { item: TimetableItem }) {
         </b>
         {speaker ? (
           <>
-            {/* 본문 말씀이 먼저, 설교자가 그다음 — 무엇을 여느냐가 누가 여느냐보다 앞선다 */}
+            {/* 본문 말씀이 먼저, 사람이 그다음 — 무엇을 여느냐가 누가 여느냐보다 앞선다 */}
             {item.verse && (
               <small className="preacher">
                 <span className="role">말씀</span>
@@ -62,7 +62,7 @@ export default function SessionRow({ item }: { item: TimetableItem }) {
               </small>
             )}
             <small className="preacher">
-              <span className="role">설교</span>
+              <span className="role">{role}</span>
               {speaker.name}
               {speaker.org && (
                 <>
@@ -84,9 +84,7 @@ export default function SessionRow({ item }: { item: TimetableItem }) {
     </>
   );
 
-  const className = `ss-row main${item.badge ? "" : " no-badge"}${
-    speaker ? " has-speaker" : ""
-  }`;
+  const className = `ss-row main${speaker ? " has-speaker" : ""}`;
 
   if (!speaker) return <div className={className}>{inner}</div>;
 

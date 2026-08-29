@@ -10,8 +10,6 @@ export type Speaker = {
   img: string | null;
   /** 상세 페이지 약력 (임시) */
   bio: string;
-  /** 담당 세션 — 타임테이블과 연결 */
-  sessions: { day: string; time: string; title: string }[];
 };
 
 export type TimetableItem = {
@@ -24,8 +22,15 @@ export type TimetableItem = {
   main?: boolean;
   /** 왼쪽 강조 블록에 들어갈 세션 라벨. 예: "MIRACLE 1" */
   badge?: string;
+  /**
+   * 앞 순서와 같은 세션이라는 표시 — 배지 칸을 나누지 않고 한 블록으로 묶는다.
+   * 예: 특순(20:00) + 저녁 예배(20:30)가 MIRACLE 4 하나를 함께 쓴다.
+   */
+  joinPrev?: boolean;
   /** 설교자 — SPEAKERS의 id. 있으면 행 오른쪽에 사진이 붙는다 */
   speakerId?: string;
+  /** 이름 앞에 붙는 라벨. 기본은 "설교"이고, 특강은 "강사", 특순은 "찬양" */
+  role?: string;
   /** 설교 제목 — 예배 순서에만 붙는다 */
   sermon?: string;
   /** 본문 말씀 출처. 설교자마다 다를 수 있어 순서별로 적는다 */

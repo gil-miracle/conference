@@ -904,7 +904,29 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .ss-body small { display: block; font-size: 0.75rem; color: var(--ink-60); margin-top: 2px; }
 
 /* ── 주요 세션 (MIRACLE 1~6) ── */
-.ss-row.main { grid-template-columns: 104px 1fr; gap: 0; padding: 0; align-items: stretch; }
+/* 블록이 왼쪽 라벨 칸을 갖고, 그 안에 순서 행이 쌓인다.
+   라벨은 grid-row로 전 행에 걸쳐 한 덩어리가 되고 — 그래서 글자도
+   블록 전체의 가운데에 선다. 행마다 라벨을 그리면 이게 안 된다.
+   세로 간격만 1px(gap)을 줘 행 사이에만 선이 보이게 한다. */
+.ss-block {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 1px 0;
+  background: var(--hair);
+}
+.ss-block > .ss-badge,
+.ss-block > .ss-time { grid-column: 1; }
+.ss-block > .ss-row { grid-column: 2; }
+.ss-block > .ss-time {
+  background: var(--paper);
+  border-right: 1px solid var(--hair);
+  padding: 18px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.ss-row.main { grid-template-columns: 1fr; gap: 0; padding: 0; align-items: stretch; }
 
 /* MIRACLE 1~6 — 포스터를 위에서 아래로 훑는 순서로 색을 놓는다.
    노을(핑크·코랄·오렌지) → 산(피치·라벤더) → 잔디(그린).
@@ -942,19 +964,21 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .ss-main-body { background: var(--paper); padding: 18px 20px; display: flex; flex-direction: column; justify-content: center; }
 
 /* 설교자 사진 — 오른쪽 칸에 여백을 두고 정사각으로. 누르면 강사 상세로 */
-.ss-row.main.has-speaker { grid-template-columns: 104px 1fr 132px; }
-.ss-row.main.no-badge.has-speaker { grid-template-columns: 1fr 132px; }
+.ss-row.main.has-speaker { grid-template-columns: 1fr 132px; }
 .ss-speaker {
   background: var(--paper);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   /* 본문 여백과 같은 값 — 배지↔글자 사이와 사진↔모서리 사이가 같아 보이게 */
   padding: 20px;
 }
+/* flex로 폭을 나눠 갖는다 — 한 장이면 꽉 차고, 두 장이면 정확히 반씩 */
 .ss-speaker img,
 .ss-speaker .ph-fallback {
-  width: 100%;
+  flex: 1 1 0;
+  min-width: 0;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
@@ -994,19 +1018,19 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .ss-main-body small { display: block; font-size: 0.76rem; color: var(--ink-60); margin-top: 5px; }
 
 @media (max-width: 560px) {
-  .ss-row, .ss-row.main { grid-template-columns: 84px 1fr; }
-  .ss-row.main.has-speaker { grid-template-columns: 72px 1fr 108px; }
-  .ss-speaker { padding: 11px; }
+  /* 왼쪽 칸은 어떤 행이든 84px — 시각과 배지가 같은 폭이라야 세로 기준선이 산다.
+     사진이 붙는 행은 사진 칸을 줄여 그 폭을 지킨다 */
+  .ss-row { grid-template-columns: 84px 1fr; }
+  .ss-block { grid-template-columns: 84px 1fr; }
+  .ss-row.main.has-speaker { grid-template-columns: 1fr 100px; }
   .ss-badge .n { font-size: 1.7rem; }
   .ss-badge .w { font-size: 0.5rem; }
   .ss-row > .ss-time { padding: 16px 6px; }
   .ss-body { padding: 14px; }
   .ss-main-body { padding: 16px 14px; }
-  .ss-speaker { padding: 14px; }
+  .ss-speaker { padding: 14px; gap: 6px; }
 }
 
-/* 배지 없는 주요 행 (강사 상세의 담당 세션) — 왼쪽 칸을 비우지 않는다 */
-.ss-row.main.no-badge { grid-template-columns: 1fr; }
 
 /* 재생 중 표시 + 앞뒤 곡 이동 */
 .pl-now { display: flex; align-items: center; gap: 14px; }
@@ -1245,9 +1269,19 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 .order-list .no { font-family: var(--mono); font-size: 0.66rem; color: var(--coral); }
 .order-list b { font-size: 0.98rem; font-weight: 700; }
 .order-list.spinning { opacity: 0.5; }
+/* 방금 뽑힌 줄 — 원판이 멈춘 뒤 눈이 갈 곳을 만들어 준다 */
+.order-list li.just b { color: var(--coral); }
 
 /* 사다리 */
 .ladder-names { display: flex; margin-top: 20px; }
+/* 조건 뽑기의 사람 고르기 — 사다리와 달리 칸을 맞출 필요가 없어 접어 넘긴다 */
+.pick-names {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+  gap: 6px;
+  margin-top: 18px;
+}
+.pick-names .lname { text-align: center; min-width: 0; }
 .ladder-names > * { flex: 1; min-width: 0; text-align: center; }
 .lname {
   border: 1px solid var(--hair);
@@ -1262,24 +1296,21 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 .lname.on { background: var(--coral); color: var(--cream); border-color: var(--coral); }
 .lname:disabled { cursor: default; }
 .lname:disabled:not(.on) { opacity: 0.4; }
-.ladder { width: 100%; height: 200px; display: block; }
-.ladder .rail { stroke: var(--hair); stroke-width: 0.5; vector-effect: non-scaling-stroke; }
-.ladder .rung { stroke: var(--ink); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
-/* 내려가는 선 — pathLength=1로 정규화해 viewBox가 늘어나도 고르게 그려진다 */
-.ladder .trace {
+/* 좌표를 픽셀 그대로 쓴다 — viewBox를 늘려 쓰면 가로·세로 배율이 달라
+   내려가는 속도가 들쭉날쭉해지고 선이 끊겨 보인다 */
+.ladder-board { margin-top: 14px; height: 220px; }
+.ladder { display: block; }
+.ladder .rail { stroke: var(--hair); stroke-width: 1; }
+.ladder .rung { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+/* 내려가는 머리와 잔상 — 선을 남기지 않고 지나간 자리만 흐려진다 */
+.ladder .tail {
   fill: none;
   stroke: var(--coral);
-  stroke-width: 2.5;
   stroke-linejoin: round;
   stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: trace-down 1.2s ease-out forwards;
 }
-@keyframes trace-down {
-  to { stroke-dashoffset: 0; }
-}
+.ladder .head { fill: var(--coral); }
+.ladder .glow { fill: var(--coral); fill-opacity: 0.16; }
 .ladder-names.results .lprize {
   font-family: var(--mono);
   font-size: 0.72rem;
@@ -1287,6 +1318,18 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   padding: 9px 2px;
 }
 .ladder-names.results .lprize.on { color: var(--coral); font-weight: 500; }
+/* 번호 아래에 그 칸으로 내려온 사람 — 누가 몇 번인지 표에서 바로 읽히게 */
+.ladder-names.results .lprize b { display: block; font-weight: 500; }
+.ladder-names.results .lprize em {
+  display: block;
+  margin-top: 3px;
+  font-family: "Nanum Gothic", "Pretendard Variable", sans-serif;
+  font-style: normal;
+  font-size: 0.72rem;
+  color: var(--ink);
+  word-break: keep-all;
+  line-height: 1.35;
+}
 
 /* 룰렛 */
 .wheel-wrap { position: relative; width: min(280px, 78vw); margin: 8px auto 22px; }
@@ -1343,7 +1386,18 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   font-size: 1rem;
 }
 .lot.open { background: var(--paper); color: var(--coral); }
-.lot b { font-size: 1.4rem; }
+.lot b { font-size: 1.4rem; display: block; }
+/* 뒤집은 사람 — 카드만 보고도 누가 몇 번인지 알 수 있게 */
+.lot em {
+  display: block;
+  margin-top: 4px;
+  font-family: "Nanum Gothic", "Pretendard Variable", sans-serif;
+  font-style: normal;
+  font-size: 0.68rem;
+  color: var(--ink);
+  word-break: keep-all;
+  line-height: 1.3;
+}
 .lot:disabled { opacity: 0.3; }
 
 

@@ -59,45 +59,65 @@ export const THEME_VERSE = {
 export const ABOUT_LEDE =
   "하늘과 땅, 바다와 모든 깊은 곳에서 일하시는 하나님의 기적을 함께 목격하는 3일. (임시 소개 문구)";
 
-// 설교자 3인. 사진은 public/speakers/ 아래 파일명으로 연결된다.
-// 예배 순서대로 나열한다 (MIRACLE 1 → 4 → 6).
+// 설교자·강사 6인. 사진은 public/speakers/ 아래 파일명으로 연결된다.
+// 일정 순서대로 나열한다 (금 → 토 → 주일).
+// 어느 순서를 맡는지는 TIMETABLE의 speakerId 한 곳에서만 관리한다.
 // ⚠️ bio는 형식을 보여주기 위한 예시다. 본인 확인을 거쳐 실제 약력으로 교체할 것.
+// ⚠️ org가 빈 사람은 소속을 아직 못 받았다 — 채우면 이름 옆에 자동으로 붙는다.
 export const SPEAKERS: Speaker[] = [
-  {
-    id: "cho-youngchan",
-    name: "조영찬 전도사",
-    org: "온누리교회 GIL 청년부",
-    tag: "FRI · MIRACLE 1",
-    img: "cho-youngchan.jpg",
-    bio:
-      "(예시) 온누리교회 GIL 청년부에서 청년들과 함께 예배하며 말씀을 나누고 있습니다. 이번 컨퍼런스에서는 첫 저녁 예배를 맡아, 사흘의 문을 여는 자리에 섭니다.",
-    sessions: [
-      { day: "금 11", time: "21:00–23:00", title: "MIRACLE 1 — 저녁 예배" },
-    ],
-  },
-  {
-    id: "lee-jaehoon",
-    name: "이재훈 목사",
-    org: "온누리교회 위임목사",
-    tag: "SAT · MIRACLE 4",
-    img: "lee-jaehoon.jpg",
-    bio:
-      "(예시) 온누리교회 위임목사로 섬기고 있습니다. 이번 컨퍼런스에서는 둘째 날 저녁 예배를 맡습니다.",
-    sessions: [
-      { day: "토 12", time: "20:00–23:00", title: "MIRACLE 4 — 저녁 예배" },
-    ],
-  },
   {
     id: "choi-jaeyoon",
     name: "최재윤 목사",
     org: "온누리교회 GIL 청년부",
-    tag: "SUN · MIRACLE 6",
-    img: "choi-jaeyoon.jpg",
+    tag: "FRI · MIRACLE 1",
+    img: "choi-jaeyoon.png",
     bio:
-      "(예시) 온누리교회 GIL 청년부에서 청년들과 함께하고 있습니다. 이번 컨퍼런스에서는 마지막 주일 예배를 맡아, 흩어지는 자리를 함께합니다.",
-    sessions: [
-      { day: "주일 13", time: "14:00–16:00", title: "MIRACLE 6 — 주일 예배" },
-    ],
+      "(예시) 온누리교회 GIL 청년부에서 청년들과 함께하고 있습니다. 이번 컨퍼런스에서는 첫 저녁 예배를 맡아, 사흘의 문을 여는 자리에 섭니다.",
+  },
+  {
+    id: "cho-youngchan",
+    name: "조영찬 전도사",
+    org: "온누리교회 GIL 청년부",
+    tag: "SAT · MIRACLE 2",
+    img: "cho-youngchan.png",
+    bio:
+      "(예시) 온누리교회 GIL 청년부에서 청년들과 함께 예배하며 말씀을 나누고 있습니다. 이번 컨퍼런스에서는 둘째 날 아침을 여는 예배를 맡습니다.",
+  },
+  {
+    id: "lee-giljae",
+    name: "이길재 선교사",
+    org: "The Story 대표",
+    tag: "SAT · 선교 특강",
+    img: "lee-giljae.png",
+    bio:
+      "(예시) The Story 대표로 선교 현장을 섬기고 있습니다. 이번 컨퍼런스에서는 토요일 오후 선교 특강을 맡아, 흩어져 살아갈 자리를 함께 그립니다.",
+  },
+  {
+    id: "kim-dongwook",
+    name: "김동욱 목사",
+    org: "",
+    tag: "SAT · 특순",
+    img: "kim-dongwook.png",
+    bio:
+      "(예시) 둘째 날 저녁 예배의 특순을 맡습니다. 말씀 앞에 마음을 여는 자리를 찬양으로 준비합니다.",
+  },
+  {
+    id: "jeon-hyeok",
+    name: "전혁 목사",
+    org: "",
+    tag: "SAT · MIRACLE 4",
+    img: "jeon-hyeok.png",
+    bio:
+      "(예시) 이번 컨퍼런스에서는 둘째 날 저녁 예배를 맡습니다. 사흘 가운데 가장 깊이 들어가는 자리입니다.",
+  },
+  {
+    id: "bae-haengsam",
+    name: "배행삼 목사",
+    org: "",
+    tag: "SUN · MIRACLE 6",
+    img: "bae-haengsam.png",
+    bio:
+      "(예시) 이번 컨퍼런스에서는 마지막 주일 예배를 맡아, 흩어지는 자리를 함께합니다.",
   },
 ];
 
@@ -116,8 +136,8 @@ export function getQtDay(day: string) {
 }
 
 /**
- * 설교자가 맡은 일정 — 어느 날, 어떤 순서인지.
- * 강사 상세에서 "그 사람이 있는 날짜 탭"으로 보내는 데 쓴다.
+ * 그 사람이 맡은 일정 — 어느 날, 어떤 순서인지.
+ * 상세 화면에서 "그 사람이 있는 날짜 탭"으로 보내는 데 쓴다.
  * 배정은 TIMETABLE의 speakerId 하나로만 관리한다(두 곳에 적지 않는다).
  */
 export function getSpeakerSession(speakerId: string) {
@@ -138,7 +158,7 @@ export const TIMETABLE: TimetableDay[] = [
       {
         time: "21:00–23:00",
         badge: "MIRACLE 1",
-        speakerId: "cho-youngchan",
+        speakerId: "choi-jaeyoon",
         title: "저녁 예배",
         sermon: "성령의 불을 받으십시오",
         verse: "사도행전 2:3–4",
@@ -191,16 +211,46 @@ export const TIMETABLE: TimetableDay[] = [
       {
         time: "09:00–12:00",
         badge: "MIRACLE 2",
-        title: "프로그램 or 예배",
+        speakerId: "cho-youngchan",
+        title: "오전 예배",
+        // ⚠️ 설교 제목·본문은 예시다. 확정되면 교체할 것.
+        sermon: "내가 새 일을 행하리라",
+        verse: "이사야 43:19",
+        verseText: [
+          {
+            n: 19,
+            text:
+              "보라, 내가 새 일을 행할 것이니 이제 그것이 나타날 것이다. " +
+              "너희가 그것을 알지 못하겠느냐? 내가 광야에 길을 내고 사막에 강을 낼 것이다.",
+          },
+        ],
         main: true,
       },
       { time: "12:00–14:00", title: "점심식사" },
       { time: "14:00–16:00", badge: "MIRACLE 3", title: "프로그램", main: true },
+      {
+        // 오후 프로그램에 이어지는 순서 — MIRACLE 3 블록을 함께 쓴다
+        time: "16:00–18:00",
+        speakerId: "lee-giljae",
+        role: "강사",
+        title: "선교 특강",
+        joinPrev: true,
+        main: true,
+      },
       { time: "18:00–20:00", title: "저녁식사" },
       {
-        time: "20:00–23:00",
+        // 저녁 예배의 앞순서 — 아래 저녁 예배와 MIRACLE 4 배지를 함께 쓴다
+        time: "20:00–20:30",
+        speakerId: "kim-dongwook",
+        role: "찬양",
+        title: "특순",
+        main: true,
+      },
+      {
+        time: "20:30–23:00",
         badge: "MIRACLE 4",
-        speakerId: "lee-jaehoon",
+        joinPrev: true,
+        speakerId: "jeon-hyeok",
         title: "저녁 예배",
         sermon: "깊은 곳까지 물이 이르러",
         verse: "에스겔 47:5",
@@ -250,7 +300,7 @@ export const TIMETABLE: TimetableDay[] = [
       {
         time: "14:00–16:00",
         badge: "MIRACLE 6",
-        speakerId: "choi-jaeyoon",
+        speakerId: "bae-haengsam",
         title: "주일 예배",
         sermon: "일어나 빛을 발하라",
         verse: "이사야 60:1",
