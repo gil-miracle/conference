@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { groupByAssignment } from "@/lib/assignment";
 import { INVITED, groupTag } from "@/lib/format";
 import { isStaff } from "@/lib/participant-fields";
 import { ROOM_GENDERS, type AdminRoom, type PersonLite } from "@/lib/types";
+import { SIGNUP_FIELDS } from "@/lib/participant-fields";
+import AddParticipant from "../checkin/AddParticipant";
 import RoomEditor from "./RoomEditor";
 import RoomFill from "./RoomFill";
+import RoomPicker from "./RoomPicker";
 
 /** 다락방이 먼저, 그다음 초청자, 교역자·멘토, 나머지 */
 const RANK = (key: string) =>
@@ -46,8 +50,11 @@ export default function RoomsPanel({
   rooms: AdminRoom[];
   people: PersonLite[];
 }) {
+  const router = useRouter();
   const [gender, setGender] = useState("");
   const [space, setSpace] = useState("");
+  const [pickFor, setPickFor] = useState<PersonLite | null>(null);
+  const [adding, setAdding] = useState(false);
   const { membersOf, unassigned } = groupByAssignment(people, "room_id");
   const usedCount = rooms.filter((room) => membersOf(room.id).length > 0).length;
 
@@ -63,6 +70,18 @@ export default function RoomsPanel({
   const left = unassigned.filter(
     (p) => !gender || gender === "기타" || p.gender === gender
   );
+
+  /* 추가 폼 후보값 — 이 화면이 들고 있는 값에서만 뽑는다. 없는 항목은
+     「직접 입력」으로 넣으면 되고, 나머지는 명단 탭에서 채우면 된다 */
+  const options: Record<string, string[]> = {};
+  for (const f of SIGNUP_FIELDS)
+    options[f.key] = [
+      ...new Set(
+        people
+          .map((p) => (p as Record<string, unknown>)[f.key])
+          .filter((v): v is string => typeof v === "string" && v.length > 0)
+      ),
+    ].sort();
 
   return (
     <>
@@ -120,9 +139,14 @@ export default function RoomsPanel({
       })}
 
       <div className="unassigned">
-        <div className="eyebrow">
-          숙소 미배정 · {left.length}명
-          {gender && unassigned.length !== left.length && ` (전체 ${unassigned.length}명)`}
+        <div className="eyebrow un-head">
+          <span>
+            숙소 미배정 · {left.length}명
+            {gender && unassigned.length !== left.length && ` (전체 ${unassigned.length}명)`}
+          </span>
+          <button className="btn sm ghost" onClick={() => setAdding(true)}>
+            ＋ 인원 추가
+          </button>
         </div>
         {left.length === 0 ? (
           <p className="hint-sm">
@@ -136,15 +160,39 @@ export default function RoomsPanel({
               </small>
               <div className="members">
                 {list.map((person) => (
-                  <span key={person.id} data-g={person.gender ?? ""}>
+                  <button
+                    type="button"
+                    className="mchip"
+                    key={person.id}
+                    data-g={person.gender ?? ""}
+                    onClick={() => setPickFor(person)}
+                  >
                     {person.name}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
           ))
         )}
       </div>
+
+      <RoomPicker
+        person={pickFor}
+        rooms={rooms}
+        countOf={(id) => membersOf(id).length}
+        onClose={() => setPickFor(null)}
+      />
+      <AddParticipant
+        open={adding}
+        options={options}
+        staffOnly={false}
+        note="신청서를 쓰지 않고 온 분을 넣는 자리예요. 넣으면 아래 미배정에 나타납니다."
+        onClose={() => setAdding(false)}
+        onAdded={() => {
+          setAdding(false);
+          router.refresh();
+        }}
+      />
     </>
   );
 }

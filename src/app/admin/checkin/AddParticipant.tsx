@@ -14,11 +14,16 @@ import ParticipantForm, { emptyParticipant } from "./ParticipantForm";
 export default function AddParticipant({
   open,
   options,
+  staffOnly = true,
+  note,
   onClose,
   onAdded,
 }: {
   open: boolean;
   options: Record<string, string[]>;
+  /** 명단 탭은 교역자·멘토만, 숙소 탭은 누구든 */
+  staffOnly?: boolean;
+  note?: string;
   onClose: () => void;
   onAdded: (message: string) => void;
 }) {
@@ -69,14 +74,12 @@ export default function AddParticipant({
             options={options}
             busy={busy}
             submitLabel="추가"
-            staffOnly
+            staffOnly={staffOnly}
             onSubmit={submit}
             onCancel={onClose}
           />
           {msg && <p className="msg mt-12">{msg}</p>}
-          <small className="pdetail-note">
-            체크인과 참석 인원 집계에서는 빠집니다.
-          </small>
+          {note && <small className="pdetail-note">{note}</small>}
         </div>
       )}
     </dialog>
