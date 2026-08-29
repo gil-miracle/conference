@@ -50,7 +50,6 @@ export default async function AdminApprovalsPage() {
       <RosterTabs />
       <div className="sec-title">
         <b>가입 승인</b>
-        <span>{pending.length} PENDING</span>
       </div>
       <p className="hint-text">
         신청 명단에 있는 사람만 요청을 보낼 수 있어요. 소셜 프로필이 아는 분이 맞는지

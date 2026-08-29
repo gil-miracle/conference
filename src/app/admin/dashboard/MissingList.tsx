@@ -3,16 +3,13 @@ import type { AdminStats } from "@/lib/types";
 
 export default function MissingList({
   missing,
-  notArrived,
 }: {
   missing: AdminStats["missing"];
-  notArrived: number;
 }) {
   return (
     <>
       <div className="sec-title">
         <b>미도착</b>
-        <span>{notArrived}명</span>
       </div>
       <div className="feed">
         {missing.length === 0 && <div className="row empty">전원 도착! 🎉</div>}

@@ -148,7 +148,6 @@ export default function CheckinPanel({
     <>
       <div className="sec-title">
         <b>참가자 명단</b>
-        <span>{data ? `${data.length} PEOPLE` : "…"}</span>
       </div>
       <div className="qr-strip">
         <button
@@ -266,10 +265,6 @@ export default function CheckinPanel({
           mutate();
         }}
       />
-      <p className="panel-hint">
-        참가자의 My 화면 QR을 스캔하거나 이름으로 수동 체크인하세요. 소셜 계정이
-        잘못 연결된 경우 연결해제 후 본인이 다시 로그인하면 돼요.
-      </p>
 
       {scanning && (
         <QrScanner onResult={onScanResult} onClose={() => setScanning(false)} />

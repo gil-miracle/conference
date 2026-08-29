@@ -62,7 +62,6 @@ export default function RoomsPanel({
   /* 자리 채움도 한 칸을 차지한다 — 정원 계산에는 사람과 같이 센다 */
   const holdsOf = (roomId: string) => holds.filter((h) => h.room_id === roomId);
   const usedOf = (roomId: string) => membersOf(roomId).length + holdsOf(roomId).length;
-  const usedCount = rooms.filter((room) => usedOf(room.id) > 0).length;
 
   /* 본관 → 별관 → 그 밖. 호수는 숫자로 견준다 — 문자열로 보면 1102가 203보다
      앞에 온다 */
@@ -95,9 +94,6 @@ export default function RoomsPanel({
     <>
       <div className="sec-title">
         <b>숙소 배정</b>
-        <span>
-          {usedCount}/{rooms.length} ROOMS
-        </span>
       </div>
 
       <RoomEditor />

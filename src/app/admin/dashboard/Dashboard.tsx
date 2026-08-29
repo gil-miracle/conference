@@ -25,7 +25,7 @@ export default function Dashboard() {
     <>
       <DashboardStats stats={data} />
       <RecentCheckins recent={data.recent} />
-      <MissingList missing={data.missing} notArrived={data.total - data.checked_in} />
+      <MissingList missing={data.missing} />
     </>
   );
 }

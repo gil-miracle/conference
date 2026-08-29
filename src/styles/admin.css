@@ -69,14 +69,8 @@
 .admin .subtabs a.on { background: var(--ink); color: var(--cream); }
 
 .admin .container { max-width: 640px; margin: 0 auto; padding: 28px 22px 0; }
-.admin .sec-title { display: flex; justify-content: space-between; align-items: baseline; margin: 26px 0 14px; }
+.admin .sec-title { margin: 26px 0 14px; }
 .admin .sec-title b { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
-.admin .sec-title span {
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  color: var(--ink-60);
-}
 .admin .btn { padding: 13px 20px; font-size: 0.84rem; }
 .admin .btn.sm { padding: 8px 14px; font-size: 0.76rem; }
 

@@ -46,7 +46,6 @@ export default function TeamsPanel({
     <>
       <div className="sec-title">
         <b>게임 조 배정</b>
-        <span>OPTIONAL</span>
       </div>
 
       <TeamEditor />

@@ -10,7 +10,6 @@ export default function RecentCheckins({
     <>
       <div className="sec-title">
         <b>최근 체크인</b>
-        <span>LIVE · 5s</span>
       </div>
       <div className="feed">
         {recent.length === 0 && (
