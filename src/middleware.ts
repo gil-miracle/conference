@@ -35,8 +35,14 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
+/**
+ * 하는 일은 만료된 세션 토큰을 갱신하는 것 하나뿐인데, 그러려고 요청마다
+ * Supabase에 한 번 다녀온다. api 라우트는 제 손으로 세션을 확인하므로 여기서
+ * 또 다녀올 이유가 없다 — 명단은 5초마다 새로 받아오는 자리라 그 왕복이
+ * 그대로 쌓인다.
+ */
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
   ],
 };

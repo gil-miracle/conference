@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { getSupabaseServer, isSupabaseConfigured } from "./supabase/server";
 
@@ -34,19 +35,21 @@ export async function requireAdmin(): Promise<AdminCtx> {
   return { demo: false, ...ctx };
 }
 
-/** 액션/API용 — 실제 admin 세션만. 데모·미설정·비admin이면 null (변경 차단) */
-export async function getAdminContext() {
+/**
+ * 액션/API용 — 실제 admin 세션만. 데모·미설정·비admin이면 null (변경 차단).
+ *
+ * React cache로 감싼다. 레이아웃과 페이지가 각각 requireAdmin을 부르는데,
+ * 감싸지 않으면 화면 하나 여는 데 세션 확인 + 권한 조회가 두 벌씩 나간다
+ * (사이트 쪽 loadContext가 같은 이유로 이미 감싸여 있다).
+ */
+export const getAdminContext = cache(async () => {
   const supabase = await getSupabaseServer();
   if (!supabase) return null;
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data: me } = await supabase
-    .from("participants")
-    .select("id,name,role")
-    .eq("auth_user_id", user.id)
-    .maybeSingle();
+
+  // 세션 확인과 권한 조회를 한 번에 묻는다. auth.uid()는 PostgREST가 검증한
+  // JWT에서 나오므로 따로 getUser()를 부를 필요가 없다.
+  const { data } = await supabase.rpc("admin_me");
+  const me = data as { id: string; name: string; role: string } | null;
   if (!me || me.role !== "admin") return null;
   return { supabase, me };
-}
+});
