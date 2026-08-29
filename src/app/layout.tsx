@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "@/styles/base.css";
 
+import ConfirmProvider from "@/components/Confirm";
 import ServiceWorker from "@/components/ServiceWorker";
 
 /**
@@ -75,7 +76,7 @@ export default function RootLayout({
       </head>
       <body>
         <div className="grain" aria-hidden="true" />
-        {children}
+        <ConfirmProvider>{children}</ConfirmProvider>
         <ServiceWorker />
       </body>
     </html>
