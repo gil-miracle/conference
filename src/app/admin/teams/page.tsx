@@ -14,7 +14,7 @@ export default async function AdminTeamsPage() {
 
   if (!ctx.demo) {
     const [teamsRes, peopleRes] = await Promise.all([
-      ctx.supabase.from("teams").select("id,name,leader").order("name"),
+      ctx.supabase.from("teams").select("id,name,leader,leader_id").order("name"),
       ctx.supabase
         .from("participants")
         .select("id,name,room_id,team_id,cell_group,inviter,applicant_type,gender")

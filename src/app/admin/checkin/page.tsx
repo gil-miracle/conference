@@ -21,7 +21,7 @@ export default async function AdminCheckinPage() {
         .select("id,building,room_no,capacity,gender,leader_id")
         .order("building")
         .order("room_no"),
-      ctx.supabase.from("teams").select("id,name,leader").order("name"),
+      ctx.supabase.from("teams").select("id,name,leader,leader_id").order("name"),
     ]);
     rooms = (r.data as AdminRoom[]) ?? [];
     teams = (t.data as AdminTeam[]) ?? [];

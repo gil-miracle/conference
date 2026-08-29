@@ -5,6 +5,7 @@ import { groupByAssignment } from "@/lib/assignment";
 import { INVITED, groupTag } from "@/lib/format";
 import { isStaff } from "@/lib/participant-fields";
 import {
+  BUILDINGS,
   ROOM_GENDERS,
   type AdminRoom,
   type PersonLite,
@@ -63,7 +64,21 @@ export default function RoomsPanel({
   const usedOf = (roomId: string) => membersOf(roomId).length + holdsOf(roomId).length;
   const usedCount = rooms.filter((room) => usedOf(room.id) > 0).length;
 
-  const shown = rooms.filter((room) => {
+  /* 본관 → 별관 → 그 밖. 호수는 숫자로 견준다 — 문자열로 보면 1102가 203보다
+     앞에 온다 */
+  const order = (b: string) => {
+    const i = (BUILDINGS as readonly string[]).indexOf(b);
+    return i < 0 ? BUILDINGS.length : i;
+  };
+  const sorted = [...rooms].sort(
+    (a, b) =>
+      order(a.building) - order(b.building) ||
+      a.building.localeCompare(b.building) ||
+      (Number(a.room_no) || 0) - (Number(b.room_no) || 0) ||
+      a.room_no.localeCompare(b.room_no)
+  );
+
+  const shown = sorted.filter((room) => {
     if (gender && room.gender !== gender) return false;
     if (!space) return true;
     const left = room.capacity - usedOf(room.id);

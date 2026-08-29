@@ -2,6 +2,7 @@ import type {
   AdminParticipant,
   AdminRoom,
   AdminStats,
+  AdminTeam,
   MySummary,
   PersonLite,
   RoomHold,
@@ -25,7 +26,7 @@ export const DEMO_SUMMARY: MySummary = {
   reject_reason: null,
   checked_in_at: null,
   checkin_token: "00000000-0000-4000-8000-000000000000",
-  room: { building: "비전관", room_no: "203", capacity: 4, note: "본관에서 도보 2분 · 4인실" },
+  room: { building: "본관", room_no: "203", capacity: 4, note: "본관에서 도보 2분 · 4인실" },
   mates: ["김예찬", "박다윗", "이요셉", "정사무엘"],
   team: {
     name: "오렌지조",
@@ -49,15 +50,15 @@ export function demoAdminStats(): AdminStats {
     guestbook: 142,
     photos: 0,
     recent: [
-      { name: "박다윗", checked_in_at: minsAgo(2), room: "비전관 203" },
-      { name: "정사무엘", checked_in_at: minsAgo(3), room: "비전관 203" },
-      { name: "김한나", checked_in_at: minsAgo(6), room: "은혜관 102" },
-      { name: "이레베카", checked_in_at: minsAgo(9), room: "은혜관 102" },
+      { name: "박다윗", checked_in_at: minsAgo(2), room: "본관 203" },
+      { name: "정사무엘", checked_in_at: minsAgo(3), room: "본관 203" },
+      { name: "김한나", checked_in_at: minsAgo(6), room: "별관 102" },
+      { name: "이레베카", checked_in_at: minsAgo(9), room: "별관 102" },
     ],
     missing: [
       { name: "강바울", phone: "010-8888-9012", room: null },
-      { name: "이요셉", phone: "010-2222-1234", room: "비전관 203" },
-      { name: "최마리아", phone: "010-7777-5678", room: "은혜관 103" },
+      { name: "이요셉", phone: "010-2222-1234", room: "본관 203" },
+      { name: "최마리아", phone: "010-7777-5678", room: "별관 103" },
     ],
   };
 }
@@ -115,7 +116,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
       bound_provider: "kakao",
       room_id: "r1",
       team_id: "t1",
-      rooms: { building: "비전관", room_no: "203", leader_id: "d4" },
+      rooms: { building: "본관", room_no: "203", leader_id: "d4" },
       teams: { name: "오렌지조" },
       applicant_type: "길 공동체 지체",
       gender: "남",
@@ -136,7 +137,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
       checked_in_at: minsAgo(2),
       room_id: "r1",
       team_id: "t2",
-      rooms: { building: "비전관", room_no: "203", leader_id: "d4" },
+      rooms: { building: "본관", room_no: "203", leader_id: "d4" },
       teams: { name: "그린조" },
     }),
     p("d4", "이요셉", "1992-03-02", "010-2222-1234", {
@@ -150,12 +151,12 @@ export function demoAdminParticipants(): AdminParticipant[] {
       tshirt: "M",
       room_id: "r1",
       team_id: "t1",
-      rooms: { building: "비전관", room_no: "203", leader_id: "d4" },
+      rooms: { building: "본관", room_no: "203", leader_id: "d4" },
       teams: { name: "오렌지조" },
     }),
     p("d5", "최마리아", "1995-12-25", "010-7777-5678", {
       gender: "여",
-      rooms: { building: "은혜관", room_no: "103", leader_id: null },
+      rooms: { building: "별관", room_no: "103", leader_id: null },
     }),
     p("d11", "이한별", "1985-04-09", "010-4545-1212", {
       source: "manual",
@@ -169,18 +170,18 @@ export function demoAdminParticipants(): AdminParticipant[] {
 
 /** 숙소·조 탭 데이터 */
 export const DEMO_ROOMS: AdminRoom[] = [
-  { id: "r1", building: "비전관", room_no: "203", capacity: 4, gender: "남", leader_id: "d4" },
-  { id: "r2", building: "은혜관", room_no: "102", capacity: 4, gender: "여", leader_id: null },
-  { id: "r3", building: "은혜관", room_no: "103", capacity: 4, gender: "기타", leader_id: null },
+  { id: "r1", building: "본관", room_no: "203", capacity: 4, gender: "남", leader_id: "d4" },
+  { id: "r2", building: "별관", room_no: "102", capacity: 4, gender: "여", leader_id: null },
+  { id: "r3", building: "별관", room_no: "103", capacity: 4, gender: "기타", leader_id: null },
 ];
 
 export const DEMO_HOLDS: RoomHold[] = [
   { id: "h1", room_id: "r3", name: "이한별 목사", gender: "남" },
 ];
 
-export const DEMO_TEAMS = [
-  { id: "t1", name: "오렌지조", leader: "이요셉" },
-  { id: "t2", name: "그린조", leader: "김한나" },
+export const DEMO_TEAMS: AdminTeam[] = [
+  { id: "t1", name: "오렌지조", leader: null, leader_id: "d4" },
+  { id: "t2", name: "그린조", leader: null, leader_id: "d7" },
 ];
 
 /** 배정 화면용 사람 한 줄 — 다락방·초청자 판단에 필요한 값까지만 */
@@ -263,7 +264,7 @@ export const MY_PREVIEW: MySummary = {
   checked_in_at: null,
   checkin_token: null,
   room: {
-    building: "비전관",
+    building: "본관",
     room_no: "203",
     capacity: 4,
     note: "본관에서 도보 2분 · 4인실",

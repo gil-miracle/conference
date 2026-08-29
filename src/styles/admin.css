@@ -1,7 +1,8 @@
 /* ════ MIRACLE 2026 — 관리자 (admin 라우트에서만 로드) ════ */
 
 .admin { min-height: 100vh; background: var(--cream); padding-bottom: 90px; }
-.admin .a-header { position: sticky; top: 0; z-index: 50; background: var(--deep); color: var(--cream); }
+.admin .a-top { position: sticky; top: 0; z-index: 50; background: var(--cream); }
+.admin .a-header { background: var(--deep); color: var(--cream); }
 .admin .hd {
   display: flex;
   align-items: center;
@@ -23,9 +24,6 @@
 }
 .admin .hd .who a:hover { opacity: 1; text-decoration: underline; }
 .admin .tabs {
-  position: sticky;
-  top: 49px;
-  z-index: 49;
   background: var(--cream);
   border-bottom: 1px solid var(--ink);
   display: flex;

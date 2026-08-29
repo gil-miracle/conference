@@ -166,6 +166,9 @@ export type AdminParticipant = SignupInfo & {
   teams: { name: string } | null;
 };
 
+/** 건물은 둘뿐이다. 순서도 이 배열이 정한다 — 가나다순으로는 별관이 앞선다 */
+export const BUILDINGS = ["본관", "별관"] as const;
+
 /** 방 성별 — 값은 우리가 정하는 셋뿐이고 DB 제약과 같아야 한다 */
 export const ROOM_GENDERS = ["남", "여", "기타"] as const;
 export type RoomGender = (typeof ROOM_GENDERS)[number];
@@ -180,7 +183,13 @@ export type AdminRoom = {
   leader_id: string | null;
 };
 
-export type AdminTeam = { id: string; name: string; leader: string | null };
+export type AdminTeam = {
+  id: string;
+  name: string;
+  /** 옛 자유 입력 조장 이름 — leader_id가 있으면 그쪽이 이긴다 */
+  leader: string | null;
+  leader_id: string | null;
+};
 
 /** 방 한 칸을 차지하지만 명단에는 없는 자리 — 체크인·집계에 들지 않는다 */
 export type RoomHold = {

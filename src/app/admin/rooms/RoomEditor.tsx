@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useConfirm } from "@/components/Confirm";
 import { useAdminDemo } from "../AdminMode";
 import { createRoom, deleteRoom, updateRoom } from "../actions/rooms";
-import { ROOM_GENDERS, type AdminRoom } from "@/lib/types";
+import { BUILDINGS, ROOM_GENDERS, type AdminRoom } from "@/lib/types";
 
 /**
  * 방 만들기·고치기·지우기.
@@ -113,12 +113,23 @@ export default function RoomEditor({
             <form className="pform" action={submit}>
               <label>
                 <span>건물</span>
-                <input
+                <select
                   name="building"
-                  defaultValue={room?.building ?? ""}
-                  placeholder="비전관"
+                  defaultValue={room?.building ?? BUILDINGS[0]}
                   required
-                />
+                >
+                  {/* 옛 이름으로 만든 방도 그대로 열려야 한다 */}
+                  {[
+                    ...BUILDINGS,
+                    ...(room && !BUILDINGS.includes(room.building as never)
+                      ? [room.building]
+                      : []),
+                  ].map((b) => (
+                    <option key={b} value={b}>
+                      {b}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label>
                 <span>호수</span>

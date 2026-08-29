@@ -8,7 +8,7 @@ export async function GET() {
   const { data, error } = await ctx.supabase
     .from("participants")
     .select(
-      "name,birth_date,phone,role,checked_in_at,bound_provider,rooms!participants_room_id_fkey(building,room_no),teams(name)"
+      "name,birth_date,phone,role,checked_in_at,bound_provider,rooms!participants_room_id_fkey(building,room_no),teams!participants_team_id_fkey(name)"
     )
     .order("name");
   if (error) return new Response("failed", { status: 500 });
