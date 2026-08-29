@@ -270,15 +270,16 @@
   transition: 0.16s;
 }
 .lead-pick:disabled { opacity: 0.3; cursor: default; }
-/* 고를 때도 성별이 보여야 한다 */
-.fill-row .fg {
+/* 모달 안 성별 표식 — 후보 줄이든 자리 채움 줄이든 같은 모양 */
+.pdetail .fg {
   font-style: normal;
   font-family: var(--mono);
   font-size: 0.6rem;
+  font-weight: 500;
   letter-spacing: 0.06em;
 }
-.fill-row .fg[data-g="남"] { color: #2f6fb0; }
-.fill-row .fg[data-g="여"] { color: #c2557a; }
+.pdetail .fg[data-g="남"] { color: #2f6fb0; }
+.pdetail .fg[data-g="여"] { color: #c2557a; }
 .lead-pick.on { color: var(--cream); background: var(--coral); border-color: var(--coral); }
 
 /* 자리 채움 — 이름만 받아 한 칸을 차지한다 */
