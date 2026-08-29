@@ -19,9 +19,6 @@ export default async function GuestbookPage() {
           lede="함께 나누고 싶은 기대와 기도를 남겨주세요."
         />
         <div className="reveal">
-          {entries.length === 0 && (
-            <p className="lede empty-note">첫 번째 인사를 남겨주세요.</p>
-          )}
           {entries.map((entry) => (
             <div className="gb" key={entry.id}>
               <div className="row">

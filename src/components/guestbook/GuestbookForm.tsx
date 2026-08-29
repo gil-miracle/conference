@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { GUESTBOOK_MAX } from "@/lib/guestbook";
 import {
   addGuestbookEntry,
   type GuestbookState,
@@ -10,6 +11,7 @@ const initialState: GuestbookState = { status: "idle" };
 
 export default function GuestbookForm() {
   const [openForm, setOpenForm] = useState(false);
+  const [left, setLeft] = useState(GUESTBOOK_MAX);
   const [state, formAction, pending] = useActionState(
     addGuestbookEntry,
     initialState
@@ -20,6 +22,7 @@ export default function GuestbookForm() {
   useEffect(() => {
     if (state.status === "ok") {
       formRef.current?.reset();
+      setLeft(GUESTBOOK_MAX);
       setOpenForm(false);
     }
   }, [state]);
@@ -37,16 +40,7 @@ export default function GuestbookForm() {
 
   return (
     <form ref={formRef} action={formAction} className="gb-form">
-      <label className="f-label" htmlFor="gb-name">
-        NAME — 실명 또는 닉네임
-      </label>
-      <input
-        id="gb-name"
-        name="display_name"
-        className="f-input"
-        maxLength={20}
-        required
-      />
+      {/* 이름 칸은 없다 — 로그인해야 쓸 수 있어 작성자는 이미 정해져 있다 */}
       <label className="f-label" htmlFor="gb-content">
         MESSAGE
       </label>
@@ -54,10 +48,15 @@ export default function GuestbookForm() {
         id="gb-content"
         name="content"
         className="f-input"
-        maxLength={500}
+        maxLength={GUESTBOOK_MAX}
         placeholder="함께 나누고 싶은 기대, 기도, 인사를 남겨주세요."
+        onChange={(e) => setLeft(GUESTBOOK_MAX - e.target.value.length)}
         required
       />
+      {/* 다 쓰고 나서 잘리는 걸 알면 늦다 — 남은 글자를 계속 보여준다 */}
+      <p className={`f-count${left <= 20 ? " near" : ""}`}>
+        {left}자 남음
+      </p>
       {state.status === "error" && <p className="msg err">{state.message}</p>}
       <div className="btn-row mt-22">
         <button className="btn accent" disabled={pending}>

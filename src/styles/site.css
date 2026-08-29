@@ -66,13 +66,10 @@ nav.site {
   align-items: center;
   gap: 18px;
   padding: 16px var(--gutter);
-  overflow-x: auto;
-  scrollbar-width: none;
   /* 포스터·컨테이너와 동일한 폭으로 좌우 경계를 맞춘다 */
   max-width: 640px;
   margin: 0 auto;
 }
-.nav-in::-webkit-scrollbar { display: none; }
 .nav-logo {
   font-family: "Anton";
   font-size: 0.9rem;
@@ -94,12 +91,62 @@ nav.site {
 .nav-in .lock { display: inline-flex; align-items: center; gap: 5px; }
 .nav-in .lock svg { width: 9px; height: 9px; opacity: 0.5; }
 .nav-auth {
+  position: relative;
   margin-left: auto;
-  display: flex;
-  gap: 16px;
-  align-items: center;
   flex-shrink: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
+/* 사람 모양 하나 — 세션에 이름이 없어 이니셜을 쓸 수 없다 */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--hair);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink-60);
+  cursor: pointer;
+  transition: 0.18s;
+}
+.avatar svg { width: 16px; height: 16px; }
+.avatar:hover, .avatar.on { color: var(--coral); border-color: var(--coral); }
+/* 내 정보·관리자·로그아웃 — 계정 쪽 일은 여기 모은다 */
+.acct-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 70;
+  min-width: 132px;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+}
+.acct-menu a,
+.acct-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 11px 16px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: none;
+  border: none;
+  border-top: 1px solid var(--hair);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.acct-menu > *:first-child a,
+.acct-menu > a:first-child { border-top: 0; }
+.acct-menu a:hover, .acct-menu button:hover { background: var(--cream); }
+
 
 /* ── Hero ── */
 .hero { background: var(--cream); }
@@ -802,7 +849,9 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 }
 
 /* 세션 로드 전 인증 버튼 자리 예약 — 상태가 채워질 때 메뉴가 밀리지 않게 */
-.auth-slot { display: inline-flex; align-items: center; min-width: 48px; justify-content: flex-end; }
+.auth-slot { display: inline-flex; align-items: center; min-width: 34px; justify-content: flex-end; }
+/* 프로필은 좌우 여백을 스스로 만든다 — 로고 쪽과 무게를 맞춘다 */
+.auth-slot .avatar { margin: -3px 0; }
 
 /* 가입 요청 확인 카드 */
 .confirm-card { border: 1px solid var(--ink); background: var(--paper); padding: 24px 22px; margin-top: 26px; }
@@ -828,10 +877,9 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .my-card.room-card { margin-top: 16px; }
 .pending-note { display: block; color: var(--ink-60); margin-bottom: 22px; }
 .note.note-left { text-align: left; margin-top: 10px; }
-.lede.empty-note { padding: 10px 0 4px; }
 .gb-write:disabled { opacity: 0.4; }
 .nav-auth .signout-form { display: flex; }
-.nav-auth .admin-lnk { color: var(--coral); }
+.nav-in .nav-auth a.admin-lnk { color: var(--coral); }
 
 /* 집회는 정해졌는데 곡이 아직인 상태 */
 .pl-empty-row {

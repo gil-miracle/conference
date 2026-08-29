@@ -134,6 +134,16 @@ button { font-family: inherit; cursor: pointer; }
 }
 .f-input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
 textarea.f-input { resize: vertical; min-height: 96px; line-height: 1.7; }
+/* 남은 글자 — 입력칸 오른쪽 아래에 붙여 눈이 가되 거슬리지 않게 */
+.f-count {
+  margin-top: 6px;
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-60);
+}
+.f-count.near { color: var(--coral); }
 .msg { margin-top: 18px; font-size: 0.84rem; padding: 13px 16px; border: 1px solid var(--hair); word-break: keep-all; }
 .msg.err { border-color: var(--coral); color: var(--coral); }
 .msg.ok { border-color: var(--green); color: var(--green); }
