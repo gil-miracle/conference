@@ -146,6 +146,10 @@ export default function CheckinPanel({
 
   return (
     <>
+      <div className="sec-title">
+        <b>참가자 명단</b>
+        <span>{data ? `${data.length} PEOPLE` : "…"}</span>
+      </div>
       <div className="qr-strip">
         <button
           className="btn accent qr-main"

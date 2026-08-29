@@ -160,15 +160,22 @@ export type AdminParticipant = SignupInfo & {
   bound_provider: string | null;
   room_id: string | null;
   team_id: string | null;
-  rooms: { building: string; room_no: string } | null;
+  rooms: { building: string; room_no: string; leader_id: string | null } | null;
   teams: { name: string } | null;
 };
+
+/** 방 성별 — 값은 우리가 정하는 셋뿐이고 DB 제약과 같아야 한다 */
+export const ROOM_GENDERS = ["남", "여", "기타"] as const;
+export type RoomGender = (typeof ROOM_GENDERS)[number];
 
 export type AdminRoom = {
   id: string;
   building: string;
   room_no: string;
   capacity: number;
+  gender: RoomGender;
+  /** 그 방 사람 중 하나 — 이름을 따로 적으면 명단을 고칠 때 어긋난다 */
+  leader_id: string | null;
 };
 
 export type AdminTeam = { id: string; name: string; leader: string | null };
@@ -179,7 +186,7 @@ export type PersonLite = {
   name: string;
   room_id: string | null;
   team_id: string | null;
-};
+} & Pick<SignupInfo, "cell_group" | "inviter" | "applicant_type">;
 
 /** 관리자 승인 대기 목록 한 건 (사칭 판별용 소셜 프로필 포함) */
 export type JoinRequest = {

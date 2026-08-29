@@ -60,9 +60,6 @@ export default function AddParticipant({
         <div className="pdetail-in">
           <header>
             <b>참가자 추가</b>
-            <button className="btn sm ghost" onClick={onClose}>
-              닫기
-            </button>
           </header>
           {/* key로 다시 열 때마다 폼을 새로 만든다 — 지난번에 치던 값이 남으면
               엉뚱한 사람이 들어간다 */}

@@ -1,4 +1,10 @@
-import type { AdminParticipant, AdminStats, MySummary } from "./types";
+import type {
+  AdminParticipant,
+  AdminRoom,
+  AdminStats,
+  MySummary,
+  PersonLite,
+} from "./types";
 
 /**
  * 미리보기(데모) 모드 — Supabase 미설정 상태에서 로그인 후 화면과 관리자 화면을
@@ -106,7 +112,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
       bound_provider: "kakao",
       room_id: "r1",
       team_id: "t1",
-      rooms: { building: "비전관", room_no: "203" },
+      rooms: { building: "비전관", room_no: "203", leader_id: "d4" },
       teams: { name: "오렌지조" },
       applicant_type: "길 공동체 지체",
       cell_group: "BASIC",
@@ -125,7 +131,7 @@ export function demoAdminParticipants(): AdminParticipant[] {
       checked_in_at: minsAgo(2),
       room_id: "r1",
       team_id: "t2",
-      rooms: { building: "비전관", room_no: "203" },
+      rooms: { building: "비전관", room_no: "203", leader_id: "d4" },
       teams: { name: "그린조" },
     }),
     p("d4", "이요셉", "1992-03-02", "010-2222-1234", {
@@ -138,11 +144,11 @@ export function demoAdminParticipants(): AdminParticipant[] {
       tshirt: "M",
       room_id: "r1",
       team_id: "t1",
-      rooms: { building: "비전관", room_no: "203" },
+      rooms: { building: "비전관", room_no: "203", leader_id: "d4" },
       teams: { name: "오렌지조" },
     }),
     p("d5", "최마리아", "1995-12-25", "010-7777-5678", {
-      rooms: { building: "은혜관", room_no: "103" },
+      rooms: { building: "은혜관", room_no: "103", leader_id: null },
     }),
     p("d11", "이한별", "1985-04-09", "010-4545-1212", {
       source: "manual",
@@ -154,10 +160,10 @@ export function demoAdminParticipants(): AdminParticipant[] {
 }
 
 /** 숙소·조 탭 데이터 */
-export const DEMO_ROOMS = [
-  { id: "r1", building: "비전관", room_no: "203", capacity: 4 },
-  { id: "r2", building: "은혜관", room_no: "102", capacity: 4 },
-  { id: "r3", building: "은혜관", room_no: "103", capacity: 4 },
+export const DEMO_ROOMS: AdminRoom[] = [
+  { id: "r1", building: "비전관", room_no: "203", capacity: 4, gender: "남", leader_id: "d4" },
+  { id: "r2", building: "은혜관", room_no: "102", capacity: 4, gender: "여", leader_id: null },
+  { id: "r3", building: "은혜관", room_no: "103", capacity: 4, gender: "기타", leader_id: null },
 ];
 
 export const DEMO_TEAMS = [
@@ -165,17 +171,28 @@ export const DEMO_TEAMS = [
   { id: "t2", name: "그린조", leader: "김한나" },
 ];
 
-export const DEMO_PEOPLE = [
-  { id: "d2", name: "김예찬", room_id: "r1", team_id: "t1" },
-  { id: "d4", name: "이요셉", room_id: "r1", team_id: "t1" },
-  { id: "d3", name: "박다윗", room_id: "r1", team_id: "t2" },
-  { id: "d6", name: "정사무엘", room_id: "r1", team_id: "t2" },
-  { id: "d7", name: "김한나", room_id: "r2", team_id: "t2" },
-  { id: "d8", name: "이레베카", room_id: "r2", team_id: "t1" },
-  { id: "d9", name: "윤에스더", room_id: "r2", team_id: null },
-  { id: "d5", name: "최마리아", room_id: "r3", team_id: "t1" },
-  { id: "d1", name: "강바울", room_id: null, team_id: null },
-  { id: "d10", name: "한느헤미야", room_id: null, team_id: null },
+/** 배정 화면용 사람 한 줄 — 다락방·초청자 판단에 필요한 값까지만 */
+const pl = (
+  id: string,
+  name: string,
+  room_id: string | null,
+  team_id: string | null,
+  cell_group: string | null = null,
+  inviter: string | null = null,
+  applicant_type: string | null = null
+): PersonLite => ({ id, name, room_id, team_id, cell_group, inviter, applicant_type });
+
+export const DEMO_PEOPLE: PersonLite[] = [
+  pl("d2", "김예찬", "r1", "t1", "BASIC"),
+  pl("d4", "이요셉", "r1", "t1", null, "김예찬"),
+  pl("d3", "박다윗", "r1", "t2", "CORNERSTONE"),
+  pl("d6", "정사무엘", "r1", "t2", "BASIC"),
+  pl("d7", "김한나", "r2", "t2", "BEGIN"),
+  pl("d8", "이레베카", "r2", "t1", "BEGIN"),
+  pl("d9", "윤에스더", "r2", null, "CORNERSTONE"),
+  pl("d5", "최마리아", "r3", "t1", null, "박다윗"),
+  pl("d1", "강바울", null, null, "BEGIN"),
+  pl("d10", "한느헤미야", null, null, null, null, "교역자"),
 ];
 
 /** 게시판 탭 방명록 */

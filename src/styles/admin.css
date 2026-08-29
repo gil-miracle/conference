@@ -184,10 +184,133 @@
 .room b { font-size: 0.95rem; font-weight: 700; }
 .room .cap { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--ink-60); white-space: nowrap; }
 .room .cap.full { color: var(--coral); }
+/* 방 성별 — 배정할 때 이름만 보고 엉뚱한 방에 넣지 않게 방 이름 옆에 붙인다 */
+.room .rg {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 7px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  border: 1px solid currentColor;
+  vertical-align: 2px;
+  color: var(--ink-60);
+}
+.room .rg[data-g="남"] { color: #2f6fb0; }
+.room .rg[data-g="여"] { color: var(--coral); }
 .room .members { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.room .members span { font-size: 0.74rem; font-weight: 500; border: 1px solid var(--hair); padding: 3px 11px; color: var(--green); }
-.room .members span.empty { color: var(--ink-60); border-style: dashed; }
+.room .members .mchip,
+.room .members .empty,
+.un-group .members span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.7;
+  border: 1px solid var(--hair);
+  padding: 3px 11px;
+  color: var(--green);
+  background: var(--paper);
+}
+/* 빈 자리는 누르면 채우는 자리다 — 눌리는 것처럼 보여야 한다 */
+.room .members .empty {
+  color: var(--ink-60);
+  border-style: dashed;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.16s;
+}
+.room .members .empty:hover { color: var(--ink); border-color: var(--ink); border-style: solid; }
+
+/* 빈 자리 채우기 — 미배정에서 여러 명을 한 번에 고른다 */
+.fill-search {
+  width: 100%;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.86rem;
+}
+.fill-search:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+.fill-list { max-height: 46vh; overflow-y: auto; margin-top: 10px; border-top: 1px solid var(--hair); }
+.fill-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--hair);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+.fill-row > label { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; }
+.fill-row.on { color: var(--coral); font-weight: 600; }
+.fill-row input { accent-color: var(--coral); width: 16px; height: 16px; }
+/* 자리가 차서 더 못 고르는 줄만 흐리게 한다 */
+.fill-row:has(input:disabled) > label { opacity: 0.45; cursor: default; }
+/* 이미 그 방 사람은 흐릴 이유가 없다 — 여기서 빼지 못할 뿐이다 */
+.fill-row.already > label { opacity: 1; cursor: default; }
+.lead-pick {
+  flex: none;
+  padding: 3px 9px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-60);
+  background: none;
+  border: 1px solid var(--hair);
+  cursor: pointer;
+  transition: 0.16s;
+}
+.lead-pick:disabled { opacity: 0.3; cursor: default; }
+.lead-pick.on { color: var(--cream); background: var(--coral); border-color: var(--coral); }
+.room-add { display: block; margin: 0 0 16px auto; background: var(--paper); }
+/* 방 제목 줄 전체가 방 정보를 여는 버튼이다 */
+.room-open {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.room-open:hover b { text-decoration: underline; text-underline-offset: 3px; }
+/* 이름 칩 — 누르면 방 배정 모달이 열린다 */
+.room .members .mchip { cursor: pointer; transition: 0.16s; }
+.room .members .mchip:hover { border-color: var(--green); }
+/* 방장은 맨 앞에 오고 색이 다르다 — 연락할 사람을 한눈에 */
+.room .members .mchip.lead { color: var(--coral); border-color: var(--coral); font-weight: 700; }
+.room .members .mchip.lead i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
 .unassigned { border: 1px dashed rgba(33, 29, 25, 0.3); padding: 16px 18px; margin-top: 20px; }
+/* 다락방별로 묶어 둔다 — 같은 다락방끼리 한 방에 넣는 일이 많다 */
+.un-group { margin-top: 12px; }
+.un-group > small {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-60);
+  margin-bottom: 6px;
+}
+.un-group .members { display: flex; flex-wrap: wrap; gap: 6px; }
+
 .assign-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--hair); }
 .assign-row:last-child { border: 0; }
 .assign-row b { flex: 1; font-size: 0.86rem; }
@@ -209,7 +332,16 @@
   font-family: inherit;
   font-size: 0.86rem;
 }
-.inline-form input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+.inline-form select {
+  padding: 11px 10px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.86rem;
+}
+.inline-form input:focus,
+.inline-form select:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
 
 /* 게시판 모더레이션 */
 .mod { border: 1px solid var(--ink); background: var(--paper); padding: 15px 17px; margin-bottom: -1px; }
@@ -601,15 +733,27 @@
   min-width: 0;
   font: inherit;
   font-size: 0.84rem;
-  padding: 8px 10px;
+  padding: 10px 12px;
   border: 1px solid var(--hair);
   background: var(--paper);
   color: var(--ink);
 }
 .pform select:focus-visible,
 .pform input:focus-visible { outline: 2px solid var(--coral); outline-offset: 1px; }
-.pform-actions { display: flex; gap: 8px; margin-top: 6px; }
-.pform-actions .btn { flex: 1; }
+/* 모달 안 버튼은 사이트 기본(15px 40px)보다 작아야 한다 — 창이 좁아 두 개만
+   놓아도 꽉 찬다 */
+.pform-actions { display: flex; gap: 8px; margin-top: 14px; }
+.pform-actions .btn { flex: 1; padding: 12px 16px; font-size: 0.84rem; }
+/* 삭제는 가장 드물게 쓰는 길이다 — 저장보다 눈에 먼저 들어오면 안 된다 */
+.pdetail .btn.danger {
+  background: none;
+  color: #b8433a;
+  border: 1px solid rgba(184, 67, 58, 0.4);
+  font-weight: 500;
+}
+.pdetail .btn.danger:hover { background: #b8433a; color: var(--cream); border-color: #b8433a; }
+.pdetail-edit .btn,
+.pdetail .btn.full { padding: 11px 16px; font-size: 0.82rem; }
 
 /* 명단 필터 — 다락방·도착·숙박·권한 */
 .filters {

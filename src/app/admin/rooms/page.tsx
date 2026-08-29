@@ -16,12 +16,12 @@ export default async function AdminRoomsPage() {
     const [roomsRes, peopleRes] = await Promise.all([
       ctx.supabase
         .from("rooms")
-        .select("id,building,room_no,capacity")
+        .select("id,building,room_no,capacity,gender,leader_id")
         .order("building")
         .order("room_no"),
       ctx.supabase
         .from("participants")
-        .select("id,name,room_id,team_id")
+        .select("id,name,room_id,team_id,cell_group,inviter,applicant_type")
         .order("name"),
     ]);
     rooms = (roomsRes.data ?? []) as AdminRoom[];

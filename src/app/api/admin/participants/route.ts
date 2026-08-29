@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     .select(
       "id,name,birth_date,phone,role,source,checked_in_at,auth_user_id,bound_at,bound_provider,room_id,team_id," +
         "applicant_type,cell_group,inviter,transport,arrive_day,arrive_time,stay,tshirt," +
-        "rooms(building,room_no),teams(name)"
+        "rooms(building,room_no,leader_id),teams(name)"
     )
     .order("name")
     .limit(300);

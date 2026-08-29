@@ -249,7 +249,7 @@ export default function ParticipantDetail({
                     <option value="">미배정</option>
                     {rooms.map((r) => (
                       <option key={r.id} value={r.id}>
-                        {r.building} {r.room_no}
+                        {r.building} {r.room_no} · {r.gender}
                       </option>
                     ))}
                   </select>
