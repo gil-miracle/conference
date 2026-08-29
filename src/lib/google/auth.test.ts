@@ -15,7 +15,7 @@ function setEnv(key?: string, email?: string) {
 afterEach(() => setEnv(undefined, undefined));
 
 describe("서비스 계정 읽기", () => {
-  it("필드 두 개를 따로 넣은 경우", () => {
+  it("이메일과 키를 각각 읽는다", () => {
     setEnv(FAKE_KEY, EMAIL);
     expect(getServiceAccount()).toEqual({ email: EMAIL, key: FAKE_KEY.trim() });
   });
@@ -25,37 +25,19 @@ describe("서비스 계정 읽기", () => {
     expect(getServiceAccount()?.key).toBe(FAKE_KEY.trim());
   });
 
-  it("JSON 키 파일을 통째로 넣어도 읽는다 — 이메일도 파일에서 가져온다", () => {
-    setEnv(
-      JSON.stringify({
-        type: "service_account",
-        project_id: "miracle-2026",
-        private_key: FAKE_KEY,
-        client_email: EMAIL,
-      })
-    );
-    expect(getServiceAccount()).toEqual({ email: EMAIL, key: FAKE_KEY.trim() });
-  });
-
-  it("JSON이 깨져 있으면 null — 반쯤 붙여넣은 값으로 인증을 시도하지 않는다", () => {
-    setEnv('{"client_email":"a@b.c","private_key":"-----BEGIN', EMAIL);
-    expect(getServiceAccount()).toBeNull();
-  });
-
-  it("JSON에 필드가 빠져 있으면 null", () => {
-    setEnv(JSON.stringify({ type: "service_account", project_id: "x" }), EMAIL);
-    expect(getServiceAccount()).toBeNull();
-  });
-
-  it("키가 없거나 형식이 아니면 null", () => {
+  it("키가 없거나 형식이 아니면 null — 잘못된 값으로 인증을 시도하지 않는다", () => {
     setEnv(undefined, EMAIL);
     expect(getServiceAccount()).toBeNull();
 
     setEnv("그냥 문자열", EMAIL);
     expect(getServiceAccount()).toBeNull();
+
+    // JSON 파일을 통째로 넣은 경우도 형식이 아니다
+    setEnv(JSON.stringify({ client_email: EMAIL, private_key: FAKE_KEY }), EMAIL);
+    expect(getServiceAccount()).toBeNull();
   });
 
-  it("필드 방식인데 이메일이 없으면 null", () => {
+  it("이메일이 없으면 null", () => {
     setEnv(FAKE_KEY);
     expect(getServiceAccount()).toBeNull();
   });
