@@ -280,6 +280,42 @@
 .fill-row .fg[data-g="남"] { color: #2f6fb0; }
 .fill-row .fg[data-g="여"] { color: #c2557a; }
 .lead-pick.on { color: var(--cream); background: var(--coral); border-color: var(--coral); }
+
+/* 자리 채움 — 이름만 받아 한 칸을 차지한다 */
+.hold-add { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--ink); }
+.hold-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 2px;
+  font-size: 0.86rem;
+}
+/* 이름과 성별이 붙어 「게스트남」으로 읽힌다 */
+.hold-row > span { display: flex; align-items: center; gap: 7px; }
+.hold-row .btn-plain { font-size: 0.7rem; color: var(--ink-60); }
+.hold-row .btn-plain:hover { color: var(--coral); }
+.hold-form { display: flex; gap: 6px; margin-top: 6px; }
+.hold-form input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 0.84rem;
+  padding: 9px 11px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink);
+}
+.hold-form input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+.hold-form select {
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 9px 6px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink);
+}
+.hold-form .btn { white-space: nowrap; }
 .room-add { display: block; margin: 0 0 16px auto; background: var(--paper); }
 /* 방 제목 줄 전체가 방 정보를 여는 버튼이다 */
 .room-open {
@@ -303,6 +339,8 @@
 .room .members .mchip:hover { border-color: currentColor; }
 .room .members .mchip[data-g="남"] { color: #2f6fb0; }
 .room .members .mchip[data-g="여"] { color: #c2557a; }
+/* 자리 채움 — 명단에 없는 사람이라 점선으로 구분한다 */
+.room .members .mchip.hold { border-style: dashed; }
 /* 방장은 맨 앞에 오고 테두리가 진하다 — 색은 성별이 쓰고 있어 무게로 가른다 */
 .room .members .mchip.lead { border-color: currentColor; font-weight: 700; }
 .room .members .mchip.lead i {

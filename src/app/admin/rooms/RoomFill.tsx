@@ -3,8 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminDemo } from "../AdminMode";
-import { setRoomMembers, setRoomLeader } from "../actions/rooms";
-import type { PersonLite } from "@/lib/types";
+import {
+  addRoomHold,
+  removeRoomHold,
+  setRoomMembers,
+  setRoomLeader,
+} from "../actions/rooms";
+import { ROOM_GENDERS, type PersonLite, type RoomHold } from "@/lib/types";
 
 /**
  * 방 한 칸의 사람들 — 이름 칩과 빈 자리, 그리고 둘 다 여는 배정 모달.
@@ -20,6 +25,10 @@ import type { PersonLite } from "@/lib/types";
  *
  * 후보는 방 성별에 맞는 사람만 보인다. 성별을 모르는 사람은 어느 방에나
  * 보인다 — 걸러내면 시트에 성별이 비어 있는 사람은 영영 배정할 수 없다.
+ *
+ * 명단에 없는 사람은 「자리 채움」으로 넣는다. 이름만 받아 한 칸을 차지할 뿐
+ * 계정도 체크인도 없다 — 자리 하나 채우자고 생년월일·전화번호를 지어내면
+ * 그 값이 나중에 시트 동기화에서 중복으로 되돌아온다.
  */
 export default function RoomFill({
   roomId,
@@ -28,6 +37,7 @@ export default function RoomFill({
   capacity,
   people,
   members,
+  holds,
   leaderId,
 }: {
   roomId: string;
@@ -38,6 +48,8 @@ export default function RoomFill({
   people: PersonLite[];
   /** 지금 이 방에 있는 사람 */
   members: PersonLite[];
+  /** 명단에 없이 한 칸만 차지하는 자리 */
+  holds: RoomHold[];
   leaderId: string | null;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -47,6 +59,8 @@ export default function RoomFill({
   const [picked, setPicked] = useState<string[]>([]);
   const [leader, setLeader] = useState<string | null>(null);
   const [q, setQ] = useState("");
+  const [holdName, setHoldName] = useState("");
+  const [holdGender, setHoldGender] = useState("남");
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -62,18 +76,20 @@ export default function RoomFill({
       setPicked(memberIds);
       setLeader(leaderId);
       setQ("");
+      setHoldName("");
       setMsg(null);
     }
     // memberIds는 매 렌더 새 배열이라 의존성에 넣으면 열자마자 되돌려진다
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, leaderId]);
 
-  const full = picked.length >= capacity;
+  // 자리 채움도 한 칸을 차지한다
+  const full = picked.length + holds.length >= capacity;
 
   const toggle = (id: string) =>
     setPicked((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id);
-      return prev.length >= capacity ? prev : [...prev, id];
+      return prev.length + holds.length >= capacity ? prev : [...prev, id];
     });
 
   // 방 밖으로 뺀 사람이 방장으로 남아 있으면 안 된다
@@ -107,7 +123,22 @@ export default function RoomFill({
   const sorted = [...members].sort((a, b) =>
     a.id === leaderId ? -1 : b.id === leaderId ? 1 : 0
   );
-  const emptyCount = Math.max(0, capacity - members.length);
+  const emptyCount = Math.max(0, capacity - members.length - holds.length);
+
+  const run = async (fn: () => Promise<{ ok: boolean; message: string }>) => {
+    setBusy(true);
+    const res = await fn();
+    setBusy(false);
+    if (!res.ok) return setMsg(res.message);
+    router.refresh();
+  };
+
+  const addHold = () => {
+    if (!holdName.trim()) return;
+    if (demo) return setMsg("미리보기 모드 — 저장되지 않아요.");
+    setHoldName("");
+    run(() => addRoomHold(roomId, holdName, holdGender));
+  };
 
   return (
     <>
@@ -121,6 +152,17 @@ export default function RoomFill({
         >
           {m.name}
           {m.id === leaderId && <i>방장</i>}
+        </button>
+      ))}
+      {holds.map((h) => (
+        <button
+          type="button"
+          className="mchip hold"
+          key={h.id}
+          data-g={h.gender ?? ""}
+          onClick={() => setOpen(true)}
+        >
+          {h.name}
         </button>
       ))}
       {Array.from({ length: emptyCount }).map((_, i) => (
@@ -151,7 +193,7 @@ export default function RoomFill({
               <b>
                 {roomLabel}
                 <span className="tagit">
-                  {picked.length} / {capacity}
+                  {picked.length + holds.length} / {capacity}
                 </span>
               </b>
             </header>
@@ -197,6 +239,68 @@ export default function RoomFill({
                   </div>
                 );
               })}
+            </div>
+
+            {/* 명단에 없는 사람 — 이름만 받아 한 칸을 차지한다 */}
+            <div className="hold-add">
+              {holds.map((h) => (
+                <div className="hold-row" key={h.id}>
+                  <span>
+                    {h.name}
+                    {h.gender && (
+                      <i className="fg" data-g={h.gender}>
+                        {h.gender}
+                      </i>
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    className="btn-plain"
+                    disabled={busy}
+                    onClick={() =>
+                      demo
+                        ? setMsg("미리보기 모드 — 저장되지 않아요.")
+                        : run(() => removeRoomHold(h.id))
+                    }
+                  >
+                    비우기
+                  </button>
+                </div>
+              ))}
+              <div className="hold-form">
+                <input
+                  placeholder="이름"
+                  value={holdName}
+                  maxLength={20}
+                  disabled={busy || (emptyCount === 0 && holds.length === 0)}
+                  onChange={(e) => setHoldName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addHold();
+                    }
+                  }}
+                />
+                <select
+                  value={holdGender}
+                  disabled={busy}
+                  onChange={(e) => setHoldGender(e.target.value)}
+                >
+                  {ROOM_GENDERS.filter((g) => g !== "기타").map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="btn sm ghost"
+                  disabled={busy || !holdName.trim() || full}
+                  onClick={addHold}
+                >
+                  자리 채움
+                </button>
+              </div>
             </div>
 
             {msg && <p className="msg mt-12">{msg}</p>}

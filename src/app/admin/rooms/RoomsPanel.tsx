@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { groupByAssignment } from "@/lib/assignment";
 import { INVITED, groupTag } from "@/lib/format";
 import { isStaff } from "@/lib/participant-fields";
-import { ROOM_GENDERS, type AdminRoom, type PersonLite } from "@/lib/types";
-import { SIGNUP_FIELDS } from "@/lib/participant-fields";
-import AddParticipant from "../checkin/AddParticipant";
+import {
+  ROOM_GENDERS,
+  type AdminRoom,
+  type PersonLite,
+  type RoomHold,
+} from "@/lib/types";
 import RoomEditor from "./RoomEditor";
 import RoomFill from "./RoomFill";
 import RoomPicker from "./RoomPicker";
@@ -46,22 +48,25 @@ function byGroup(people: PersonLite[]) {
 export default function RoomsPanel({
   rooms,
   people,
+  holds,
 }: {
   rooms: AdminRoom[];
   people: PersonLite[];
+  holds: RoomHold[];
 }) {
-  const router = useRouter();
   const [gender, setGender] = useState("");
   const [space, setSpace] = useState("");
   const [pickFor, setPickFor] = useState<PersonLite | null>(null);
-  const [adding, setAdding] = useState(false);
   const { membersOf, unassigned } = groupByAssignment(people, "room_id");
-  const usedCount = rooms.filter((room) => membersOf(room.id).length > 0).length;
+  /* 자리 채움도 한 칸을 차지한다 — 정원 계산에는 사람과 같이 센다 */
+  const holdsOf = (roomId: string) => holds.filter((h) => h.room_id === roomId);
+  const usedOf = (roomId: string) => membersOf(roomId).length + holdsOf(roomId).length;
+  const usedCount = rooms.filter((room) => usedOf(room.id) > 0).length;
 
   const shown = rooms.filter((room) => {
     if (gender && room.gender !== gender) return false;
     if (!space) return true;
-    const left = room.capacity - membersOf(room.id).length;
+    const left = room.capacity - usedOf(room.id);
     return space === "open" ? left > 0 : left <= 0;
   });
 
@@ -70,18 +75,6 @@ export default function RoomsPanel({
   const left = unassigned.filter(
     (p) => !gender || gender === "기타" || p.gender === gender
   );
-
-  /* 추가 폼 후보값 — 이 화면이 들고 있는 값에서만 뽑는다. 없는 항목은
-     「직접 입력」으로 넣으면 되고, 나머지는 명단 탭에서 채우면 된다 */
-  const options: Record<string, string[]> = {};
-  for (const f of SIGNUP_FIELDS)
-    options[f.key] = [
-      ...new Set(
-        people
-          .map((p) => (p as Record<string, unknown>)[f.key])
-          .filter((v): v is string => typeof v === "string" && v.length > 0)
-      ),
-    ].sort();
 
   return (
     <>
@@ -122,7 +115,7 @@ export default function RoomsPanel({
         return (
           <div className="room" key={room.id}>
             {/* 제목을 누르면 방 정보를 고친다 — 삭제도 그 안에 있다 */}
-            <RoomEditor room={room} memberCount={members.length} />
+            <RoomEditor room={room} memberCount={usedOf(room.id)} />
             <div className="members">
               <RoomFill
                 roomId={room.id}
@@ -131,6 +124,7 @@ export default function RoomsPanel({
                 capacity={room.capacity}
                 people={unassigned}
                 members={members}
+                holds={holdsOf(room.id)}
                 leaderId={room.leader_id}
               />
             </div>
@@ -139,14 +133,9 @@ export default function RoomsPanel({
       })}
 
       <div className="unassigned">
-        <div className="eyebrow un-head">
-          <span>
-            숙소 미배정 · {left.length}명
-            {gender && unassigned.length !== left.length && ` (전체 ${unassigned.length}명)`}
-          </span>
-          <button className="btn sm ghost" onClick={() => setAdding(true)}>
-            ＋ 인원 추가
-          </button>
+        <div className="eyebrow">
+          숙소 미배정 · {left.length}명
+          {gender && unassigned.length !== left.length && ` (전체 ${unassigned.length}명)`}
         </div>
         {left.length === 0 ? (
           <p className="hint-sm">
@@ -179,19 +168,8 @@ export default function RoomsPanel({
       <RoomPicker
         person={pickFor}
         rooms={rooms}
-        countOf={(id) => membersOf(id).length}
+        countOf={usedOf}
         onClose={() => setPickFor(null)}
-      />
-      <AddParticipant
-        open={adding}
-        options={options}
-        staffOnly={false}
-        note="신청서를 쓰지 않고 온 분을 넣는 자리예요. 넣으면 아래 미배정에 나타납니다."
-        onClose={() => setAdding(false)}
-        onAdded={() => {
-          setAdding(false);
-          router.refresh();
-        }}
       />
     </>
   );

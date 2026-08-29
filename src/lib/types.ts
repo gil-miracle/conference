@@ -182,6 +182,14 @@ export type AdminRoom = {
 
 export type AdminTeam = { id: string; name: string; leader: string | null };
 
+/** 방 한 칸을 차지하지만 명단에는 없는 자리 — 체크인·집계에 들지 않는다 */
+export type RoomHold = {
+  id: string;
+  room_id: string;
+  name: string;
+  gender: string | null;
+};
+
 /** 배정 화면용 최소 참가자 정보 */
 export type PersonLite = {
   id: string;

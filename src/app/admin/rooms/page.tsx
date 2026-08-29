@@ -1,6 +1,6 @@
 import { requireAdmin } from "@/lib/admin";
-import { DEMO_PEOPLE, DEMO_ROOMS } from "@/lib/demo";
-import type { AdminRoom, PersonLite } from "@/lib/types";
+import { DEMO_HOLDS, DEMO_PEOPLE, DEMO_ROOMS } from "@/lib/demo";
+import type { AdminRoom, PersonLite, RoomHold } from "@/lib/types";
 import RosterTabs from "../RosterTabs";
 import RoomsPanel from "./RoomsPanel";
 
@@ -11,9 +11,10 @@ export default async function AdminRoomsPage() {
 
   let rooms: AdminRoom[] = DEMO_ROOMS;
   let people: PersonLite[] = DEMO_PEOPLE;
+  let holds: RoomHold[] = DEMO_HOLDS;
 
   if (!ctx.demo) {
-    const [roomsRes, peopleRes] = await Promise.all([
+    const [roomsRes, peopleRes, holdsRes] = await Promise.all([
       ctx.supabase
         .from("rooms")
         .select("id,building,room_no,capacity,gender,leader_id")
@@ -23,15 +24,20 @@ export default async function AdminRoomsPage() {
         .from("participants")
         .select("id,name,room_id,team_id,cell_group,inviter,applicant_type,gender")
         .order("name"),
+      ctx.supabase
+        .from("room_holds")
+        .select("id,room_id,name,gender")
+        .order("created_at"),
     ]);
     rooms = (roomsRes.data ?? []) as AdminRoom[];
     people = (peopleRes.data ?? []) as PersonLite[];
+    holds = (holdsRes.data ?? []) as RoomHold[];
   }
 
   return (
     <>
       <RosterTabs />
-      <RoomsPanel rooms={rooms} people={people} />
+      <RoomsPanel rooms={rooms} people={people} holds={holds} />
     </>
   );
 }

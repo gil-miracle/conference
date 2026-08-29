@@ -4,6 +4,7 @@ import type {
   AdminStats,
   MySummary,
   PersonLite,
+  RoomHold,
 } from "./types";
 
 /**
@@ -171,6 +172,10 @@ export const DEMO_ROOMS: AdminRoom[] = [
   { id: "r1", building: "비전관", room_no: "203", capacity: 4, gender: "남", leader_id: "d4" },
   { id: "r2", building: "은혜관", room_no: "102", capacity: 4, gender: "여", leader_id: null },
   { id: "r3", building: "은혜관", room_no: "103", capacity: 4, gender: "기타", leader_id: null },
+];
+
+export const DEMO_HOLDS: RoomHold[] = [
+  { id: "h1", room_id: "r3", name: "이한별 목사", gender: "남" },
 ];
 
 export const DEMO_TEAMS = [

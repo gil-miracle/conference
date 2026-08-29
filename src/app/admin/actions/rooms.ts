@@ -107,6 +107,39 @@ export async function updateRoom(roomId: string, formData: FormData) {
   return { ok: true as const, message: "저장했어요." };
 }
 
+/**
+ * 자리 채움 추가.
+ *
+ * 방 한 칸만 차지하는 이름이다. 명단에 올리는 것이 아니라 계정도 체크인도
+ * 없다 — 자리만 채우자고 생년월일·전화번호를 지어내지 않으려고 나눠 뒀다.
+ */
+export async function addRoomHold(roomId: string, name: string, gender: string) {
+  const ctx = await getAdminContext();
+  if (!ctx) return { ok: false as const, message: "권한이 없어요." };
+
+  const trimmed = name.trim().slice(0, 20);
+  if (!trimmed) return { ok: false as const, message: "이름을 입력해주세요." };
+  const g = gender === "남" || gender === "여" ? gender : null;
+
+  const { error } = await ctx.supabase
+    .from("room_holds")
+    .insert({ room_id: roomId, name: trimmed, gender: g });
+  if (error) return { ok: false as const, message: error.message };
+
+  revalidatePath("/admin/rooms");
+  return { ok: true as const, message: "자리를 채웠어요." };
+}
+
+/** 자리 채움 삭제 */
+export async function removeRoomHold(holdId: string) {
+  const ctx = await getAdminContext();
+  if (!ctx) return { ok: false as const, message: "권한이 없어요." };
+  const { error } = await ctx.supabase.from("room_holds").delete().eq("id", holdId);
+  if (error) return { ok: false as const, message: error.message };
+  revalidatePath("/admin/rooms");
+  return { ok: true as const, message: "자리를 비웠어요." };
+}
+
 /** 방 삭제 — 그 방 사람들은 미배정으로 돌아간다(FK가 room_id를 비운다) */
 export async function deleteRoom(roomId: string) {
   const ctx = await getAdminContext();
