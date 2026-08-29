@@ -85,8 +85,8 @@ export default function LoginSheet() {
       <div className="sheet">
         <h3>참가자 로그인</h3>
         <p className="sub">
-          카카오 또는 구글로 로그인해요. 처음이라면 로그인 후 신청 명단(이름 +
-          생년월일)과 한 번만 연결하면 돼요.
+          카카오 또는 구글로 로그인해요. 처음이라면 로그인 후 신청 명단과 한 번만
+          연결하면 돼요.
         </p>
         <button
           className="social-btn kakao"
@@ -140,11 +140,11 @@ export default function LoginSheet() {
         )}
         {error && <p className="msg err">{error}</p>}
         <p className="note">
-          아직 참가 신청 전이라면{" "}
+          컨퍼런스 접수 전이면{" "}
           <a href={EVENT.applyUrl} target="_blank" rel="noreferrer">
-            접수 먼저
-          </a>{" "}
-          해주세요. 문의는 체크인 데스크로.
+            여기
+          </a>
+          를 클릭해주세요.
         </p>
       </div>
     </div>

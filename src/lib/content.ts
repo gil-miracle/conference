@@ -31,8 +31,9 @@ export const EVENT = {
   /** 지도 좌표 — 카카오맵 마커 위치 */
   lat: 37.2278,
   lng: 127.2903,
-  /** 참가 신청 폼 (구글폼 등) — 확정되면 교체 */
-  applyUrl: "#",
+  /** 참가 신청 구글폼. "#"이면 화면에서 신청 링크가 알아서 빠진다 */
+  applyUrl:
+    "https://docs.google.com/forms/d/e/1FAIpQLSeJdM2WUQrBDzL9e2iwtqsdFRFML0oGkLTd68mQvFkBS82wmQ/viewform",
   naverMapUrl: "https://map.naver.com/p/search/Acts29%20비전빌리지",
   kakaoMapUrl: "https://map.kakao.com/?q=Acts29%20비전빌리지",
   /** 홍보 영상 YouTube ID — 나오면 채우기 (예: "dQw4w9WgXcQ") */
