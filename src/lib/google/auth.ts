@@ -18,15 +18,38 @@ export const SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets.readon
 export type ServiceAccount = { email: string; key: string };
 
 /**
- * 환경변수에서 서비스 계정을 읽는다.
+ * 환경변수에서 서비스 계정을 읽는다. 두 가지 방식을 모두 받는다.
+ *
+ * ① **JSON 키 파일 통째로** — `GOOGLE_SERVICE_ACCOUNT_KEY`에 받은 파일 내용을
+ *    그대로 붙여넣으면 된다. 어느 필드를 골라야 하는지 헷갈릴 일이 없어
+ *    설정 실수가 줄어든다. 이메일도 파일 안에서 가져오므로 따로 넣지 않아도 된다.
+ * ② **필드 두 개 따로** — `_EMAIL`에 client_email, `_KEY`에 private_key.
+ *
  * 개인키는 여러 줄이라 .env에 넣을 때 \n으로 이스케이프되는 경우가 많다 — 되돌린다.
  */
 export function getServiceAccount(): ServiceAccount | null {
+  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY?.trim();
+  if (!raw) return null;
+
+  if (raw.startsWith("{")) {
+    try {
+      const json = JSON.parse(raw) as {
+        client_email?: string;
+        private_key?: string;
+      };
+      const email = json.client_email?.trim();
+      const key = json.private_key?.replace(/\\n/g, "\n").trim();
+      if (!email || !key?.includes("BEGIN")) return null;
+      return { email, key };
+    } catch {
+      // 붙여넣다 잘렸거나 형식이 깨진 경우 — 조용히 통과시키지 않는다
+      return null;
+    }
+  }
+
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
-  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-  if (!email || !raw) return null;
   const key = raw.replace(/\\n/g, "\n").trim();
-  if (!key.includes("BEGIN")) return null;
+  if (!email || !key.includes("BEGIN")) return null;
   return { email, key };
 }
 

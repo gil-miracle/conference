@@ -153,6 +153,11 @@ GOOGLE_SERVICE_ACCOUNT_KEY="-----BEGIN PRIVATE KEY-----\nMIIEv...\n-----END PRIV
 `private_key`는 여러 줄이라 JSON 안에서 `\n`으로 이스케이프돼 있다.
 그 형태 그대로 넣으면 되고, 코드가 실제 줄바꿈으로 되돌린다.
 
+**받은 JSON 파일 내용을 통째로** `GOOGLE_SERVICE_ACCOUNT_KEY`에 넣어도 된다.
+그때는 이메일도 파일 안에서 읽으므로 `_EMAIL`을 비워 둬도 된다 —
+어느 필드를 골라야 하는지 헷갈릴 일이 없어진다.
+반쯤 붙여넣어 JSON이 깨지면 조용히 넘어가지 않고 "설정되지 않았어요"로 막는다.
+
 > [!warning] 서비스 계정 키는 비밀번호와 같다
 > 저장소에 커밋하지 않는다. 유출되면 GCP에서 키를 삭제하고 새로 만든다.
 > 권한은 **읽기 전용 스코프**(`spreadsheets.readonly`)로 제한해 두었다.
