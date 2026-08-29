@@ -33,6 +33,12 @@ export const metadata: Metadata = {
   title: "MIRACLE — 2026 GIL Community Conference",
   description:
     "2026 GIL Community Conference MIRACLE · 9.11(금)–13(주일) · ACTS29 비전 빌리지(양지 온누리교회)",
+  /*
+   * 검색 결과에 뜨지 않게 한다. robots.txt만으로는 부족하다 — 다른 곳에
+   * 링크가 걸리면 크롤링 없이도 색인될 수 있어서, noindex를 문서에도 박는다.
+   * 메신저 미리보기 봇은 색인기가 아니라 이 태그를 보지 않는다.
+   */
+  robots: { index: false, follow: false },
   appleWebApp: {
     capable: true,
     title: "MIRACLE",
