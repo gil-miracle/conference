@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin";
 import { getJoinRequests } from "../actions/approval";
 import type { JoinRequest } from "@/lib/types";
+import RosterTabs from "../RosterTabs";
 import JoinRequestCard from "./JoinRequestCard";
 import ApproveAllButton from "./ApproveAllButton";
 
@@ -46,6 +47,7 @@ export default async function AdminApprovalsPage() {
 
   return (
     <>
+      <RosterTabs />
       <div className="sec-title">
         <b>가입 승인</b>
         <span>{pending.length} PENDING</span>

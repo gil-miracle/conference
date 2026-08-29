@@ -48,7 +48,7 @@
    위쪽 탭이 밑줄이라 여기서 또 밑줄을 쓰면 층이 안 보인다. 아래 QR 줄과 같은
    폭을 꽉 채운 한 덩어리로 두고, 대시보드 지표 라벨과 같은 모노·자간을 써서
    관리자 화면의 다른 라벨들과 한 식구로 읽히게 한다. */
-.admin .subtabs { max-width: 640px; margin: 20px auto 0; padding: 0 22px; }
+.admin .subtabs { margin: 0 0 16px; }
 .admin .subtabs-in {
   display: flex;
   border: 1px solid var(--ink);

@@ -36,6 +36,10 @@ export default function CheckinPanel({
   const [cell, setCell] = useState("");
   const [arrive, setArrive] = useState("");
   const [stay, setStay] = useState("");
+  /* 있음/없음 둘 다 필요해서 토글이 아니라 셋 중 하나로 둔다 — 데스크에서
+     실제로 뽑는 건 "아직 안 온 사람", "아직 연결 안 한 사람" 쪽이다 */
+  const [joined, setJoined] = useState("");
+  const [checked, setChecked] = useState("");
   const [onlyAdmin, setOnlyAdmin] = useState(false);
   const { toast, showToast } = useToast();
   const demo = useAdminDemo();
@@ -134,6 +138,8 @@ export default function CheckinPanel({
     // 숙박일은 "9월 11일(금), 9월 12일(토)"처럼 여러 날이 한 칸에 들어온다 —
     // 고른 날이 포함되면 잡는다
     if (stay && !(p.stay ?? "").includes(stay)) return false;
+    if (joined && (joined === "y") !== Boolean(p.auth_user_id)) return false;
+    if (checked && (checked === "y") !== Boolean(p.checked_in_at)) return false;
     if (onlyAdmin && p.role !== "admin") return false;
     return true;
   });
@@ -149,9 +155,6 @@ export default function CheckinPanel({
         </button>
         <button className="btn ghost" onClick={() => setAdding(true)}>
           참가자 추가
-        </button>
-        <button className="btn ghost" onClick={() => mutate()}>
-          새로고침
         </button>
       </div>
       <div className="search">
@@ -186,6 +189,16 @@ export default function CheckinPanel({
             </option>
           ))}
         </select>
+        <select value={joined} onChange={(e) => setJoined(e.target.value)}>
+          <option value="">가입 전체</option>
+          <option value="y">가입함</option>
+          <option value="n">미가입</option>
+        </select>
+        <select value={checked} onChange={(e) => setChecked(e.target.value)}>
+          <option value="">체크인 전체</option>
+          <option value="y">체크인함</option>
+          <option value="n">미체크인</option>
+        </select>
         <button
           className={`chip-toggle${onlyAdmin ? " on" : ""}`}
           onClick={() => setOnlyAdmin(!onlyAdmin)}
@@ -208,7 +221,7 @@ export default function CheckinPanel({
           <div className="p-row">
             <div className="info">
               <small>
-                {q || cell || arrive || stay || onlyAdmin
+                {q || cell || arrive || stay || joined || checked || onlyAdmin
                   ? "조건에 맞는 사람이 없어요."
                   : "참가자 명단이 비어 있어요 — 설정 탭에서 동기화하세요."}
               </small>
