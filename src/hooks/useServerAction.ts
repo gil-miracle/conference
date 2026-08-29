@@ -2,6 +2,7 @@
 
 import { useCallback, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useConfirm } from "@/components/Confirm";
 
 type RunOptions = {
   /** 값을 주면 실행 전에 확인 대화상자를 띄운다 */
@@ -22,16 +23,26 @@ type RunOptions = {
 export function useServerAction() {
   const [pending, startTransition] = useTransition();
   const router = useRouter();
+  const confirm = useConfirm();
 
   const run = useCallback(
     (action: () => Promise<unknown>, options: RunOptions = {}) => {
-      if (options.confirm && !window.confirm(options.confirm)) return;
-      startTransition(async () => {
-        await action();
-        if (!options.skipRefresh) router.refresh();
-      });
+      const go = () =>
+        startTransition(async () => {
+          await action();
+          if (!options.skipRefresh) router.refresh();
+        });
+
+      // 확인 창은 모달이라 비동기다 — 승인된 뒤에 실행한다
+      if (options.confirm) {
+        void confirm({ message: options.confirm, danger: true }).then((ok) => {
+          if (ok) go();
+        });
+        return;
+      }
+      go();
     },
-    [router]
+    [router, confirm]
   );
 
   return { pending, run };

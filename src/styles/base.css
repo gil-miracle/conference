@@ -85,8 +85,33 @@ button { font-family: inherit; cursor: pointer; }
 .btn.accent:hover { background: var(--ink); }
 .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
 .btn.ghost:hover { background: var(--ink); color: var(--cream); }
+.btn.danger { background: #b8433a; color: #fff; }
+.btn.danger:hover { background: var(--ink); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn.full { width: 100%; }
+
+/* ── 확인 창 ──
+   네이티브 <dialog>라 포커스 가둠·Esc·배경 비활성은 브라우저가 해 준다.
+   여기서는 모양만 사이트에 맞춘다. */
+.confirm {
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0;
+  width: min(340px, calc(100vw - 40px));
+  /* 기본 dialog는 위쪽에 붙는다 — 화면 한가운데로 */
+  margin: auto;
+}
+.confirm::backdrop { background: rgba(33, 29, 25, 0.42); }
+.confirm-in { padding: 26px 24px 20px; }
+.confirm-in p {
+  font-size: 0.94rem;
+  line-height: 1.7;
+  word-break: keep-all;
+  margin-bottom: 22px;
+}
+.confirm-actions { display: flex; gap: 8px; }
+.confirm-actions .btn { flex: 1; padding: 13px 10px; }
 
 /* ── 폼 요소 ── */
 .f-label {

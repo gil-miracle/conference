@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Toast from "@/components/Toast";
+import { useConfirm } from "@/components/Confirm";
 import { CameraIcon } from "@/components/icons";
 import { useToast } from "@/hooks/useToast";
 import { deletePhoto } from "@/app/actions/gallery";
@@ -24,6 +25,7 @@ export default function GalleryGrid({
   const [hasMore, setHasMore] = useState(initialPhotos.length === PAGE);
   const [uploading, setUploading] = useState<string | null>(null);
   const { toast, showToast } = useToast();
+  const confirm = useConfirm();
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function onFiles(files: FileList | null) {
@@ -43,7 +45,12 @@ export default function GalleryGrid({
   }
 
   async function onDelete(id: string) {
-    if (!confirm("이 사진을 삭제할까요?")) return;
+    const ok = await confirm({
+      message: "이 사진을 삭제할까요?",
+      confirmLabel: "삭제",
+      danger: true,
+    });
+    if (!ok) return;
     const res = await deletePhoto(id);
     if (res.ok) setPhotos((prev) => prev.filter((p) => p.id !== id));
     else showToast("삭제에 실패했어요.", true);

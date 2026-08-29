@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { deleteGuestbookEntry } from "@/app/actions/guestbook";
 import { useSession } from "@/components/SessionProvider";
+import { useConfirm } from "@/components/Confirm";
 
 /**
  * 본인 글에만 노출되는 삭제 버튼.
@@ -18,6 +19,7 @@ export default function GuestbookDelete({
   ownerId: string | null;
 }) {
   const { session } = useSession();
+  const confirm = useConfirm();
   const [pending, startTransition] = useTransition();
   const [failed, setFailed] = useState(false);
 
@@ -29,8 +31,13 @@ export default function GuestbookDelete({
     <button
       className="del"
       disabled={pending}
-      onClick={() => {
-        if (!confirm("이 방명록을 삭제할까요?")) return;
+      onClick={async () => {
+        const ok = await confirm({
+          message: "이 방명록을 삭제할까요?",
+          confirmLabel: "삭제",
+          danger: true,
+        });
+        if (!ok) return;
         setFailed(false);
         startTransition(async () => {
           const res = await deleteGuestbookEntry(id);

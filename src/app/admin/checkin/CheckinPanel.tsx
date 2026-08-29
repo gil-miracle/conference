@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import useSWR from "swr";
 import Toast from "@/components/Toast";
+import { useConfirm } from "@/components/Confirm";
 import { useToast } from "@/hooks/useToast";
 import { jsonFetcher } from "@/lib/fetcher";
 import { useAdminDemo } from "../AdminMode";
@@ -22,6 +23,7 @@ export default function CheckinPanel() {
   const [scanning, setScanning] = useState(false);
   const { toast, showToast } = useToast();
   const demo = useAdminDemo();
+  const confirm = useConfirm();
 
   const { data, mutate, isLoading } = useSWR<AdminParticipant[]>(
     `/api/admin/participants?q=${encodeURIComponent(q)}`,
@@ -31,7 +33,15 @@ export default function CheckinPanel() {
 
   async function onToggleCheckin(p: AdminParticipant) {
     if (demo) return showToast(DEMO_MSG);
-    if (p.checked_in_at && !confirm(`${p.name} 체크인을 취소할까요?`)) return;
+    if (
+      p.checked_in_at &&
+      !(await confirm({
+        message: `${p.name} 체크인을 취소할까요?`,
+        confirmLabel: "취소하기",
+        danger: true,
+      }))
+    )
+      return;
     const res = await setCheckin(p.id, !p.checked_in_at);
     if (!res.ok) showToast("처리에 실패했어요.", true);
     mutate();
@@ -39,12 +49,12 @@ export default function CheckinPanel() {
 
   async function onUnbind(p: AdminParticipant) {
     if (demo) return showToast(DEMO_MSG);
-    if (
-      !confirm(
-        `${p.name}의 소셜 계정 연결을 해제할까요?\n본인이 다시 로그인해 명단과 연결해야 해요.`
-      )
-    )
-      return;
+    const ok = await confirm({
+      message: `${p.name}의 소셜 계정 연결을 해제할까요? 본인이 다시 로그인해 명단과 연결해야 해요.`,
+      confirmLabel: "연결 해제",
+      danger: true,
+    });
+    if (!ok) return;
     const res = await unbindParticipant(p.id);
     if (!res.ok) showToast("해제에 실패했어요.", true);
     else showToast("연결을 해제했어요.");
