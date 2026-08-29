@@ -87,19 +87,40 @@ export async function renderWordcardPng(name: string): Promise<Blob> {
   ctx.font = fontOf(false);
   const spaceW = ctx.measureText(" ").width;
 
+  // 먼저 줄로 나눈다 — 몇 줄인지 알아야 위아래 여백을 반씩 나눠 가운데에 놓는다
+  // (화면 카드의 `margin: auto 0`과 같은 배치)
+  type Tok = { w: string; b: boolean };
+  const lines: { toks: Tok[]; width: number }[] = [];
+  let line: Tok[] = [];
   let x = 0;
-  let y = pad + 2 + 17 + Math.round(txtW * 0.165); // 라벨 아래 margin-top 9%×1.84
-  ctx.fillStyle = "#211D19";
-  ctx.textBaseline = "alphabetic";
   for (const tok of toks) {
     ctx.font = fontOf(tok.b);
     const w = ctx.measureText(tok.w).width;
     if (x > 0 && x + w > txtW) {
+      lines.push({ toks: line, width: x });
+      line = [];
       x = 0;
-      y += lineH;
     }
-    ctx.fillText(tok.w, txtX + x, y + verseSize);
+    line.push(tok);
     x += w + spaceW;
+  }
+  if (line.length) lines.push({ toks: line, width: x });
+
+  const refBottom = pad + 2 + 17;
+  const footTop = pad + inner - 6 - 32 - 22;
+  const blockH = lines.length * lineH;
+  let y = refBottom + Math.max(0, (footTop - refBottom - blockH) / 2);
+
+  ctx.fillStyle = "#211D19";
+  ctx.textBaseline = "alphabetic";
+  for (const l of lines) {
+    x = 0;
+    for (const tok of l.toks) {
+      ctx.font = fontOf(tok.b);
+      ctx.fillText(tok.w, txtX + x, y + verseSize);
+      x += ctx.measureText(tok.w).width + spaceW;
+    }
+    y += lineH;
   }
 
   // 푸터 (하단 정렬)

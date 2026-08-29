@@ -47,7 +47,7 @@ export default function NavAuth() {
     <div className="nav-auth" ref={ref}>
       {session.isAdmin && (
         <Link className="lnk admin-lnk" href="/admin">
-          Admin
+          admin
         </Link>
       )}
       {/* 로드 전에는 폭만 잡아둬 상태가 바뀔 때 메뉴가 밀리지 않게 */}

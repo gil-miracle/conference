@@ -427,9 +427,15 @@ nav.site {
 .locked svg { width: 20px; height: 20px; color: var(--ink-60); }
 .locked p { font-size: 0.86rem; color: var(--ink-60); margin: 14px 0 26px; word-break: keep-all; }
 
-/* 말씀카드 (세로 분할) */
+/* 말씀카드 (세로 분할).
+   글자 크기를 카드 폭(cqw)에 매단다. 화면 폭(vw)에 매달면 카드가 커져도 글씨는
+   그대로라 넓은 화면에서 글이 위쪽에 몰리고 아래가 텅 빈다. 비율은 저장되는
+   PNG(1080px 캔버스)와 같은 값이라 화면과 파일이 같은 카드로 보인다. cqw는 패딩
+   안쪽(content box) 기준이라 캔버스의 inner=940을 분모로 잡는다.
+   rem 하한을 둔 건 좁은 화면에서까지 비례로 줄면 못 읽기 때문이다. */
 .wcard {
   position: relative;
+  container-type: inline-size;
   aspect-ratio: 1/1;
   border: 1px solid var(--ink);
   background: var(--paper);
@@ -443,23 +449,24 @@ nav.site {
 .wcard .txt-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .wcard .wc-ref {
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: max(0.58rem, 1.81cqw);
   letter-spacing: 0.26em;
   color: var(--coral);
 }
 .wcard .wc-verse {
   font-family: "Nanum Myeongjo", serif;
   font-weight: 400;
-  font-size: clamp(0.82rem, 3.8vw, 1.04rem);
+  font-size: max(0.86rem, 3.19cqw);
   line-height: 2.1;
-  margin-top: 9%;
+  /* 위아래 남는 자리를 반씩 나눠 갖는다 — 구절을 라벨 밑에 붙여두면 줄 수가
+     적을 때 아래로 커다란 구멍이 남는다 */
+  margin: auto 0;
   word-break: keep-all;
 }
 .wcard .wc-verse b { font-weight: 700; }
 .wcard .wc-foot {
-  margin-top: auto;
   font-family: var(--mono);
-  font-size: 0.56rem;
+  font-size: max(0.56rem, 1.7cqw);
   letter-spacing: 0.2em;
   color: var(--ink-60);
   line-height: 2;
