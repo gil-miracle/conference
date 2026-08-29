@@ -63,8 +63,8 @@ export default function SheetSync() {
       {result?.ok && (
         <>
           <p className="msg ok mt-14">
-            시트 {result.total}명 — 새로 {result.added}명, 이미 있던{" "}
-            {result.unchanged}명
+            시트 {result.total}명 — 새로 {result.added}명, 빈 칸 채움{" "}
+            {result.filled}명, 그대로 {result.unchanged}명
           </p>
           <details className="mt-12">
             <summary>읽은 열 {result.headers.length}개</summary>
@@ -126,11 +126,10 @@ export default function SheetSync() {
       )}
 
       <small className="mt-12">
-        명단에 <b>없는 사람만</b> 새로 들어옵니다. 이미 있는 사람은 시트 쪽이
-        달라져도 건드리지 않아요 — 신청 정보는 명단 탭에서 고칠 수 있고, 그렇게
-        고친 값이 동기화에 덮이면 안 되니까요. 시트에 적힌 값으로 되돌리려면 그
-        사람을 지우고 다시 누르세요. 이름·생년월일·전화번호 셋으로 사람을
-        구분합니다.
+명단에 <b>없는 사람</b>은 새로 넣고, 이미 있는 사람은 <b>빈 칸만</b>
+        채웁니다. 값이 든 칸은 덮어쓰지 않아요 — 명단 탭에서 고친 값이 동기화에
+        밀리면 안 되니까요. 시트에 적힌 값으로 되돌리려면 그 사람을 지우고 다시
+        누르세요. 이름·생년월일·전화번호 셋으로 사람을 구분합니다.
       </small>
     </div>
   );

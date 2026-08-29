@@ -137,6 +137,8 @@ export type Photo = {
 /** 신청서에서 함께 들어온 값 — 시트 동기화로 채워진다 */
 export type SignupInfo = {
   applicant_type: string | null;
+  /** 남 | 여 — 방 배정에 쓴다 */
+  gender: string | null;
   cell_group: string | null;
   inviter: string | null;
   transport: string | null;

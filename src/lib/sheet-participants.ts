@@ -26,6 +26,8 @@ export type SheetParticipant = {
   phone: string;
   /** 신청자 유형 — 길 공동체 지체 / 초청 받은 지체 */
   applicantType?: string;
+  /** 성별 — 시트는 1/2로 받고 여기서 남/여로 편다 */
+  gender?: string;
   /** 소속 다락방 (길 공동체 지체만) */
   cellGroup?: string;
   /** 초청자 이름 (초청 받은 지체만) */
@@ -67,6 +69,7 @@ const FIELDS: { key: FieldKey; label: string; aliases: string[]; required?: bool
   { key: "stay", label: "숙박일", aliases: ["숙박"] },
   { key: "cellGroup", label: "다락방", aliases: ["다락방", "구역", "셀"] },
   { key: "applicantType", label: "유형", aliases: ["유형", "구분"] },
+  { key: "gender", label: "성별", aliases: ["성별", "gender", "sex"] },
   { key: "name", label: "이름", required: true, aliases: ["이름", "성명", "참가자", "name"] },
   { key: "phone", label: "연락처", required: true, aliases: ["전화번호", "전화", "휴대폰", "핸드폰", "연락처", "phone", "mobile", "tel"] },
 ];
@@ -124,6 +127,19 @@ export function expandBirth(raw: string, year = new Date().getFullYear()): strin
   if (d.length !== 6) return raw ?? "";
   const yy = Number(d.slice(0, 2));
   return (yy <= year % 100 ? "20" : "19") + d;
+}
+
+/**
+ * 성별 — 시트에 1/2로 들어온다.
+ *
+ * 남/여를 그대로 적어 넣는 사람도 있을 수 있어 그 경우도 받는다. 아는 값이
+ * 아니면 비운다 — 모르는 값을 넣으면 DB 제약에 걸려 그 사람이 통째로 빠진다.
+ */
+function readGender(raw: string): string | undefined {
+  const v = (raw ?? "").trim();
+  if (v === "1" || v.startsWith("남")) return "남";
+  if (v === "2" || v.startsWith("여")) return "여";
+  return undefined;
 }
 
 /** 폼 분기 안내(">>> 3-4 질문으로")를 떼어 사람이 읽을 값만 남긴다 */
@@ -191,6 +207,7 @@ export function parseSheetParticipants(values: string[][]): SheetParseResult {
       birth,
       phone,
       applicantType: pick(cells, "applicantType") || undefined,
+      gender: readGender(pick(cells, "gender")),
       cellGroup: pick(cells, "cellGroup") || undefined,
       inviter: pick(cells, "inviter") || undefined,
       transport: transport || undefined,

@@ -22,6 +22,7 @@ const toInput = (p: AdminParticipant): ParticipantInput => ({
   birth_date: p.birth_date,
   phone: p.phone,
   applicant_type: p.applicant_type,
+  gender: p.gender,
   cell_group: p.cell_group,
   inviter: p.inviter,
   transport: p.transport,

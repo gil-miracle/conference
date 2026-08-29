@@ -11,6 +11,7 @@ import type { SignupInfo } from "./types";
  */
 export const SIGNUP_FIELDS: { key: keyof SignupInfo; label: string }[] = [
   { key: "applicant_type", label: "유형" },
+  { key: "gender", label: "성별" },
   { key: "cell_group", label: "다락방" },
   { key: "inviter", label: "초청자" },
   { key: "transport", label: "오는 방법" },

@@ -21,8 +21,22 @@ describe("시트 머리글 찾기", () => {
       ["1", "김예찬", "남", "1994.01.01", "GIL", "01012345678", "차량"],
     ]);
     expect(rows).toEqual([
-      { name: "김예찬", birth: "1994-01-01", phone: "010-1234-5678" },
+      { name: "김예찬", birth: "1994-01-01", phone: "010-1234-5678", gender: "남" },
     ]);
+  });
+
+  it("성별은 1/2로 들어와도 남/여로 편다", () => {
+    const rowsOf = (g: string) =>
+      parseSheetParticipants([
+        ["이름", "생년월일", "휴대폰 번호", "성별"],
+        ["김예찬", "1994.01.01", "01012345678", g],
+      ]).rows;
+    expect(rowsOf("1")[0].gender).toBe("남");
+    expect(rowsOf("2")[0].gender).toBe("여");
+    expect(rowsOf("여자")[0].gender).toBe("여");
+    // 모르는 값은 비운다 — DB 제약에 걸리면 그 사람이 통째로 빠진다
+    expect(rowsOf("3")[0].gender).toBeUndefined();
+    expect(rowsOf("")[0].gender).toBeUndefined();
   });
 
   it("위쪽 안내 문구를 건너뛰고 머리글 행을 찾는다", () => {
