@@ -119,6 +119,19 @@
 .p-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--hair); }
 .p-row:last-child { border: 0; }
 .p-row .info { flex: 1; min-width: 0; }
+/* 다락방 — 이름 옆 작은 표식. 조 편성할 때 눈으로 묶기 좋게 */
+.tagit {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--coral);
+  border: 1px solid currentColor;
+  vertical-align: 2px;
+}
 .p-row b { font-size: 0.9rem; font-weight: 700; }
 .p-row small {
   display: block;

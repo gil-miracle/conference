@@ -75,13 +75,28 @@ const p = (
   team_id: null,
   rooms: null,
   teams: null,
+  applicant_type: null,
+  cell_group: null,
+  inviter: null,
+  transport: null,
+  arrive_day: null,
+  arrive_time: null,
+  stay: null,
+  tshirt: null,
   ...opts,
 });
 
 /** 체크인 탭 명단 */
 export function demoAdminParticipants(): AdminParticipant[] {
   return [
-    p("d1", "강바울", "1998-02-17", "010-8888-9012"),
+    p("d1", "강바울", "1998-02-17", "010-8888-9012", {
+      applicant_type: "길 공동체 지체",
+      cell_group: "BEGIN",
+      transport: "공동체 버스",
+      arrive_day: "9월 11일(금)",
+      arrive_time: "오후 7시 30분",
+      tshirt: "L",
+    }),
     p("d2", "김예찬", "1994-01-01", "010-1234-3456", {
       role: "admin",
       checked_in_at: minsAgo(32),
@@ -89,6 +104,11 @@ export function demoAdminParticipants(): AdminParticipant[] {
       bound_provider: "kakao",
       rooms: { building: "비전관", room_no: "203" },
       teams: { name: "오렌지조" },
+      applicant_type: "길 공동체 지체",
+      cell_group: "BASIC",
+      transport: "자차",
+      arrive_day: "9월 11일(금)",
+      tshirt: "XL",
     }),
     p("d3", "박다윗", "1996-07-11", "010-3333-7890", {
       checked_in_at: minsAgo(2),

@@ -134,7 +134,19 @@ export type Photo = {
   created_at: string;
 };
 
-export type AdminParticipant = {
+/** 신청서에서 함께 들어온 값 — 시트 동기화로 채워진다 */
+export type SignupInfo = {
+  applicant_type: string | null;
+  cell_group: string | null;
+  inviter: string | null;
+  transport: string | null;
+  arrive_day: string | null;
+  arrive_time: string | null;
+  stay: string | null;
+  tshirt: string | null;
+};
+
+export type AdminParticipant = SignupInfo & {
   id: string;
   name: string;
   birth_date: string;

@@ -10,8 +10,8 @@ export type SheetSyncResult =
   | { ok: false; message: string }
   | {
       ok: true;
-      /** 어느 열을 무엇으로 읽었는지 */
-      headers: { name: string; birth: string; phone: string };
+      /** 어느 항목을 어느 열에서 읽었는지 */
+      headers: { field: string; label: string; columns: string[] }[];
       /** 시트에서 읽은 사람 수 */
       total: number;
       /** 이번에 새로 들어온 사람 */
@@ -88,6 +88,14 @@ export async function syncParticipantsFromSheet(): Promise<SheetSyncResult> {
       name: r.name,
       birth_date: r.birth,
       phone: r.phone,
+      applicant_type: r.applicantType ?? null,
+      cell_group: r.cellGroup ?? null,
+      inviter: r.inviter ?? null,
+      transport: r.transport ?? null,
+      arrive_day: r.arriveDay ?? null,
+      arrive_time: r.arriveTime ?? null,
+      stay: r.stay ?? null,
+      tshirt: r.tshirt ?? null,
     }));
     const { error } = await ctx.supabase
       .from("participants")

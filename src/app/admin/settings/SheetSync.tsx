@@ -66,10 +66,16 @@ export default function SheetSync() {
             시트 {result.total}명 — 새로 {result.added}명, 이미 있던{" "}
             {result.unchanged}명
           </p>
-          <small className="mt-8">
-            읽은 열: {result.headers.name} · {result.headers.birth} ·{" "}
-            {result.headers.phone}
-          </small>
+          <details className="mt-12">
+            <summary>읽은 열 {result.headers.length}개</summary>
+            <ul className="plain-list">
+              {result.headers.map((h) => (
+                <li key={h.field}>
+                  <b>{h.label}</b> ← {h.columns.join(" · ")}
+                </li>
+              ))}
+            </ul>
+          </details>
 
           {result.skipped.length > 0 && (
             <details className="mt-12">
