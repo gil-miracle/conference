@@ -72,13 +72,13 @@ export default function AddParticipant({
             options={options}
             busy={busy}
             submitLabel="추가"
+            staffOnly
             onSubmit={submit}
             onCancel={onClose}
           />
           {msg && <p className="msg mt-12">{msg}</p>}
           <small className="pdetail-note">
-            신청서를 쓰지 않은 분(교역자·멘토 등)을 넣는 자리예요. 여기서 넣은
-            사람은 시트에 없어도 동기화가 「시트에 없는 사람」으로 잡지 않아요.
+            체크인과 참석 인원 집계에서는 빠집니다.
           </small>
         </div>
       )}

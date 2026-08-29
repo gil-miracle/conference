@@ -1,4 +1,5 @@
 import type { AdminParticipant } from "./types";
+import { isStaff } from "./participant-fields";
 
 /** 010-****-1234 형태로 마스킹 */
 export function maskPhone(phone: string) {
@@ -75,6 +76,9 @@ export const INVITED = "초청자";
 export function groupTag(
   p: Pick<AdminParticipant, "cell_group" | "inviter" | "applicant_type">
 ): string | null {
+  // 교역자·멘토는 다락방에 매이지 않는다. 체크인 버튼도 없는 줄이라 표식까지
+  // 없으면 왜 다른지 알 수가 없다
+  if (isStaff(p.applicant_type)) return p.applicant_type;
   if (p.cell_group) return p.cell_group;
   return p.inviter || p.applicant_type?.includes("초청") ? INVITED : null;
 }

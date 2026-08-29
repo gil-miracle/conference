@@ -1,4 +1,4 @@
-import type { BannerSetting, MenuVisibility } from "./types";
+import type { BannerSetting, MenuKey, MenuVisibility } from "./types";
 
 export type SiteSettings = {
   banner: BannerSetting;
@@ -11,8 +11,6 @@ export type SiteSettings = {
 };
 
 export const DEFAULT_MENUS: MenuVisibility = {
-  about: true,
-  speakers: true,
   timetable: true,
   songs: true,
   guestbook: true,
@@ -28,6 +26,10 @@ export function parseSiteSettings(rows: SettingRow[] | null): SiteSettings {
     { text?: string; visible?: boolean; value?: boolean } | undefined
   >;
   const rawMenus = (map.menu_visibility ?? {}) as Partial<MenuVisibility>;
+  // 없어진 메뉴가 DB에 남아 있어도 딸려 들어오지 않게 아는 키만 받는다
+  const menus = { ...DEFAULT_MENUS };
+  for (const key of Object.keys(DEFAULT_MENUS) as MenuKey[])
+    if (typeof rawMenus[key] === "boolean") menus[key] = rawMenus[key];
 
   return {
     banner: {
@@ -38,6 +40,6 @@ export function parseSiteSettings(rows: SettingRow[] | null): SiteSettings {
     guestbookOpen: map.guestbook_open?.value !== false,
     roomsOpen: map.rooms_open?.value === true,
     // 설정이 없으면 전부 노출 (기본값)
-    menus: { ...DEFAULT_MENUS, ...rawMenus },
+    menus,
   };
 }

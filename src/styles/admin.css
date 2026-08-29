@@ -44,27 +44,28 @@
   transition: 0.2s;
 }
 .admin .tabs a.on { color: var(--ink); border-color: var(--ink); }
-/* 명단 안쪽 갈래 — 위쪽 탭보다 한 단 작게 해서 층이 보이게 한다 */
-.admin .subtabs {
-  display: flex;
-  gap: 6px;
-  max-width: 640px;
-  margin: 18px auto -6px;
-  padding: 0 22px;
+/* 명단 안쪽 갈래.
+   위쪽 탭이 밑줄이라 여기서 또 밑줄을 쓰면 층이 안 보인다. 헤더와 같은
+   진초록 한 덩어리 스위치로 두고, 켜진 칸만 채운다. */
+.admin .subtabs { max-width: 640px; margin: 22px auto 0; padding: 0 22px; }
+.admin .subtabs-in {
+  display: inline-flex;
+  border: 1px solid var(--deep);
+  background: var(--paper);
 }
 .admin .subtabs a {
-  padding: 6px 14px;
+  padding: 8px 22px;
   font-size: 0.76rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--ink-60);
-  border: 1px solid var(--hair);
-  transition: 0.2s;
+  border-left: 1px solid var(--hair);
+  transition: 0.16s;
 }
-.admin .subtabs a.on {
-  color: var(--cream);
-  background: var(--ink);
-  border-color: var(--ink);
-}
+.admin .subtabs a:first-child { border-left: 0; }
+.admin .subtabs a:hover { color: var(--deep); }
+.admin .subtabs a.on { background: var(--deep); color: var(--cream); }
+
 .admin .container { max-width: 640px; margin: 0 auto; padding: 28px 22px 0; }
 .admin .sec-title { display: flex; justify-content: space-between; align-items: baseline; margin: 26px 0 14px; }
 .admin .sec-title b { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -156,6 +157,9 @@
 /* 임원진(CORNERSTONE)은 색으로 구분한다 — 명단에서 바로 눈에 띄어야 한다 */
 .tagit[data-g="CORNERSTONE"] { color: #2f6fb0; }
 .tagit[data-g="초청자"] { color: var(--green); }
+/* 섬기러 오는 분들 — 참석자와 다르게 읽혀야 한다 */
+.tagit[data-g="교역자"],
+.tagit[data-g="멘토"] { color: var(--cream); background: var(--deep); border-color: var(--deep); }
 .p-row b { font-size: 0.98rem; font-weight: 700; }
 .p-row small {
   display: block;
@@ -582,6 +586,8 @@
   letter-spacing: 0.08em;
   color: var(--ink-60);
 }
+.pf-choice { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.pform select,
 .pform input {
   flex: 1;
   min-width: 0;
@@ -592,6 +598,7 @@
   background: var(--paper);
   color: var(--ink);
 }
+.pform select:focus-visible,
 .pform input:focus-visible { outline: 2px solid var(--coral); outline-offset: 1px; }
 .pform-actions { display: flex; gap: 8px; margin-top: 6px; }
 .pform-actions .btn { flex: 1; }

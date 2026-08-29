@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useConfirm } from "@/components/Confirm";
 import { ProviderMark } from "@/components/icons";
 import { fmtBirth, fmtDateTime, groupTag } from "@/lib/format";
-import { SIGNUP_FIELDS } from "@/lib/participant-fields";
+import { SIGNUP_FIELDS, isStaff } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
 import { assignRoom } from "../actions/rooms";
 import { assignTeam } from "../actions/teams";
@@ -228,14 +228,13 @@ export default function ParticipantDetail({
                     )}
                   </dd>
                 </div>
-                <Row
-                  label="체크인"
-                  value={p.checked_in_at ? fmtDateTime(p.checked_in_at) : "아직"}
-                />
-                <Row
-                  label="출처"
-                  value={p.source === "manual" ? "직접 추가" : "구글 시트"}
-                />
+                {/* 교역자·멘토는 체크인 대상이 아니라 "아직"이 영영 안 바뀐다 */}
+                {!isStaff(p.applicant_type) && (
+                  <Row
+                    label="체크인"
+                    value={p.checked_in_at ? fmtDateTime(p.checked_in_at) : "아직"}
+                  />
+                )}
               </dl>
 
               {/* 여기부터는 명단 쪽에서 바꾸는 값들 */}
@@ -295,11 +294,6 @@ export default function ParticipantDetail({
 
           {msg && <p className="msg mt-12">{msg}</p>}
 
-          <small className="pdetail-note">
-            동기화는 명단에 <b>없는 사람만</b> 새로 넣어요. 여기서 고친 값은 그대로
-            유지됩니다. 시트에 적힌 값으로 되돌리고 싶으면 이 사람을 지우고 다시
-            동기화하세요.
-          </small>
         </div>
       )}
     </dialog>

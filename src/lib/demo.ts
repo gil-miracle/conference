@@ -144,6 +144,12 @@ export function demoAdminParticipants(): AdminParticipant[] {
     p("d5", "최마리아", "1995-12-25", "010-7777-5678", {
       rooms: { building: "은혜관", room_no: "103" },
     }),
+    p("d11", "이한별", "1985-04-09", "010-4545-1212", {
+      source: "manual",
+      applicant_type: "교역자",
+      stay: "9월 11일(금), 9월 12일(토)",
+      tshirt: "XL",
+    }),
   ];
 }
 

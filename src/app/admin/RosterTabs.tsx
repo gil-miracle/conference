@@ -19,15 +19,17 @@ export default function RosterTabs() {
   const pathname = usePathname();
   return (
     <nav className="subtabs">
-      {SUB.map((t) => (
-        <Link
-          key={t.href}
-          href={t.href}
-          className={pathname.startsWith(t.href) ? "on" : ""}
-        >
-          {t.label}
-        </Link>
-      ))}
+      <div className="subtabs-in">
+        {SUB.map((t) => (
+          <Link
+            key={t.href}
+            href={t.href}
+            className={pathname.startsWith(t.href) ? "on" : ""}
+          >
+            {t.label}
+          </Link>
+        ))}
+      </div>
     </nav>
   );
 }

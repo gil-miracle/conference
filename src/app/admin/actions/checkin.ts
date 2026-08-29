@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
+import { isStaff } from "@/lib/participant-fields";
 
 export type CheckinResult = {
   status: "ok" | "already" | "not_found" | "forbidden" | "error";
@@ -26,6 +27,16 @@ export async function checkinByToken(token: string): Promise<CheckinResult> {
 export async function setCheckin(participantId: string, on: boolean) {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false };
+
+  // 화면에서 버튼을 숨기지만 여기서도 막는다 — 유형이 바뀐 직후의 낡은 화면이나
+  // QR로도 들어올 수 있다
+  const { data: target } = await ctx.supabase
+    .from("participants")
+    .select("applicant_type")
+    .eq("id", participantId)
+    .maybeSingle();
+  if (on && isStaff(target?.applicant_type ?? null)) return { ok: false };
+
   const { error } = await ctx.supabase
     .from("participants")
     .update({ checked_in_at: on ? new Date().toISOString() : null })

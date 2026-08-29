@@ -52,8 +52,15 @@ describe("parseSiteSettings", () => {
     ]);
     expect(s.menus.gallery).toBe(false);
     expect(s.menus.songs).toBe(false);
-    expect(s.menus.about).toBe(true); // 새로 생긴 메뉴가 조용히 사라지면 안 된다
-    expect(s.menus.timetable).toBe(true);
+    expect(s.menus.timetable).toBe(true); // 새로 생긴 메뉴가 조용히 사라지면 안 된다
+    expect(s.menus.guestbook).toBe(true);
+  });
+
+  it("없어진 메뉴가 DB에 남아 있어도 딸려 들어오지 않는다", () => {
+    const s = parseSiteSettings([
+      { key: "menu_visibility", value: { speakers: false, songs: false } },
+    ]);
+    expect(s.menus).toEqual({ ...DEFAULT_MENUS, songs: false });
   });
 
   it("모르는 key는 무시한다", () => {

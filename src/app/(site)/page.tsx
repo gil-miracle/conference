@@ -24,19 +24,17 @@ export default async function HomePage() {
       <HeroSection />
 
       {/* 주제 말씀 */}
-      {menus.about && (
-        <section id="about" className="flow">
-          <div className="container">
-            <FlowHead title="초대" />
-            {EVENT.teaserVideo && <TeaserVideo src={EVENT.teaserVideo} />}
-            <p className="lede reveal">{ABOUT_LEDE}</p>
-            <div className="verse reveal">
-              <p>{THEME_VERSE.text}</p>
-              <span className="ref">{THEME_VERSE.ref}</span>
-            </div>
+      <section id="about" className="flow">
+        <div className="container">
+          <FlowHead title="초대" />
+          {EVENT.teaserVideo && <TeaserVideo src={EVENT.teaserVideo} />}
+          <p className="lede reveal">{ABOUT_LEDE}</p>
+          <div className="verse reveal">
+            <p>{THEME_VERSE.text}</p>
+            <span className="ref">{THEME_VERSE.ref}</span>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* 3일 일정 */}
       {menus.timetable && (
@@ -48,34 +46,32 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* 장소 · 오시는 길 */}
-      {menus.about && (
-        <section id="venue" className="flow">
-          <div className="container">
-            <FlowHead title="오시는 길" />
-            <div className="place reveal">
-              <KakaoMap
-                address={EVENT.address}
-                label={EVENT.venue}
-                fallbackLat={EVENT.lat}
-                fallbackLng={EVENT.lng}
-              />
-              <div className="in">
-                <b>{EVENT.venue}</b>
-                <p>{EVENT.venueSub}</p>
-                <div className="map-links">
-                  <a href={EVENT.naverMapUrl} target="_blank" rel="noreferrer">
-                    네이버지도
-                  </a>
-                  <a href={EVENT.kakaoMapUrl} target="_blank" rel="noreferrer">
-                    카카오맵
-                  </a>
-                </div>
+      {/* 장소 · 오시는 길 — 늘 보인다. 못 찾아오면 다른 게 다 소용없다 */}
+      <section id="venue" className="flow">
+        <div className="container">
+          <FlowHead title="오시는 길" />
+          <div className="place reveal">
+            <KakaoMap
+              address={EVENT.address}
+              label={EVENT.venue}
+              fallbackLat={EVENT.lat}
+              fallbackLng={EVENT.lng}
+            />
+            <div className="in">
+              <b>{EVENT.venue}</b>
+              <p>{EVENT.venueSub}</p>
+              <div className="map-links">
+                <a href={EVENT.naverMapUrl} target="_blank" rel="noreferrer">
+                  네이버지도
+                </a>
+                <a href={EVENT.kakaoMapUrl} target="_blank" rel="noreferrer">
+                  카카오맵
+                </a>
               </div>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </>
   );
 }

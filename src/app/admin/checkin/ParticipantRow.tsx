@@ -2,6 +2,7 @@
 
 import { ProviderMark } from "@/components/icons";
 import { fmtBirth, fmtTime, groupTag, maskPhone } from "@/lib/format";
+import { isStaff } from "@/lib/participant-fields";
 import type { AdminParticipant } from "@/lib/types";
 
 /** 폼 선택지가 길어 잘리므로 괄호 안 설명은 떼어낸다 — "공동체 버스(9/11 …)" → "공동체 버스" */
@@ -56,7 +57,8 @@ export default function ParticipantRow({
           </small>
         )}
       </div>
-      {p.checked_in_at ? (
+      {/* 교역자·멘토는 체크인 대상이 아니다 — 버튼이 있으면 눌리게 되어 있다 */}
+      {isStaff(p.applicant_type) ? null : p.checked_in_at ? (
         <button className="done" title="탭하면 체크인 취소" onClick={onToggleCheckin}>
           ✓ {fmtTime(p.checked_in_at)}
         </button>

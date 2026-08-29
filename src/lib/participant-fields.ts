@@ -19,3 +19,17 @@ export const SIGNUP_FIELDS: { key: keyof SignupInfo; label: string }[] = [
   { key: "stay", label: "숙박일" },
   { key: "tshirt", label: "티셔츠" },
 ];
+
+/**
+ * 신청서에 없는 유형 — 교역자·멘토는 신청을 받지 않고 우리가 넣는다.
+ *
+ * 두 분류를 한 칸에 묶지 않는다. 방 배정도 역할도 다르게 보게 되는 자리다.
+ */
+export const STAFF_TYPES = ["교역자", "멘토"];
+
+/** 교역자·멘토에게는 해당이 없는 항목 — 물어볼 것도, 채울 것도 없다 */
+export const STAFF_HIDDEN: (keyof SignupInfo)[] = ["cell_group", "inviter"];
+
+/** 섬기러 오는 분들 — 체크인도 참석 인원 집계도 하지 않는다 */
+export const isStaff = (applicantType: string | null) =>
+  STAFF_TYPES.includes(applicantType ?? "");
