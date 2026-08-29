@@ -9,7 +9,7 @@ import {
   setRoomMembers,
   setRoomLeader,
 } from "../actions/rooms";
-import { ROOM_GENDERS, type PersonLite, type RoomHold } from "@/lib/types";
+import type { PersonLite, RoomHold } from "@/lib/types";
 
 /**
  * 방 한 칸의 사람들 — 이름 칩과 빈 자리, 그리고 둘 다 여는 배정 모달.
@@ -32,7 +32,7 @@ import { ROOM_GENDERS, type PersonLite, type RoomHold } from "@/lib/types";
  */
 export default function RoomFill({
   roomId,
-  roomLabel,
+  roomName,
   roomGender,
   capacity,
   people,
@@ -41,7 +41,8 @@ export default function RoomFill({
   leaderId,
 }: {
   roomId: string;
-  roomLabel: string;
+  /** 건물 + 호수 */
+  roomName: string;
   roomGender: string;
   capacity: number;
   /** 아직 어느 방에도 없는 사람 */
@@ -60,7 +61,9 @@ export default function RoomFill({
   const [leader, setLeader] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [holdName, setHoldName] = useState("");
-  const [holdGender, setHoldGender] = useState("남");
+  /* 자리 채움도 방 성별을 따른다 — 남자 방에 여자 자리를 만들 일이 없다 */
+  const holdGenders = roomGender === "기타" ? ["남", "여"] : [roomGender];
+  const [holdGender, setHoldGender] = useState(holdGenders[0]);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -77,6 +80,7 @@ export default function RoomFill({
       setLeader(leaderId);
       setQ("");
       setHoldName("");
+      setHoldGender(holdGenders[0]);
       setMsg(null);
     }
     // memberIds는 매 렌더 새 배열이라 의존성에 넣으면 열자마자 되돌려진다
@@ -191,11 +195,16 @@ export default function RoomFill({
           <div className="pdetail-in">
             <header>
               <b>
-                {roomLabel}
-                <span className="tagit">
-                  {picked.length + holds.length} / {capacity}
+                {roomName}
+                <span className="rg" data-g={roomGender}>
+                  {roomGender}
                 </span>
               </b>
+              <span
+                className={`cap${picked.length + holds.length >= capacity ? " full" : ""}`}
+              >
+                {picked.length + holds.length} / {capacity}
+              </span>
             </header>
 
             <input
@@ -283,10 +292,10 @@ export default function RoomFill({
                 />
                 <select
                   value={holdGender}
-                  disabled={busy}
+                  disabled={busy || holdGenders.length === 1}
                   onChange={(e) => setHoldGender(e.target.value)}
                 >
-                  {ROOM_GENDERS.filter((g) => g !== "기타").map((g) => (
+                  {holdGenders.map((g) => (
                     <option key={g} value={g}>
                       {g}
                     </option>

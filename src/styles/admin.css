@@ -184,10 +184,13 @@
 .room { border: 1px solid var(--ink); background: var(--paper); margin-bottom: -1px; padding: 16px 18px; }
 .room .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .room b { font-size: 0.95rem; font-weight: 700; }
-.room .cap { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--ink-60); white-space: nowrap; }
-.room .cap.full { color: var(--coral); }
+.room .cap,
+.pdetail header .cap { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--ink-60); white-space: nowrap; }
+.room .cap.full,
+.pdetail header .cap.full { color: var(--coral); }
 /* 방 성별 — 배정할 때 이름만 보고 엉뚱한 방에 넣지 않게 방 이름 옆에 붙인다 */
-.room .rg {
+.room .rg,
+.pdetail header .rg {
   display: inline-block;
   margin-left: 7px;
   padding: 1px 7px;
@@ -199,8 +202,10 @@
   vertical-align: 2px;
   color: var(--ink-60);
 }
-.room .rg[data-g="남"] { color: #2f6fb0; }
-.room .rg[data-g="여"] { color: var(--coral); }
+.room .rg[data-g="남"],
+.pdetail header .rg[data-g="남"] { color: #2f6fb0; }
+.room .rg[data-g="여"],
+.pdetail header .rg[data-g="여"] { color: var(--coral); }
 .room .members { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .room .members .mchip,
 .room .members .empty,
@@ -340,8 +345,12 @@
 .room .members .mchip:hover { border-color: currentColor; }
 .room .members .mchip[data-g="남"] { color: #2f6fb0; }
 .room .members .mchip[data-g="여"] { color: #c2557a; }
-/* 자리 채움 — 명단에 없는 사람이라 점선으로 구분한다 */
-.room .members .mchip.hold { border-style: dashed; }
+/* 자리 채움 — 명단에 없는 사람이다. 점선만으로는 옆의 「빈 자리」와 헷갈려
+   바탕을 깔아 "자리는 찼지만 명단 밖"으로 읽히게 한다 */
+.room .members .mchip.hold {
+  border-style: dashed;
+  background: rgba(33, 29, 25, 0.07);
+}
 /* 방장은 맨 앞에 오고 테두리가 진하다 — 색은 성별이 쓰고 있어 무게로 가른다 */
 .room .members .mchip.lead { border-color: currentColor; font-weight: 700; }
 .room .members .mchip.lead i {

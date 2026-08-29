@@ -119,7 +119,7 @@ export default function RoomsPanel({
             <div className="members">
               <RoomFill
                 roomId={room.id}
-                roomLabel={`${room.building} ${room.room_no} · ${room.gender}`}
+                roomName={`${room.building} ${room.room_no}`}
                 roomGender={room.gender}
                 capacity={room.capacity}
                 people={unassigned}
