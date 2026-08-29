@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useNames } from "@/hooks/useNames";
+import { useConfirm } from "@/components/Confirm";
+import { useNames, shortName } from "@/hooks/useNames";
 import Shuffle from "./games/Shuffle";
 import Ladder from "./games/Ladder";
 import Roulette from "./games/Roulette";
@@ -28,6 +29,7 @@ type GameKey = (typeof GAMES)[number]["key"];
  */
 export default function NanumBoard() {
   const { names, loaded, add, remove, clear } = useNames();
+  const confirm = useConfirm();
   const [input, setInput] = useState("");
   const [game, setGame] = useState<GameKey | null>(null);
 
@@ -57,13 +59,23 @@ export default function NanumBoard() {
         <>
           <div className="chips">
             {names.map((n) => (
-              <button key={n} className="chip-x" onClick={() => remove(n)}>
-                {n}
+              <button key={n} className="chip-x" title={n} onClick={() => remove(n)}>
+                {shortName(n)}
                 <i aria-hidden="true">✕</i>
               </button>
             ))}
           </div>
-          <button className="btn-plain nanum-clear" onClick={clear}>
+          <button
+            className="btn-plain nanum-clear"
+            onClick={async () => {
+              const ok = await confirm({
+                message: `명단 ${names.length}명이 모두 지워져요. 계속할까요?`,
+                confirmLabel: "전체 지우기",
+                danger: true,
+              });
+              if (ok) clear();
+            }}
+          >
             전체 지우기
           </button>
         </>
@@ -95,7 +107,7 @@ export default function NanumBoard() {
           {game === "ladder" && <Ladder names={names} />}
           {game === "lots" && <DrawLots names={names} />}
           {game === "roulette" && <Roulette names={names} />}
-          {game === "pick" && <PickCard />}
+          {game === "pick" && <PickCard names={names} />}
           {game === "bomb" && <Bomb names={names} />}
         </>
       )}

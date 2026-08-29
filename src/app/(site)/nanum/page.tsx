@@ -4,7 +4,7 @@ import PageHead from "@/components/PageHead";
 import NanumBack from "@/components/nanum/NanumBack";
 import NanumBoard from "@/components/nanum/NanumBoard";
 
-export const metadata: Metadata = { title: "나눔 순서 — MIRACLE 2026" };
+export const metadata: Metadata = { title: "나눔 순서 정하기 — MIRACLE 2026" };
 export const revalidate = 3600;
 
 export default function NanumPage() {
@@ -15,7 +15,7 @@ export default function NanumPage() {
         <Suspense fallback={null}>
           <NanumBack />
         </Suspense>
-        <PageHead title="나눔 순서" />
+        <PageHead title="나눔 순서 정하기" />
         <NanumBoard />
       </div>
     </section>

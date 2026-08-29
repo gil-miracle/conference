@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 
 const KEY = "miracle.nanum.names";
+/** 이름 최대 길이 — 긴 이름 하나가 칩·카드·룰렛 조각을 다 밀어낸다 */
+export const MAX_NAME = 10;
 
 /**
  * 나눔 순서를 정할 사람 목록.
@@ -39,7 +41,7 @@ export function useNames() {
       // 쉼표·줄바꿈으로 여러 명을 한 번에 붙여넣을 수 있게
       const parts = raw
         .split(/[,\n]/)
-        .map((s) => s.trim())
+        .map((s) => s.trim().slice(0, MAX_NAME))
         .filter(Boolean);
       if (parts.length === 0) return;
       setNames((prev) => {
@@ -62,6 +64,15 @@ export function useNames() {
   const clear = useCallback(() => save([]), [save]);
 
   return { names, loaded, add, remove, clear };
+}
+
+/**
+ * 좁은 칸(칩·카드·룰렛 조각)에 넣는 이름.
+ * 다섯 글자부터 줄인다 — 긴 이름 하나가 칸을 밀어내면 표가 통째로 어긋난다.
+ * 전체 이름은 title로 남겨 눌러 보면 알 수 있게 한다.
+ */
+export function shortName(name: string, max = 4) {
+  return name.length > max ? `${name.slice(0, max)}…` : name;
 }
 
 /** 피셔–예이츠 — 앞에서부터 뽑아 넣어 치우침이 없다 */

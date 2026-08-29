@@ -39,7 +39,7 @@ export default async function QtPage({ params }: Props) {
           title={`${found.date} QT`}
           action={
             <Link className="head-action" href={`/nanum?from=${found.day}`}>
-              나눔 순서
+              나눔 순서 정하기
             </Link>
           }
         />
