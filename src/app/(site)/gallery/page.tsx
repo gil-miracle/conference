@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageHead from "@/components/PageHead";
-import GalleryLocked from "@/components/gallery/GalleryLocked";
+import Locked from "@/components/Locked";
+import { CameraIcon } from "@/components/icons";
 import GalleryDemoGrid from "@/components/gallery/GalleryDemoGrid";
 import GalleryGrid from "@/components/gallery/GalleryGrid";
 import { getCloudName } from "@/lib/cloudinary";
@@ -24,17 +25,17 @@ export default async function GalleryPage({
       <div className="container">
         <PageHead title="우리의 순간들" />
         {!ctx.galleryOpen ? (
-          <GalleryLocked showLogin={!ctx.authed}>
+          <Locked icon={<CameraIcon />} showLogin={!ctx.authed}>
             컨퍼런스가 시작되면 열려요.
             <br />
             현장에서 찍은 사진을 함께 올리고 볼 수 있어요.
-          </GalleryLocked>
+          </Locked>
         ) : !ctx.authed ? (
-          <GalleryLocked showLogin>
+          <Locked icon={<CameraIcon />} showLogin>
             갤러리가 열렸어요! 로그인하고 우리의 순간들을 함께 나눠요.
-          </GalleryLocked>
+          </Locked>
         ) : !bound ? (
-          <GalleryLocked showBind>신청 명단과 연결하면 사진을 올리고 볼 수 있어요.</GalleryLocked>
+          <Locked icon={<CameraIcon />} showBind>신청 명단과 연결하면 사진을 올리고 볼 수 있어요.</Locked>
         ) : ctx.demoMode ? (
           <GalleryDemoGrid />
         ) : (
