@@ -987,13 +987,16 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 
    반투명으로 두면 안 된다 — 묶음 배경이 줄 사이 선 색(--hair, 어두운 회색)이라
    그게 비쳐 올라와 죄다 탁한 회보라가 된다. 종이 위에 얹은 값을 미리 계산해
-   불투명하게 박아 둔다. */
-.ss-group[data-n="1"] { --ms-bg: #fde8e4; --ms-fg: #c0453c; }
-.ss-group[data-n="2"] { --ms-bg: #fbe0da; --ms-fg: #b53a30; }
-.ss-group[data-n="3"] { --ms-bg: #fdead0; --ms-fg: #9c5c11; }
-.ss-group[data-n="4"] { --ms-bg: #fce6d8; --ms-fg: #a55c35; }
-.ss-group[data-n="5"] { --ms-bg: #edeaf8; --ms-fg: #5c4d8c; }
-.ss-group[data-n="6"] { --ms-bg: #e2efe4; --ms-fg: #2a5233; }
+   불투명하게 박아 둔다.
+
+   밝기는 띠에만 준다 — 선과 글자까지 밝히면 띠가 띠로 안 보이고
+   0.64rem 모노 글자가 띠 위에서 묻힌다. 모두 대비 4.5:1 위로 둔다. */
+.ss-group[data-n="1"] { --ms-bg: #fee4e8; --ms-fg: #b83f4a; }
+.ss-group[data-n="2"] { --ms-bg: #fee5e1; --ms-fg: #b53a30; }
+.ss-group[data-n="3"] { --ms-bg: #feefdc; --ms-fg: #9c5c11; }
+.ss-group[data-n="4"] { --ms-bg: #fee7dc; --ms-fg: #9b5330; }
+.ss-group[data-n="5"] { --ms-bg: #ece7fb; --ms-fg: #5c4d8c; }
+.ss-group[data-n="6"] { --ms-bg: #e1f6e7; --ms-fg: #2a5233; }
 
 /* ── 주요 순서 본문 ── */
 .ss-row.main { display: grid; grid-template-columns: 1fr; align-items: stretch; }
