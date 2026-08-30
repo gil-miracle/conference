@@ -17,6 +17,9 @@ export const DEFAULT_MENUS: MenuVisibility = {
   songs: true,
   guestbook: true,
   gallery: true,
+  // 때가 되면 켠다 — 신청은 정해진 날 열리고, 점수는 레크리에이션 때만 쓴다
+  mentoring: false,
+  standings: false,
 };
 
 type SettingRow = { key: string; value: unknown };

@@ -33,9 +33,9 @@ export default async function ProfilePage({
           <PageHead title="내 정보" />
           <PreviewNotice />
           <div className="reveal" aria-hidden="true">
+            <RoomCard room={MY_PREVIEW.room} mates={MY_PREVIEW.mates} open />
+            <TeamCard team={MY_PREVIEW.team} open />
             <WordCard name={MY_PREVIEW.name} />
-            <RoomCard room={MY_PREVIEW.room} mates={MY_PREVIEW.mates} />
-            <TeamCard team={MY_PREVIEW.team} />
           </div>
         </div>
       </section>
@@ -52,20 +52,22 @@ export default async function ProfilePage({
           <PendingCard summary={summary} />
         ) : (
           <div className="reveal">
-            <WordCard name={summary.name} />
-            <WordcardSave name={summary.name} />
-            {summary.rooms_open && (
-              <>
-                <RoomCard room={summary.room} mates={summary.mates} />
-                <TeamCard team={summary.team} />
-              </>
-            )}
+            {/* 체크인 데스크에서 제일 먼저 여는 화면이다 — QR이 맨 위 */}
             {summary.checkin_token && (
               <QrCard
                 token={summary.checkin_token}
                 checkedInAt={summary.checked_in_at}
               />
             )}
+            {/* 공개 전에도 자리는 둔다. 없다가 생기면 "내 건 왜 없지"가 된다 */}
+            <RoomCard
+              room={summary.room}
+              mates={summary.mates}
+              open={summary.rooms_open === true}
+            />
+            <TeamCard team={summary.team} open={summary.rooms_open === true} />
+            <WordCard name={summary.name} />
+            <WordcardSave name={summary.name} />
           </div>
         )}
       </div>

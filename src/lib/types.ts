@@ -245,5 +245,11 @@ export type AdminStats = {
 export type BannerSetting = { text: string; visible: boolean };
 
 /** 사이트 메뉴 노출 — 관리자 설정에서 항목별로 켜고 끈다 */
-export type MenuKey = "timetable" | "songs" | "guestbook" | "gallery";
+export type MenuKey =
+  | "timetable"
+  | "songs"
+  | "guestbook"
+  | "gallery"
+  | "mentoring"
+  | "standings";
 export type MenuVisibility = Record<MenuKey, boolean>;

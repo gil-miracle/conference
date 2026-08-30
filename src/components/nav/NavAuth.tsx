@@ -75,6 +75,17 @@ export default function NavAuth() {
           <Link href="/profile" role="menuitem">
             내 정보
           </Link>
+          {/* 메뉴 노출은 설정에서 켠다 — 때가 되기 전에는 자리조차 없다 */}
+          {session.menus.mentoring && (
+            <Link href="/mentoring" role="menuitem">
+              멘토님과의 시간
+            </Link>
+          )}
+          {session.menus.standings && (
+            <Link href="/standings" role="menuitem">
+              조 점수
+            </Link>
+          )}
           <form action="/auth/signout" method="post">
             <button type="submit" role="menuitem">
               로그아웃
