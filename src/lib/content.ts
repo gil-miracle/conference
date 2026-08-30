@@ -247,7 +247,7 @@ export const TIMETABLE: TimetableDay[] = [
         time: "20:00–20:30",
         speakerId: "kim-dongwook",
         role: "찬양",
-        title: "스페셜 게스트",
+        title: "SPECIAL GUEST",
         main: true,
       },
       {
@@ -319,7 +319,6 @@ export const TIMETABLE: TimetableDay[] = [
         ],
         main: true,
       },
-      { time: "16:00–", title: "귀가" },
     ],
   },
 ];

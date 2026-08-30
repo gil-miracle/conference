@@ -64,12 +64,6 @@ export default function SessionRow({
             <small className="preacher">
               <span className="role">{role}</span>
               {speaker.name}
-              {speaker.org && (
-                <>
-                  <span className="sep">|</span>
-                  <span className="org">{speaker.org}</span>
-                </>
-              )}
             </small>
           </>
         ) : (
