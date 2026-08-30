@@ -111,8 +111,14 @@ export async function deletePhoto(id: string) {
   const supabase = await getSupabaseServer();
   if (!supabase) return { ok: false };
   // DB에서만 제거 (RLS: 본인 또는 admin). Cloudinary 원본 정리는 콘솔에서 일괄.
-  const { error } = await supabase.from("photos").delete().eq("id", id);
-  if (error) return { ok: false };
+  // 정책에 막히면 오류가 아니라 0행으로 돌아온다 — 확인하지 않으면 남의 사진을
+  // 지운 척하게 된다.
+  const { data, error } = await supabase
+    .from("photos")
+    .delete()
+    .eq("id", id)
+    .select("id");
+  if (error || !data?.length) return { ok: false };
   revalidatePath("/");
   return { ok: true };
 }

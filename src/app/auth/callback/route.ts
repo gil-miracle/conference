@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { safeNext } from "@/lib/redirect";
 
 /** 소셜 로그인 OAuth 콜백 — 세션 교환 후 바인딩 여부에 따라 분기 */
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  let next = searchParams.get("next") ?? "/";
-  if (!next.startsWith("/")) next = "/";
+  const next = safeNext(searchParams.get("next"));
 
   const supabase = await getSupabaseServer();
   if (supabase && code) {
