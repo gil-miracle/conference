@@ -64,7 +64,6 @@ export const ABOUT_LEDE =
 // 일정 순서대로 나열한다 (금 → 토 → 주일).
 // 어느 순서를 맡는지는 TIMETABLE의 speakerId 한 곳에서만 관리한다.
 // ⚠️ bio는 형식을 보여주기 위한 예시다. 본인 확인을 거쳐 실제 약력으로 교체할 것.
-// ⚠️ org가 빈 사람은 소속을 아직 못 받았다 — 채우면 이름 옆에 자동으로 붙는다.
 export const SPEAKERS: Speaker[] = [
   {
     id: "choi-jaeyoon",
@@ -96,8 +95,8 @@ export const SPEAKERS: Speaker[] = [
   {
     id: "kim-dongwook",
     name: "김동욱 목사",
-    org: "",
-    tag: "SAT · 특순",
+    org: "히즈윌",
+    tag: "SAT · SPECIAL GUEST",
     img: "kim-dongwook.png",
     bio:
       "(예시) 둘째 날 저녁 예배의 특순을 맡습니다. 말씀 앞에 마음을 여는 자리를 찬양으로 준비합니다.",
@@ -105,7 +104,7 @@ export const SPEAKERS: Speaker[] = [
   {
     id: "jeon-hyeok",
     name: "전혁 목사",
-    org: "",
+    org: "사송영락교회 담임목사 · 예람워십 대표",
     tag: "SAT · MIRACLE 4",
     img: "jeon-hyeok.png",
     bio:
@@ -114,7 +113,7 @@ export const SPEAKERS: Speaker[] = [
   {
     id: "bae-haengsam",
     name: "배행삼 목사",
-    org: "",
+    org: "온누리교회 부목사 · 2000선교본부",
     tag: "SUN · MIRACLE 5",
     img: "bae-haengsam.png",
     bio:
@@ -248,7 +247,7 @@ export const TIMETABLE: TimetableDay[] = [
         time: "20:00–20:30",
         speakerId: "kim-dongwook",
         role: "찬양",
-        title: "특순",
+        title: "스페셜 게스트",
         main: true,
       },
       {
