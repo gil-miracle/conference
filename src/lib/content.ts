@@ -115,7 +115,7 @@ export const SPEAKERS: Speaker[] = [
     id: "bae-haengsam",
     name: "배행삼 목사",
     org: "",
-    tag: "SUN · MIRACLE 6",
+    tag: "SUN · MIRACLE 5",
     img: "bae-haengsam.png",
     bio:
       "(예시) 이번 컨퍼런스에서는 마지막 주일 예배를 맡아, 흩어지는 자리를 함께합니다.",
@@ -208,9 +208,10 @@ export const TIMETABLE: TimetableDay[] = [
         "오늘 주님으로 채워 주소서.",
     },
     items: [
-      { time: "07:00–09:00", title: "QT 및 아침식사", href: "/qt/2" },
+      { time: "07:00–08:30", title: "QT 및 아침식사", href: "/qt/2" },
+      { time: "08:30–09:00", title: "예배당 입장 및 준비" },
       {
-        time: "09:00–12:00",
+        time: "09:00–10:30",
         badge: "MIRACLE 2",
         speakerId: "cho-youngchan",
         title: "오전 예배",
@@ -227,18 +228,21 @@ export const TIMETABLE: TimetableDay[] = [
         ],
         main: true,
       },
-      { time: "12:00–14:00", title: "점심식사" },
-      { time: "14:00–16:00", badge: "MIRACLE 3", title: "프로그램", main: true },
+      // 눌러서 신청 화면으로 — 이 순서만 미리 정해두는 것이 있다
+      { time: "10:30–12:30", title: "멘토님 타임", href: "/mentoring" },
+      { time: "12:30–14:00", title: "점심식사" },
+      { time: "14:00–16:00", title: "프로그램" },
       {
-        // 오후 프로그램에 이어지는 순서 — MIRACLE 3 블록을 함께 쓴다
-        time: "16:00–18:00",
+        time: "16:00–17:30",
+        badge: "MIRACLE 3",
         speakerId: "lee-giljae",
         role: "강사",
         title: "선교 특강",
-        joinPrev: true,
         main: true,
       },
-      { time: "18:00–20:00", title: "저녁식사" },
+      { time: "17:30–18:00", title: "쉬는 시간" },
+      { time: "18:00–19:30", title: "저녁식사" },
+      { time: "19:30–20:00", title: "식사 종료 및 예배 준비" },
       {
         // 저녁 예배의 앞순서 — 아래 저녁 예배와 MIRACLE 4 배지를 함께 쓴다
         time: "20:00–20:30",
@@ -294,13 +298,16 @@ export const TIMETABLE: TimetableDay[] = [
         "제 힘이 아니라 주님의 도우심으로 걷게 하소서.",
     },
     items: [
-      { time: "07:00–09:00", title: "QT 및 아침식사", href: "/qt/3" },
-      { time: "09:00–10:00", title: "출발" },
-      { time: "10:00–12:00", badge: "MIRACLE 5", title: "프로그램", main: true },
-      { time: "12:00–14:00", title: "점심식사" },
+      { time: "07:00–07:30", title: "짐 정리" },
+      { time: "07:30–08:30", title: "QT 및 아침식사", href: "/qt/3" },
+      { time: "08:30–09:00", title: "출발 준비" },
+      { time: "09:00–09:30", title: "출발" },
+      { time: "09:30–12:00", title: "영화 War Room" },
+      { time: "12:00–13:00", title: "점심식사" },
+      { time: "13:00–13:30", title: "예배 준비" },
       {
-        time: "14:00–16:00",
-        badge: "MIRACLE 6",
+        time: "13:30–16:00",
+        badge: "MIRACLE 5",
         speakerId: "bae-haengsam",
         title: "주일 예배",
         sermon: "일어나 빛을 발하라",
@@ -313,6 +320,7 @@ export const TIMETABLE: TimetableDay[] = [
         ],
         main: true,
       },
+      { time: "16:00–", title: "귀가" },
     ],
   },
 ];
@@ -341,7 +349,7 @@ export const SONG_SETS_FALLBACK: SongSet[] = [
   },
   {
     id: "set-6",
-    name: "MIRACLE 6 — 주일 예배",
+    name: "MIRACLE 5 — 주일 예배",
     dayLabel: "주일 13",
     timeLabel: "14:00",
     leader: "박민희 자매",
