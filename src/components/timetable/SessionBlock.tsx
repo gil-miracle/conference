@@ -27,8 +27,9 @@ export default function SessionBlock({ items }: { items: TimetableItem[] }) {
     <div className="ss-group" data-n={badgeNo}>
       {badge && (
         <div className="ss-gh">
-          <span className="w">{badge}</span>
+          {/* 곁순서와 같은 차례로 — 시간을 먼저 보고 무엇인지를 본다 */}
           <time>{spanOf(items)}</time>
+          <span className="w">{badge}</span>
         </div>
       )}
       {items.map((item) => (
