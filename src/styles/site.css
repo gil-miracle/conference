@@ -953,10 +953,24 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
    가로 한 줄로 이름과 시간을 얹고, 왼쪽 색 선이 묶음 전체를 따라 내려간다.
    "이 집회가 여기서 여기까지"가 선 길이로 읽힌다. */
 .ss-group {
+  position: relative;
   display: grid;
   gap: 1px;
   background: var(--hair);
-  border-left: 5px solid var(--ms-fg, var(--coral));
+}
+/* 색 선은 자리를 차지하면 안 된다. border로 두면 묶음 안쪽만 선 굵기만큼
+   밀려서, 집회의 시간·제목이 곁순서의 시간·제목과 왼쪽이 어긋난다.
+   어차피 줄마다 좌우 여백이 있으니 그 여백 위에 겹쳐 얹는다.
+   줄 배경이 불투명해서 z-index로 한 겹 올려야 가려지지 않는다. */
+.ss-group::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 5px;
+  background: var(--ms-fg, var(--coral));
+  z-index: 1;
 }
 .ss-gh {
   display: flex;
