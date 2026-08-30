@@ -22,8 +22,6 @@ function spanOf(items: TimetableItem[]) {
 export default function SessionBlock({ items }: { items: TimetableItem[] }) {
   const badge = items.find((i) => i.badge)?.badge;
   const badgeNo = badge?.match(/\d+$/)?.[0];
-  // 순서가 둘 이상이면 각 줄에도 제 시간을 적는다 — 머리에 적힌 건 묶음 전체다
-  const many = items.length > 1;
 
   return (
     <div className="ss-group" data-n={badgeNo}>
@@ -37,7 +35,7 @@ export default function SessionBlock({ items }: { items: TimetableItem[] }) {
         <SessionRow
           key={`${item.time}-${item.title}`}
           item={item}
-          showTime={!badge || many}
+          showTime={!badge}
         />
       ))}
     </div>
