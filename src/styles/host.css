@@ -1,0 +1,141 @@
+/* ════ 진행자 화면 — 점수와 순위만 ════ */
+
+.host-shell { min-height: 100vh; background: var(--cream); padding-bottom: 80px; }
+
+.host-top {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 22px;
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--deep);
+  color: var(--cream);
+}
+.host-top b { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; }
+.host-top span {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  opacity: 0.6;
+}
+
+/* ── 순위 ──
+   1등만 색으로 가른다. 다 칠하면 어디가 위인지 오히려 안 보인다. */
+.rank { list-style: none; margin: 0; padding: 0; border: 1px solid var(--ink); background: var(--paper); }
+.rank li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hair);
+}
+.rank li:last-child { border-bottom: 0; }
+.rank .n {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-60);
+  width: 1.4em;
+  flex: none;
+}
+.rank b { flex: 1; font-size: 0.95rem; font-weight: 700; }
+.rank em {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.rank em i {
+  font-style: normal;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-60);
+  margin-left: 8px;
+}
+.rank li.top { background: rgba(220, 90, 81, 0.07); }
+.rank li.top .n, .rank li.top b, .rank li.top em { color: var(--coral); }
+
+/* ── 게임 고르기 ── */
+.gtabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.gtab {
+  padding: 9px 16px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-60);
+  background: var(--paper);
+  border: 1px solid var(--hair);
+  cursor: pointer;
+  transition: 0.16s;
+}
+.gtab:hover { color: var(--ink); border-color: var(--ink); }
+.gtab.on { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+/* ── 점수 넣기 ──
+   숫자 칸을 크게 둔다. 서서 한 손으로 누르는 자리다. */
+.score-list { border: 1px solid var(--ink); background: var(--paper); }
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--hair);
+}
+.score-row:last-child { border-bottom: 0; }
+.score-row b { flex: 1; font-size: 0.92rem; font-weight: 700; }
+.score-row input {
+  width: 6.5em;
+  flex: none;
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  text-align: right;
+  padding: 10px 12px;
+  border: 1px solid var(--hair);
+  background: var(--cream);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.score-row input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+
+/* ── 가산점 ── */
+.bonus-form { display: flex; flex-wrap: wrap; gap: 6px; }
+.bonus-form select,
+.bonus-form input {
+  font: inherit;
+  font-size: 0.84rem;
+  padding: 10px 12px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink);
+}
+.bonus-form input:not(.w-70) { flex: 1; min-width: 140px; }
+.bonus-form input:focus,
+.bonus-form select:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+
+.bonus-list { margin-top: 12px; border: 1px solid var(--hair); background: var(--paper); }
+.bonus-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--hair);
+  font-size: 0.86rem;
+}
+.bonus-row:last-child { border-bottom: 0; }
+.bonus-row b { font-weight: 700; margin-right: 6px; }
+.bonus-row i {
+  font-style: normal;
+  color: var(--ink-60);
+  font-size: 0.8rem;
+  margin-left: 10px;
+}
+.bonus-row .btn-plain { font-size: 0.7rem; color: var(--ink-60); flex: none; }
+.bonus-row .btn-plain:hover { color: var(--coral); }

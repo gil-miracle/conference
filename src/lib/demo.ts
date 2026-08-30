@@ -75,6 +75,7 @@ const p = (
   birth_date: birth,
   phone,
   role: "member",
+  is_host: false,
   checked_in_at: null,
   auth_user_id: null,
   bound_at: null,

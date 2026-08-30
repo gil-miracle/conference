@@ -12,6 +12,26 @@ import { getAdminContext } from "@/lib/admin";
  * 스스로는 못 내린다 — 마지막 관리자가 자기 권한을 내리면 아무도 관리자
  * 화면에 못 들어가고, 되돌리려면 다시 SQL을 열어야 한다.
  */
+/** 진행자 지정·해제 — 레크리에이션 점수를 넣을 수 있는가. 역할과 독립이다 */
+export async function setHost(participantId: string, isHost: boolean) {
+  const ctx = await getAdminContext();
+  if (!ctx) return { ok: false as const, message: "권한이 없어요." };
+
+  const { data, error } = await ctx.supabase
+    .from("participants")
+    .update({ is_host: isHost })
+    .eq("id", participantId)
+    .select("id");
+  if (error) return { ok: false as const, message: error.message };
+  if (!data?.length) return { ok: false as const, message: "변경되지 않았어요." };
+
+  revalidatePath("/admin");
+  return {
+    ok: true as const,
+    message: isHost ? "진행자로 지정했어요." : "진행자에서 내렸어요.",
+  };
+}
+
 export async function setRole(participantId: string, role: "admin" | "member") {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false as const, message: "권한이 없어요." };

@@ -8,7 +8,7 @@ import { SIGNUP_FIELDS, isStaff } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
 import { assignRoom } from "../actions/rooms";
 import { assignTeam } from "../actions/teams";
-import { setRole } from "../actions/role";
+import { setHost, setRole } from "../actions/role";
 import {
   removeParticipant,
   updateParticipant,
@@ -121,6 +121,16 @@ export default function ParticipantDetail({
     onDeleted(`${p.name} 님을 지웠어요.`);
   };
 
+  const toggleHost = async () => {
+    if (!p) return;
+    if (demo) return setMsg("미리보기 모드 — 저장되지 않아요.");
+    setBusy(true);
+    const res = await setHost(p.id, !p.is_host);
+    setBusy(false);
+    setMsg(res.message);
+    if (res.ok) onChanged();
+  };
+
   const toggleAdmin = async () => {
     if (!p) return;
     const next = p.role === "admin" ? "member" : "admin";
@@ -175,6 +185,11 @@ export default function ParticipantDetail({
               {p.role === "admin" && (
                 <span className="tagit" data-g="관리자">
                   관리자
+                </span>
+              )}
+              {p.is_host && (
+                <span className="tagit" data-g="진행자">
+                  진행자
                 </span>
               )}
             </b>
@@ -276,6 +291,14 @@ export default function ParticipantDetail({
                   onClick={toggleAdmin}
                 >
                   {p.role === "admin" ? "관리자에서 내리기" : "관리자로 지정"}
+                </button>
+                {/* 진행자는 역할과 별개다 — 관리자여도 따로 켤 수 있다 */}
+                <button
+                  className="btn sm ghost full"
+                  disabled={busy}
+                  onClick={toggleHost}
+                >
+                  {p.is_host ? "진행자에서 내리기" : "진행자로 지정"}
                 </button>
                 <div className="pdetail-row2">
                   <button

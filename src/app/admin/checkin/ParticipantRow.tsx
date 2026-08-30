@@ -43,6 +43,11 @@ export default function ParticipantRow({
               관리자
             </span>
           )}
+          {p.is_host && (
+            <span className="tagit" data-g="진행자">
+              진행자
+            </span>
+          )}
         </button>
         <small>
           {fmtBirth(p.birth_date)}

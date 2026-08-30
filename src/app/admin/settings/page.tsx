@@ -12,6 +12,7 @@ const DEMO_SETTINGS: SiteSettings = {
   galleryOpen: false,
   guestbookOpen: true,
   roomsOpen: false,
+  scoresOpen: false,
   menus: DEFAULT_MENUS,
 };
 
@@ -38,6 +39,12 @@ export default async function AdminSettingsPage() {
         title="갤러리 오픈"
         description="참가자 사진 업로드·열람 허용 (컨퍼런스 시작할 때 켜기)"
         initialOn={settings.galleryOpen}
+      />
+      <ToggleSettingCard
+        settingKey="scores_open"
+        title="조 점수 공개"
+        description="레크리에이션 순위를 참가자에게 보여줍니다 (진행자는 늘 보입니다)"
+        initialOn={settings.scoresOpen}
       />
       <ToggleSettingCard
         settingKey="guestbook_open"

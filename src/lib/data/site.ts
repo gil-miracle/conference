@@ -14,6 +14,7 @@ export type SiteContext = {
   banner: BannerSetting | null;
   galleryOpen: boolean;
   guestbookOpen: boolean;
+  scoresOpen: boolean;
   /** 항목별 메뉴 노출 */
   menus: MenuVisibility;
   /** Supabase 미설정 + 미리보기 쿠키/쿼리 → 가짜 세션 */
@@ -38,6 +39,7 @@ const loadContext = cache(async (): Promise<SiteContext> => {
     banner: null,
     galleryOpen: false,
     guestbookOpen: true,
+    scoresOpen: false,
     menus: DEFAULT_MENUS,
     demoMode: false,
   };
@@ -66,6 +68,7 @@ const loadContext = cache(async (): Promise<SiteContext> => {
   ctx.banner = settings.banner.visible ? settings.banner : null;
   ctx.galleryOpen = settings.galleryOpen;
   ctx.guestbookOpen = settings.guestbookOpen;
+  ctx.scoresOpen = settings.scoresOpen;
   ctx.menus = settings.menus;
 
   if (user) {

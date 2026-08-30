@@ -4,8 +4,16 @@ import { getSupabaseServer, isSupabaseConfigured } from "./supabase/server";
 
 type Supabase = NonNullable<Awaited<ReturnType<typeof getSupabaseServer>>>;
 
+export type AdminMe = {
+  id: string;
+  name: string;
+  role: string;
+  /** 레크리에이션 점수를 넣을 수 있는가 — 역할과 독립이다 */
+  is_host: boolean;
+};
+
 export type AdminCtx =
-  | { demo: false; supabase: Supabase; me: { id: string; name: string; role: string } }
+  | { demo: false; supabase: Supabase; me: AdminMe }
   | { demo: true; me: { name: string } };
 
 /**
@@ -49,7 +57,23 @@ export const getAdminContext = cache(async () => {
   // 세션 확인과 권한 조회를 한 번에 묻는다. auth.uid()는 PostgREST가 검증한
   // JWT에서 나오므로 따로 getUser()를 부를 필요가 없다.
   const { data } = await supabase.rpc("admin_me");
-  const me = data as { id: string; name: string; role: string } | null;
+  const me = data as AdminMe | null;
   if (!me || me.role !== "admin") return null;
+  return { supabase, me };
+});
+
+/**
+ * 진행자 화면용 가드 — 진행자로 지정된 사람과 관리자.
+ *
+ * 관리자를 따로 확인하지 않는다. is_host가 이미 관리자를 통과시키고, 두 곳에서
+ * 각각 판단하면 언젠가 갈라진다.
+ */
+export const getHostContext = cache(async () => {
+  const supabase = await getSupabaseServer();
+  if (!supabase) return null;
+
+  const { data } = await supabase.rpc("admin_me");
+  const me = data as AdminMe | null;
+  if (!me || (me.role !== "admin" && !me.is_host)) return null;
   return { supabase, me };
 });

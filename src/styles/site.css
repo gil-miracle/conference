@@ -1464,3 +1464,79 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 .link-acc .social-btn:first-of-type { margin-top: 16px; }
 .link-acc .note { font-size: 0.75rem; color: var(--ink-60); margin-top: 8px; word-break: keep-all; }
 .link-acc .note-left { text-align: left; }
+
+/* ── 조 점수 — 진행자 화면과 같은 모양 ──
+   같은 순위를 두 군데서 다르게 그리면 "이게 그거 맞나"를 매번 확인하게 된다. */
+.rank { list-style: none; margin: 26px 0 0; padding: 0; border: 1px solid var(--ink); background: var(--paper); }
+.rank li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 13px 17px;
+  border-bottom: 1px solid var(--hair);
+}
+.rank li:last-child { border-bottom: 0; }
+.rank .n {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-60);
+  width: 1.4em;
+  flex: none;
+}
+.rank b { flex: 1; font-size: 0.98rem; font-weight: 700; }
+.rank em {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.rank em i {
+  font-style: normal;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-60);
+  margin-left: 8px;
+}
+.rank li.top { background: rgba(220, 90, 81, 0.07); }
+.rank li.top .n, .rank li.top b, .rank li.top em { color: var(--coral); }
+
+/* ── 멘토링 세션 카드 ──
+   내가 고른 자리는 테두리로 가른다. 목록을 훑을 때 "내가 어디였지"가
+   제일 먼저 나오는 질문이다. */
+.ms {
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  padding: 18px 20px;
+  margin-top: 12px;
+}
+.ms.mine { border-color: var(--coral); border-width: 2px; padding: 17px 19px; }
+.ms-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.ms-top b { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
+.ms-cap {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-60);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.ms-title { margin: 8px 0 0; font-size: 0.92rem; word-break: keep-all; }
+.ms-meta { margin: 4px 0 0; font-size: 0.78rem; color: var(--ink-60); }
+.ms-pick { width: 100%; margin-top: 14px; }
+.ms-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+.ms-mine {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  color: var(--coral);
+}
+.ms-actions .btn-plain { font-size: 0.76rem; color: var(--ink-60); }
+.ms-actions .btn-plain:hover { color: var(--coral); }

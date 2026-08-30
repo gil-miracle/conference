@@ -696,6 +696,13 @@
 }
 .pname:hover { text-decoration: underline; text-underline-offset: 3px; }
 .pname:focus-visible { outline: 2px solid var(--coral); outline-offset: 3px; }
+/* 진행자 — 관리자와 나란히 붙을 수 있어 색으로 가른다 */
+.tagit[data-g="진행자"] {
+  color: #2f6fb0;
+  background: rgba(47, 111, 176, 0.1);
+  border-color: rgba(47, 111, 176, 0.55);
+}
+.mchip-empty { font-size: 0.78rem; color: var(--ink-60); }
 .tagit[data-g="관리자"] {
   color: #8a5313;
   background: rgba(239, 154, 71, 0.16);
