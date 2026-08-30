@@ -926,11 +926,15 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 
 .ss-list { border: 1px solid var(--hair); background: var(--hair); display: grid; gap: 1px; }
 
+/* 좌우 여백이 일부러 다르다 — 왼쪽 28, 오른쪽 23.
+   집회 묶음은 왼쪽 끝 5px을 색 선이 쓴다. 상자 여백을 같게 맞추면
+   정작 눈에 보이는 틈은 왼쪽만 좁아진다. 선 굵기를 왼쪽에 더해 둔다. */
+
 /* ── 한 줄 ──
    시간은 제목 위에 작게. 왼쪽에 시간 칸을 세우면 어느 줄이든 그 폭을
    내줘야 해서 정작 읽어야 할 제목이 좁아진다. */
 .ss-row { background: var(--paper); }
-.ss-body { padding: 15px 28px; }
+.ss-body { padding: 15px 23px 15px 28px; }
 .ss-time {
   display: block;
   font-family: var(--mono);
@@ -977,7 +981,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  padding: 9px 28px;
+  padding: 9px 23px 9px 28px;
   background: var(--ms-bg, rgba(220, 90, 81, 0.14));
 }
 .ss-gh .w {
@@ -1016,21 +1020,21 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .ss-row.main { display: grid; grid-template-columns: 1fr; align-items: stretch; }
 .ss-main-body {
   background: var(--paper);
-  padding: 16px 28px;
+  padding: 16px 23px 16px 28px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 /* 설교자 사진 — 오른쪽 칸에 여백을 두고 정사각으로. 누르면 강사 상세로 */
-.ss-row.main.has-speaker { grid-template-columns: 1fr 140px; }
+.ss-row.main.has-speaker { grid-template-columns: 1fr 135px; }
 .ss-speaker {
   background: var(--paper);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 16px 28px 16px 0;
+  padding: 16px 23px 16px 0;
 }
 /* flex로 폭을 나눠 갖는다 — 한 장이면 꽉 차고, 두 장이면 정확히 반씩 */
 .ss-speaker img,
@@ -1077,11 +1081,11 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .ss-main-body small { display: block; font-size: 0.76rem; color: var(--ink-60); margin-top: 5px; }
 
 @media (max-width: 560px) {
-  .ss-row.main.has-speaker { grid-template-columns: 1fr 106px; }
-  .ss-body { padding: 13px 20px; }
-  .ss-gh { padding: 8px 20px; }
-  .ss-main-body { padding: 14px 20px; }
-  .ss-speaker { padding: 14px 20px 14px 0; gap: 6px; }
+  .ss-row.main.has-speaker { grid-template-columns: 1fr 101px; }
+  .ss-body { padding: 13px 15px 13px 20px; }
+  .ss-gh { padding: 8px 15px 8px 20px; }
+  .ss-main-body { padding: 14px 15px 14px 20px; }
+  .ss-speaker { padding: 14px 15px 14px 0; gap: 6px; }
 }
 
 
