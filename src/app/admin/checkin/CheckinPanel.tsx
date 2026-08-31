@@ -41,6 +41,18 @@ export default function CheckinPanel({
   const [joined, setJoined] = useState("");
   const [checked, setChecked] = useState("");
   const [onlyAdmin, setOnlyAdmin] = useState(false);
+
+  /* 걸어 둔 것이 하나라도 있으면 초기화를 낸다 — 다섯 개를 하나씩
+     되돌리다 보면 어느 것이 남았는지 모른다 */
+  const filtered = Boolean(cell || arrive || stay || joined || checked || onlyAdmin);
+  const clearFilters = () => {
+    setCell("");
+    setArrive("");
+    setStay("");
+    setJoined("");
+    setChecked("");
+    setOnlyAdmin(false);
+  };
   const { toast, showToast } = useToast();
   const demo = useAdminDemo();
   const confirm = useConfirm();
@@ -167,8 +179,12 @@ export default function CheckinPanel({
           onChange={(e) => setQ(e.target.value)}
         />
       </div>
+      {/* 걸어 둔 조건이 하나라도 있으면 초기화가 나온다 */}
       <div className="filters">
-        <select value={cell} onChange={(e) => setCell(e.target.value)}>
+        <select
+          className={cell ? "on" : undefined}
+          value={cell}
+          onChange={(e) => setCell(e.target.value)}>
           <option value="">다락방 전체</option>
           {groups.map((g) => (
             <option key={g} value={g}>
@@ -176,7 +192,10 @@ export default function CheckinPanel({
             </option>
           ))}
         </select>
-        <select value={arrive} onChange={(e) => setArrive(e.target.value)}>
+        <select
+          className={arrive ? "on" : undefined}
+          value={arrive}
+          onChange={(e) => setArrive(e.target.value)}>
           <option value="">도착 전체</option>
           {arriveDays.map((d) => (
             <option key={d} value={d}>
@@ -184,7 +203,10 @@ export default function CheckinPanel({
             </option>
           ))}
         </select>
-        <select value={stay} onChange={(e) => setStay(e.target.value)}>
+        <select
+          className={stay ? "on" : undefined}
+          value={stay}
+          onChange={(e) => setStay(e.target.value)}>
           <option value="">숙박 전체</option>
           {stays.map((d) => (
             <option key={d} value={d}>
@@ -192,12 +214,18 @@ export default function CheckinPanel({
             </option>
           ))}
         </select>
-        <select value={joined} onChange={(e) => setJoined(e.target.value)}>
+        <select
+          className={joined ? "on" : undefined}
+          value={joined}
+          onChange={(e) => setJoined(e.target.value)}>
           <option value="">가입 전체</option>
           <option value="y">가입함</option>
           <option value="n">미가입</option>
         </select>
-        <select value={checked} onChange={(e) => setChecked(e.target.value)}>
+        <select
+          className={checked ? "on" : undefined}
+          value={checked}
+          onChange={(e) => setChecked(e.target.value)}>
           <option value="">체크인 전체</option>
           <option value="y">체크인함</option>
           <option value="n">미체크인</option>
@@ -208,8 +236,19 @@ export default function CheckinPanel({
         >
           관리자만
         </button>
+        {filtered && (
+          <button className="fclear" onClick={clearFilters}>
+            초기화
+          </button>
+        )}
         <span className="fcount">
-          {data ? `${data.length}명 중 ${shown.length}명` : ""}
+          {data ? (
+            <>
+              {data.length}명 중 <b>{shown.length}</b>명
+            </>
+          ) : (
+            ""
+          )}
         </span>
       </div>
       <div className="plist">
