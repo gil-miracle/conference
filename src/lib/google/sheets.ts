@@ -24,6 +24,18 @@ export async function readSheetValues(
       );
     if (res.status === 404)
       throw new Error("시트를 찾을 수 없어요. GOOGLE_SHEETS_ID를 확인해주세요.");
+    // 탭 이름을 바꾸면 여기서 걸린다. 범위 문자열만 되돌려주면
+    // 뭐가 틀렸는지 알 길이 없어 실제 탭 이름을 같이 알려준다.
+    if (res.status === 400) {
+      const titles = await listSheetTitles(spreadsheetId);
+      throw new Error(
+        titles.length
+          ? `'${range}' 범위를 읽지 못했어요. 이 문서의 탭은 ${titles
+              .map((t) => `'${t}'`)
+              .join(", ")}예요. GOOGLE_SHEETS_RANGE를 맞춰주세요.`
+          : `'${range}' 범위를 읽지 못했어요. GOOGLE_SHEETS_RANGE를 확인해주세요.`
+      );
+    }
     throw new Error(`시트 읽기 실패 (${res.status}) ${body.slice(0, 200)}`);
   }
 
@@ -35,4 +47,30 @@ export async function readSheetValues(
 export function extractSheetId(input: string): string {
   const m = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
   return (m ? m[1] : input).trim();
+}
+
+/**
+ * 문서 안의 탭 이름들.
+ *
+ * 범위를 못 읽었을 때 "그럼 뭐가 있는데" 에 답하려고 쓴다.
+ * 이것까지 실패하면 빈 배열을 돌려 원래 오류를 가리지 않는다.
+ */
+export async function listSheetTitles(spreadsheetId: string): Promise<string[]> {
+  try {
+    const token = await getAccessToken();
+    const res = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}` +
+        `?fields=sheets.properties.title`,
+      { headers: { authorization: `Bearer ${token}` }, cache: "no-store" }
+    );
+    if (!res.ok) return [];
+    const json = (await res.json()) as {
+      sheets?: { properties?: { title?: string } }[];
+    };
+    return (json.sheets ?? [])
+      .map((s) => s.properties?.title)
+      .filter((t): t is string => Boolean(t));
+  } catch {
+    return [];
+  }
 }
