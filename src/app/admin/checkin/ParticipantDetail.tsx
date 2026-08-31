@@ -6,7 +6,7 @@ import { ProviderMark } from "@/components/icons";
 import { fmtBirth, fmtDateTime, groupTag } from "@/lib/format";
 import { SIGNUP_FIELDS, isStaff } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
-import { assignRoom } from "../actions/rooms";
+import { assignRoom, setNoStay } from "../actions/rooms";
 import { assignTeam } from "../actions/teams";
 import { setHost, setRole } from "../actions/role";
 import {
@@ -192,6 +192,11 @@ export default function ParticipantDetail({
                   진행자
                 </span>
               )}
+              {p.no_stay && (
+                <span className="tagit" data-g="숙박 안 함">
+                  숙박 안 함
+                </span>
+              )}
             </b>
             <button className="btn sm ghost" onClick={onClose}>
               닫기
@@ -259,10 +264,10 @@ export default function ParticipantDetail({
                   <span>숙소</span>
                   <select
                     value={p.room_id ?? ""}
-                    disabled={busy}
+                    disabled={busy || p.no_stay}
                     onChange={(e) => run(() => assignRoom(p.id, e.target.value || null))}
                   >
-                    <option value="">미배정</option>
+                    <option value="">{p.no_stay ? "숙박 안 함" : "미배정"}</option>
                     {rooms.map((r) => (
                       <option key={r.id} value={r.id}>
                         {r.building} {r.room_no} · {r.gender}
@@ -293,6 +298,15 @@ export default function ParticipantDetail({
                   {p.role === "admin" ? "관리자에서 내리기" : "관리자로 지정"}
                 </button>
                 {/* 진행자는 역할과 별개다 — 관리자여도 따로 켤 수 있다 */}
+                {/* 숙박 여부는 방 배정이 아니라 그 사람에 대한 사실이라 여기가 집이다.
+                    숙소 배정 화면에도 같은 버튼을 둔다 — 깨닫는 건 거기서다 */}
+                <button
+                  className="btn sm ghost full"
+                  disabled={busy}
+                  onClick={() => run(() => setNoStay(p.id, !p.no_stay))}
+                >
+                  {p.no_stay ? "숙박함으로 되돌리기" : "숙박 안 함으로"}
+                </button>
                 <button
                   className="btn sm ghost full"
                   disabled={busy}

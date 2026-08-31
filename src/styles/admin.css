@@ -898,3 +898,27 @@
   color: var(--ink-60);
   white-space: nowrap;
 }
+
+/* ── 숙박 안 함 ──
+   방이 없는 게 정상인 사람들이라, 남은 일처럼 보이면 안 된다.
+   위 묶음들과 선으로 끊고 글자를 흐리게 둔다. */
+.un-group.no-stay {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--hair);
+}
+.un-group.no-stay .members .mchip { color: var(--ink-40); border-style: dashed; }
+.un-group.no-stay .members .mchip:hover { color: var(--ink-60); }
+
+/* 방 목록 맨 아래 — 방이 아니므로 위 줄들과 떼어 놓는다 */
+.pick-row.no-stay {
+  margin-top: 6px;
+  border-top: 1px dashed var(--hair);
+  color: var(--ink-60);
+}
+.pick-row.no-stay.on { color: var(--coral); font-weight: 700; }
+
+.tagit[data-g="숙박 안 함"] {
+  color: var(--ink-60);
+  border-style: dashed;
+}

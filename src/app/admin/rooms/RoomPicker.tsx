@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAdminDemo } from "../AdminMode";
-import { setRoomMembers } from "../actions/rooms";
+import { setNoStay, setRoomMembers } from "../actions/rooms";
 import type { AdminRoom, PersonLite } from "@/lib/types";
 
 /**
@@ -40,15 +40,26 @@ export default function RoomPicker({
     if (person) setMsg(null);
   }, [person]);
 
-  const assign = async (roomId: string) => {
-    if (!person) return;
+  const run = async (fn: () => Promise<{ ok: boolean; message: string }>) => {
     if (demo) return setMsg("미리보기 모드 — 저장되지 않아요.");
     setBusy(true);
-    const res = await setRoomMembers(roomId, [person.id], []);
+    const res = await fn();
     setBusy(false);
     if (!res.ok) return setMsg(res.message);
     onClose();
     router.refresh();
+  };
+
+  const assign = (roomId: string) => {
+    if (!person) return;
+    // 방을 주는 순간 숙박하는 사람이 된다 — 표시도 같이 뜼다
+    return run(async () => {
+      if (person.no_stay) {
+        const off = await setNoStay(person.id, false);
+        if (!off.ok) return off;
+      }
+      return setRoomMembers(roomId, [person.id], []);
+    });
   };
 
   return (
@@ -104,6 +115,17 @@ export default function RoomPicker({
                 </button>
               );
             })}
+            {/* 맨 아래 — 방을 고르다 "이 사람 숙박 안 하는데"를 깨닫는 자리다.
+                여기서 못 넣으면 명단으로 되돌아가야 해서 결국 안 넣게 된다. */}
+            <button
+              type="button"
+              className={`pick-row no-stay${person.no_stay ? " on" : ""}`}
+              disabled={busy}
+              onClick={() => run(() => setNoStay(person.id, !person.no_stay))}
+            >
+              <span>숙박 안 함</span>
+              <em>{person.no_stay ? "해제하기" : "방을 주지 않는다"}</em>
+            </button>
           </div>
 
           {msg && <p className="msg mt-12">{msg}</p>}

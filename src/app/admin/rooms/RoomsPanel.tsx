@@ -89,6 +89,10 @@ export default function RoomsPanel({
   const left = unassigned.filter(
     (p) => !gender || gender === "기타" || p.gender === gender
   );
+  /* 숙박 안 하는 사람은 방이 없는 게 정상이다. 같이 세면 미배정 숫자가
+     끝까지 안 줄어 무엇이 남았는지를 알 수 없다 — 빼서 아래 따로 둔다 */
+  const needRoom = left.filter((p) => !p.no_stay);
+  const noStay = left.filter((p) => p.no_stay);
 
   return (
     <>
@@ -146,15 +150,19 @@ export default function RoomsPanel({
 
       <div className="unassigned">
         <div className="eyebrow">
-          숙소 미배정 · {left.length}명
-          {gender && unassigned.length !== left.length && ` (전체 ${unassigned.length}명)`}
+          숙소 미배정 · {needRoom.length}명
+          {gender &&
+            unassigned.length !== left.length &&
+            ` (전체 ${unassigned.length}명)`}
         </div>
-        {left.length === 0 ? (
+        {needRoom.length === 0 ? (
           <p className="hint-sm">
-            {unassigned.length === 0 ? "전원 배정 완료." : "조건에 맞는 사람이 없어요."}
+            {unassigned.every((p) => p.no_stay)
+              ? "전원 배정 완료."
+              : "조건에 맞는 사람이 없어요."}
           </p>
         ) : (
-          byGroup(left).map(([group, list]) => (
+          byGroup(needRoom).map(([group, list]) => (
             <div className="un-group" key={group}>
               <small>
                 {group} · {list.length}명
@@ -174,6 +182,27 @@ export default function RoomsPanel({
               </div>
             </div>
           ))
+        )}
+
+        {/* 맨 아래 — 남은 일이 아니라 "이미 끝난 사람"이라는 뜻이다.
+            눌러서 되돌릴 수 있게 같은 칩을 쓴다 */}
+        {noStay.length > 0 && (
+          <div className="un-group no-stay">
+            <small>숙박 안 함 · {noStay.length}명</small>
+            <div className="members">
+              {noStay.map((person) => (
+                <button
+                  type="button"
+                  className="mchip"
+                  key={person.id}
+                  data-g={person.gender ?? ""}
+                  onClick={() => setPickFor(person)}
+                >
+                  {person.name}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 

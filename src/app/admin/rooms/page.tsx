@@ -22,7 +22,7 @@ export default async function AdminRoomsPage() {
         .order("room_no"),
       ctx.supabase
         .from("participants")
-        .select("id,name,room_id,team_id,cell_group,inviter,applicant_type,gender")
+        .select("id,name,room_id,team_id,no_stay,cell_group,inviter,applicant_type,gender")
         .order("name"),
       ctx.supabase
         .from("room_holds")

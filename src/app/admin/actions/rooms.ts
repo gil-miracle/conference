@@ -161,3 +161,31 @@ export async function assignRoom(participantId: string, roomId: string | null) {
     .eq("id", participantId);
   revalidatePath("/admin/rooms");
 }
+
+/**
+ * 숙박 여부.
+ *
+ * 통학하는 사람은 방이 없는 게 정상인데, 그냥 두면 "아직 못 정한 사람"과
+ * 섞여 미배정 숫자가 끝까지 안 줄어든다.
+ *
+ * 숙박 안 함으로 두면 방에서도 뺀다 — 둘 다일 수는 없다.
+ */
+export async function setNoStay(participantId: string, value: boolean) {
+  const ctx = await getAdminContext();
+  if (!ctx) return { ok: false as const, message: "권한이 없어요." };
+
+  const { data, error } = await ctx.supabase
+    .from("participants")
+    .update(value ? { no_stay: true, room_id: null } : { no_stay: false })
+    .eq("id", participantId)
+    .select("id");
+  if (error) return { ok: false as const, message: error.message };
+  // RLS가 막으면 오류 없이 0줄이 돌아온다 — 조용히 성공한 척하지 않는다
+  if (!data?.length) return { ok: false as const, message: "바꾸지 못했어요." };
+
+  revalidatePath("/admin/rooms");
+  return {
+    ok: true as const,
+    message: value ? "숙박 안 함으로 두었어요." : "숙박함으로 되돌렸어요.",
+  };
+}

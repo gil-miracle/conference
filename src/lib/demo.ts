@@ -76,6 +76,7 @@ const p = (
   phone,
   role: "member",
   is_host: false,
+  no_stay: false,
   checked_in_at: null,
   auth_user_id: null,
   bound_at: null,
@@ -202,12 +203,14 @@ const pl = (
   cell_group: string | null = null,
   inviter: string | null = null,
   applicant_type: string | null = null,
-  gender: string | null = null
+  gender: string | null = null,
+  no_stay = false
 ): PersonLite => ({
   id,
   name,
   room_id,
   team_id,
+  no_stay,
   cell_group,
   inviter,
   applicant_type,
@@ -225,6 +228,8 @@ export const DEMO_PEOPLE: PersonLite[] = [
   pl("d5", "최마리아", "r3", "t1", null, "박다윗", null, "여"),
   pl("d1", "강바울", null, null, "BEGIN", null, null, "남"),
   pl("d10", "한느헤미야", null, null, null, null, "교역자", "여"),
+  /* 통학하는 사람 — 미배정 아래 따로 묶여 보인다 */
+  pl("d11", "서드보라", null, "t2", "BASIC", null, null, "여", true),
 ];
 
 /** 게시판 탭 방명록 */

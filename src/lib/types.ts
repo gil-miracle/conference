@@ -164,6 +164,8 @@ export type AdminParticipant = SignupInfo & {
   bound_provider: string | null;
   room_id: string | null;
   team_id: string | null;
+  /** 숙박하지 않음 — 방을 안 주는 게 정상이라 미배정과 구분한다 */
+  no_stay: boolean;
   rooms: { building: string; room_no: string; leader_id: string | null } | null;
   teams: { name: string } | null;
 };
@@ -209,6 +211,7 @@ export type PersonLite = {
   name: string;
   room_id: string | null;
   team_id: string | null;
+  no_stay?: boolean;
 } & Pick<SignupInfo, "cell_group" | "inviter" | "applicant_type" | "gender">;
 
 /** 관리자 승인 대기 목록 한 건 (사칭 판별용 소셜 프로필 포함) */
