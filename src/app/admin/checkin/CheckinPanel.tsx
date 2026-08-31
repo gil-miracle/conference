@@ -257,7 +257,7 @@ export default function CheckinPanel({
       <AddParticipant
         open={adding}
         options={options}
-        note="체크인과 참석 인원 집계에서는 빠집니다."
+        note="신청서를 쓰지 않는 분들입니다. 체크인과 집계는 똑같이 됩니다."
         onClose={() => setAdding(false)}
         onAdded={(message) => {
           setAdding(false);

@@ -46,6 +46,7 @@ export default async function QtPage({ params }: Props) {
 
         <div className="qt-head reveal">
           <h3>{qt.passage}</h3>
+          {qt.theme && <p className="qt-theme">{qt.theme}</p>}
         </div>
 
         <blockquote className="spk-verse reveal">
@@ -57,6 +58,8 @@ export default async function QtPage({ params }: Props) {
           ))}
           <cite>{qt.passage} · 우리말성경</cite>
         </blockquote>
+        {/* 전문을 다 실을 수 없는 날이 있다 — 줄였다면 그 사실을 적는다 */}
+        {qt.note && <p className="qt-note reveal">{qt.note}</p>}
 
         <div className="sub-head reveal">
           <h3>묵상</h3>

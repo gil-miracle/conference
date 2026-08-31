@@ -29,7 +29,7 @@ export async function GET() {
     const team = one(p.teams);
     return [
       esc(p.name),
-      esc(p.birth_date),
+      esc(p.birth_date ?? ""),
       esc(p.phone),
       esc(p.role),
       esc(p.checked_in_at ?? ""),

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useConfirm } from "@/components/Confirm";
 import { ProviderMark } from "@/components/icons";
 import { fmtBirth, fmtDateTime, groupTag } from "@/lib/format";
-import { SIGNUP_FIELDS, isStaff } from "@/lib/participant-fields";
+import { SIGNUP_FIELDS } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
 import { assignRoom, setNoStay } from "../actions/rooms";
 import { assignTeam } from "../actions/teams";
@@ -19,7 +19,7 @@ import type { AdminParticipant, AdminRoom, AdminTeam } from "@/lib/types";
 
 const toInput = (p: AdminParticipant): ParticipantInput => ({
   name: p.name,
-  birth_date: p.birth_date,
+  birth_date: p.birth_date ?? "",
   phone: p.phone,
   applicant_type: p.applicant_type,
   gender: p.gender,
@@ -249,13 +249,10 @@ export default function ParticipantDetail({
                     )}
                   </dd>
                 </div>
-                {/* 교역자·멘토는 체크인 대상이 아니라 "아직"이 영영 안 바뀐다 */}
-                {!isStaff(p.applicant_type) && (
-                  <Row
-                    label="체크인"
-                    value={p.checked_in_at ? fmtDateTime(p.checked_in_at) : "아직"}
-                  />
-                )}
+                <Row
+                  label="체크인"
+                  value={p.checked_in_at ? fmtDateTime(p.checked_in_at) : "아직"}
+                />
               </dl>
 
               {/* 여기부터는 명단 쪽에서 바꾸는 값들 */}

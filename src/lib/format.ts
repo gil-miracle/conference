@@ -38,8 +38,8 @@ export function fmtTime(iso: string) {
 }
 
 /** 1994.01.01 */
-export function fmtBirth(iso: string) {
-  return iso.slice(0, 10).replaceAll("-", ".");
+export function fmtBirth(iso: string | null | undefined) {
+  return (iso ?? "").slice(0, 10).replaceAll("-", ".");
 }
 
 /** "19940101" → "1994-01-01", 잘못된 날짜면 null */

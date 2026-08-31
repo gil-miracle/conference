@@ -27,11 +27,14 @@ export default function BindForm({ defaultName }: { defaultName: string }) {
   const [name, setName] = useState(defaultName);
   const [birth, setBirth] = useState("");
   const [phone, setPhone] = useState("");
+  /* 교역자·멘토는 신청서를 안 써서 생년월일이 없다 */
+  const [staff, setStaff] = useState(false);
 
   // 조회에 성공하면 확인 화면으로 넘어간다
   if (lookup?.kind === "found") {
     return (
       <form action={requestFormAction}>
+        <input type="hidden" name="mode" value={lookup.staff ? "staff" : "guest"} />
         <input type="hidden" name="name" value={lookup.name} />
         <input type="hidden" name="birth" value={lookup.birth.replaceAll("-", "")} />
         <input type="hidden" name="phone" value={lookup.phone} />
@@ -61,8 +64,32 @@ export default function BindForm({ defaultName }: { defaultName: string }) {
 
   return (
     <form action={lookupFormAction}>
+      {/* 신청서를 쓴 사람과 우리가 직접 모신 사람은 대야 것이 다르다.
+          한 폼에 섮어 두면 교역자께 없는 걸 묻게 된다 */}
+      <div className="day-tabs bind-tabs" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={!staff}
+          className={staff ? "" : "on"}
+          onClick={() => setStaff(false)}
+        >
+          신청자 · 초청자
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={staff}
+          className={staff ? "on" : ""}
+          onClick={() => setStaff(true)}
+        >
+          교역자 · 멘토
+        </button>
+      </div>
+      <input type="hidden" name="mode" value={staff ? "staff" : "guest"} />
+
       <label className="f-label" htmlFor="bind-name">
-        NAME — 신청서에 적은 이름
+        NAME — {staff ? "운영진에 알린 이름" : "신청서에 적은 이름"}
       </label>
       <input
         id="bind-name"
@@ -75,23 +102,27 @@ export default function BindForm({ defaultName }: { defaultName: string }) {
         required
       />
 
-      <label className="f-label" htmlFor="bind-birth">
-        BIRTH — 8자리
-      </label>
-      <input
-        id="bind-birth"
-        name="birth"
-        className="f-input"
-        placeholder="19940101"
-        inputMode="numeric"
-        maxLength={8}
-        value={birth}
-        onChange={(e) => setBirth(e.target.value.replace(/\D/g, ""))}
-        required
-      />
+      {!staff && (
+        <>
+          <label className="f-label" htmlFor="bind-birth">
+            BIRTH — 8자리
+          </label>
+          <input
+            id="bind-birth"
+            name="birth"
+            className="f-input"
+            placeholder="19940101"
+            inputMode="numeric"
+            maxLength={8}
+            value={birth}
+            onChange={(e) => setBirth(e.target.value.replace(/\D/g, ""))}
+            required
+          />
+        </>
+      )}
 
       <label className="f-label" htmlFor="bind-phone">
-        PHONE — 신청서에 적은 번호
+        PHONE — {staff ? "운영진에 알린 번호" : "신청서에 적은 번호"}
       </label>
       <input
         id="bind-phone"
@@ -119,7 +150,7 @@ export default function BindForm({ defaultName }: { defaultName: string }) {
       )}
 
       <button className="btn accent full mt-30" disabled={looking}>
-        {looking ? "확인 중…" : "신청 내역 확인"}
+        {looking ? "확인 중…" : staff ? "명단에서 확인" : "신청 내역 확인"}
       </button>
       <p className="note">
         다른 계정으로 로그인하려면 <SignOutLink />

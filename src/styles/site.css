@@ -1545,3 +1545,25 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 
 /* 아직 안 나온 값 — 배정된 이름과 같은 무게로 읽히면 안 된다 */
 .my-card h3.tbd { color: var(--ink-60); font-weight: 400; }
+
+/* 로그인 — 신청자와 교역자·멘토는 물어볼 것이 다르다.
+   일정표 날짜 탭과 같은 모양을 쓴다. 위쪽 여백만 줄인다 */
+.bind-tabs { margin: 0 0 26px; }
+
+/* QT — 교재에 적힌 그날의 주제와, 본문을 줄였을 때의 안내 */
+.qt-theme {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--coral);
+  letter-spacing: -0.01em;
+}
+.qt-note {
+  margin: 12px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--hair);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--ink-60);
+  word-break: keep-all;
+}

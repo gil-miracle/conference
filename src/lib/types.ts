@@ -45,8 +45,12 @@ export type TimetableItem = {
 export type Qt = {
   /** 성경 범위. 예: "시편 42:1~5" */
   passage: string;
-  /** 본문 전문 (우리말성경) */
-  verses: { n: number; text: string }[];
+  /** 그날의 주제 — 교재에 적힌 제목 */
+  theme?: string;
+  /** 본문 (우리말성경). 장을 넘나들면 n을 "2:1"처럼 적는다 */
+  verses: { n: number | string; text: string }[];
+  /** 전문이 아니면 왜 그러한지 밝힌다 — 생략을 숨기지 않는다 */
+  note?: string;
   /** 묵상 질문 — 조별 나눔에 그대로 쓴다 */
   reflect: string[];
   /** 기도 */
@@ -151,7 +155,8 @@ export type SignupInfo = {
 export type AdminParticipant = SignupInfo & {
   id: string;
   name: string;
-  birth_date: string;
+  /** 교역자·멘토는 신청서를 안 써서 없다 */
+  birth_date: string | null;
   phone: string;
   role: "member" | "admin";
   /** 레크리에이션 점수를 넣을 수 있는가 — 역할과 독립이다 */

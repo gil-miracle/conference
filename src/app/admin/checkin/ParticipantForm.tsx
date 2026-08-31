@@ -40,11 +40,14 @@ function ChoiceField({
   label,
   value,
   options,
+  allowCustom = true,
   onChange,
 }: {
   label: string;
   value: string | null;
   options: string[];
+  /** 고를 값이 둘뿐이면 직접 칠 자리가 없다 */
+  allowCustom?: boolean;
   onChange: (next: string) => void;
 }) {
   // 시트에서 온 값이 후보에 없을 수 있다 — 그대로 보여야 실수로 지워지지 않는다
@@ -69,7 +72,7 @@ function ChoiceField({
               {o}
             </option>
           ))}
-          <option value={CUSTOM}>직접 입력…</option>
+          {allowCustom && <option value={CUSTOM}>직접 입력…</option>}
         </select>
         {typing && (
           <input
@@ -113,9 +116,17 @@ export default function ParticipantForm({
     setV((prev) => ({ ...prev, [k]: value }));
 
   const staff = staffOnly || isStaff(v.applicant_type);
-  const fields = SIGNUP_FIELDS.filter(
-    (f) => !(staff && STAFF_HIDDEN.includes(f.key))
-  );
+  /*
+   * 추가 화면은 교역자·멘토 전용이라 쓸 게 세 칸뿐이다 — 유형·이름·전화번호.
+   * 오는 방법·도착 시간·티셔츠는 신청서 문항이라 그분들께는 묻지 않는다.
+   * 생년월일도 마찬가지다 — 받으려면 따로 여줘야 한다.
+   */
+  const leadField = staffOnly
+    ? SIGNUP_FIELDS.find((f) => f.key === "applicant_type")
+    : null;
+  const fields = staffOnly
+    ? []
+    : SIGNUP_FIELDS.filter((f) => !(staff && STAFF_HIDDEN.includes(f.key)));
 
   /** 유형만은 코드가 아는 값이 있다 — 교역자·멘토는 시트에서 오지 않는다 */
   const choicesFor = (key: keyof SignupInfo) =>
@@ -140,6 +151,15 @@ export default function ParticipantForm({
         submit();
       }}
     >
+      {leadField && (
+        <ChoiceField
+          label={leadField.label}
+          value={v[leadField.key]}
+          options={choicesFor(leadField.key)}
+          allowCustom={false}
+          onChange={(next) => set(leadField.key, next)}
+        />
+      )}
       <label>
         <span>이름</span>
         <input
@@ -149,15 +169,18 @@ export default function ParticipantForm({
           required
         />
       </label>
-      <label>
-        <span>생년월일</span>
-        <input
-          type="date"
-          value={v.birth_date}
-          onChange={(e) => set("birth_date", e.target.value)}
-          required
-        />
-      </label>
+      {/* 교역자·멘토는 생년월일이 없다. 고칠 땐 칸을 남기되 강요하지 않는다 */}
+      {!staffOnly && (
+        <label>
+          <span>생년월일</span>
+          <input
+            type="date"
+            value={v.birth_date}
+            onChange={(e) => set("birth_date", e.target.value)}
+            required={!staff}
+          />
+        </label>
+      )}
       <label>
         <span>전화번호</span>
         <input

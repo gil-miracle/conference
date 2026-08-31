@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
 import { normalizePhone, parseBirth8 } from "@/lib/format";
-import { SIGNUP_FIELDS } from "@/lib/participant-fields";
+import { SIGNUP_FIELDS, isStaff } from "@/lib/participant-fields";
 import type { SignupInfo } from "@/lib/types";
 
 export type ParticipantInput = SignupInfo & {
@@ -36,8 +36,11 @@ function clean(input: ParticipantInput): {
 } {
   const name = input.name.trim();
   if (!name) return { error: "이름을 입력해주세요." };
+  // 교역자·멘토는 신청서를 안 써서 생년월일이 없다. 받으려면 따로 여줘야 하는데,
+  // 명단에 넣는 데도 로그인 때 맞춰 보는 데도 이름과 전화번호면 충분하다.
+  const staff = isStaff(input.applicant_type);
   const birth = parseBirth8(input.birth_date);
-  if (!birth) return { error: "생년월일이 올바르지 않아요." };
+  if (!birth && !staff) return { error: "생년월일이 올바르지 않아요." };
   const phone = normalizePhone(input.phone ?? "");
   if (phone.replace(/\D/g, "").length < 10)
     return { error: "전화번호가 올바르지 않아요." };
