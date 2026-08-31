@@ -15,6 +15,7 @@ const KEYS = [
   "gallery_open",
   "guestbook_open",
   "rooms_open",
+  "teams_open",
   "menu_visibility",
 ] as const;
 

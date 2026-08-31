@@ -65,7 +65,7 @@ export default async function ProfilePage({
               mates={summary.mates}
               open={summary.rooms_open === true}
             />
-            <TeamCard team={summary.team} open={summary.rooms_open === true} />
+            <TeamCard team={summary.team} open={summary.teams_open === true} />
             <WordCard name={summary.name} />
             <WordcardSave name={summary.name} />
           </div>

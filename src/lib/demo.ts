@@ -274,6 +274,7 @@ export const MY_PREVIEW: MySummary = {
   role: "member",
   status: "approved",
   rooms_open: true,
+  teams_open: true,
   reject_reason: null,
   checked_in_at: null,
   checkin_token: null,

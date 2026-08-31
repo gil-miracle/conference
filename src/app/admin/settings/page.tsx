@@ -12,6 +12,7 @@ const DEMO_SETTINGS: SiteSettings = {
   galleryOpen: false,
   guestbookOpen: true,
   roomsOpen: false,
+  teamsOpen: false,
   scoresOpen: false,
   menus: DEFAULT_MENUS,
 };
@@ -28,11 +29,18 @@ export default async function AdminSettingsPage() {
   return (
     <>
       <BannerSettingCard banner={settings.banner} />
+      {/* 숙소는 며칠 전에 확정되는데 조는 당일까지 바뀐다 — 따로 연다 */}
       <ToggleSettingCard
         settingKey="rooms_open"
-        title="숙소·조 공개"
-        description="배정이 끝나면 켜세요. 끄면 참가자 My에서 숙소·조가 보이지 않습니다"
+        title="숙소 공개"
+        description="숙소 배정이 끝나면 켜세요. 끄면 참가자 My에서 숙소가 미정으로 보입니다"
         initialOn={settings.roomsOpen}
+      />
+      <ToggleSettingCard
+        settingKey="teams_open"
+        title="조 공개"
+        description="조 편성이 끝나면 켜세요. 끄면 참가자 My에서 조가 미정으로 보입니다"
+        initialOn={settings.teamsOpen}
       />
       <ToggleSettingCard
         settingKey="gallery_open"

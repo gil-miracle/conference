@@ -102,6 +102,7 @@ export type MySummary = {
   status: ParticipantStatus;
   /** 숙소·조 배정이 공개된 상태인지 */
   rooms_open?: boolean;
+  teams_open?: boolean;
   reject_reason: string | null;
   checked_in_at: string | null;
   checkin_token: string | null;

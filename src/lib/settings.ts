@@ -6,6 +6,7 @@ export type SiteSettings = {
   guestbookOpen: boolean;
   /** 숙소·조 배정 공개 여부 */
   roomsOpen: boolean;
+  teamsOpen: boolean;
   /** 레크리에이션 점수 공개 여부 */
   scoresOpen: boolean;
   /** 항목별 메뉴 노출 */
@@ -44,6 +45,7 @@ export function parseSiteSettings(rows: SettingRow[] | null): SiteSettings {
     galleryOpen: map.gallery_open?.value === true,
     guestbookOpen: map.guestbook_open?.value !== false,
     roomsOpen: map.rooms_open?.value === true,
+    teamsOpen: map.teams_open?.value === true,
     scoresOpen: map.scores_open?.value === true,
     // 설정이 없으면 전부 노출 (기본값)
     menus,
