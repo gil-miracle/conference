@@ -13,7 +13,7 @@ export default async function AdminSongsPage() {
   return (
     <>
       <div className="sec-title">
-        <b>찬양리스트</b>
+        <b>찬양</b>
       </div>
       <p className="hint-text">
         집회별로 곡을 관리해요. YouTube는 주소를 그대로 붙여넣어도 영상 ID만 저장됩니다.

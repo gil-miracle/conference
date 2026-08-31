@@ -11,10 +11,7 @@ export default function TimetablePage() {
   return (
     <section id="timetable">
       <div className="container">
-        <PageHead
-          title="일정표"
-          lede="금요일 저녁 등록으로 시작해 주일 예배 후 귀가합니다. 세부 프로그램은 확정되는 대로 업데이트돼요."
-        />
+        <PageHead title="일정표" />
         {/* useSearchParams(?day=)를 쓰므로 Suspense가 필요하다.
             대신 페이지는 계속 정적으로 남는다. */}
         <Suspense fallback={null}>

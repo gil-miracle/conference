@@ -154,7 +154,11 @@ export const TIMETABLE: TimetableDay[] = [
     label: "9.11 (금)",
     date: "9.11 (금)",
     items: [
-      { time: "20:00–21:00", title: "등록", sub: "본관 로비 · 숙소 안내" },
+      {
+        time: "20:00–21:00",
+        title: "등록",
+        sub: "본관 B1층 박모세홀 · 체크인 · 티셔츠 수령",
+      },
       {
         time: "21:00–23:00",
         badge: "MIRACLE 1",
@@ -208,7 +212,7 @@ export const TIMETABLE: TimetableDay[] = [
     },
     items: [
       { time: "07:00–08:30", title: "QT 및 아침식사", href: "/qt/2" },
-      { time: "08:30–09:00", title: "예배당 입장 및 준비" },
+      { time: "08:30–09:00", title: "예배당 입장" },
       {
         time: "09:00–10:30",
         badge: "MIRACLE 2",
@@ -232,16 +236,15 @@ export const TIMETABLE: TimetableDay[] = [
       { time: "12:30–14:00", title: "점심식사" },
       { time: "14:00–16:00", title: "프로그램" },
       {
-        time: "16:00–17:30",
+        time: "16:00–18:00",
         badge: "MIRACLE 3",
         speakerId: "lee-giljae",
         role: "강사",
         title: "선교 특강",
         main: true,
       },
-      { time: "17:30–18:00", title: "쉬는 시간" },
       { time: "18:00–19:30", title: "저녁식사" },
-      { time: "19:30–20:00", title: "식사 종료 및 예배 준비" },
+      { time: "19:30–20:00", title: "예배당 입장" },
       {
         // 저녁 예배의 앞순서 — 아래 저녁 예배와 MIRACLE 4 배지를 함께 쓴다
         time: "20:00–20:30",
@@ -297,15 +300,13 @@ export const TIMETABLE: TimetableDay[] = [
         "제 힘이 아니라 주님의 도우심으로 걷게 하소서.",
     },
     items: [
-      { time: "07:00–07:30", title: "짐 정리" },
-      { time: "07:30–08:30", title: "QT 및 아침식사", href: "/qt/3" },
-      { time: "08:30–09:00", title: "출발 준비" },
-      { time: "09:00–09:30", title: "출발" },
-      { time: "09:30–12:00", title: "영화 War Room" },
-      { time: "12:00–13:00", title: "점심식사" },
-      { time: "13:00–13:30", title: "예배 준비" },
+      { time: "07:00–08:30", title: "QT 및 아침식사", href: "/qt/3" },
+      { time: "08:30–10:00", title: "혜화로 이동" },
+      { time: "10:00–12:00", title: "영화 관람" },
+      { time: "12:00–13:30", title: "점심식사" },
+      { time: "13:30–14:00", title: "예배당 입장" },
       {
-        time: "13:30–16:00",
+        time: "14:00–16:00",
         badge: "MIRACLE 5",
         speakerId: "bae-haengsam",
         title: "주일 예배",

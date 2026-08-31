@@ -49,7 +49,7 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
   };
 
   if (sets.length === 0) {
-    return <p className="msg">아직 등록된 찬양리스트가 없어요.</p>;
+    return <p className="msg">아직 등록된 찬양이 없어요.</p>;
   }
 
   const shown = sets[activeSet] ?? sets[0];
