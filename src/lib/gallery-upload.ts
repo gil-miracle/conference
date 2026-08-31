@@ -35,7 +35,26 @@ export async function uploadOnePhoto(file: File): Promise<UploadOutcome> {
       `https://api.cloudinary.com/v1_1/${sig.cloudName}/image/upload`,
       { method: "POST", body: form }
     );
-    if (!res.ok) throw new Error("cloudinary upload failed");
+    if (!res.ok) {
+      /*
+       * Cloudinary가 왜 거절했는지 그대로 올린다. 처음 연동하는 날 틀리는 건
+       * 거의 cloud name(404)이나 API secret(401)인데, "업로드에 실패했어요"만
+       * 뜨면 어느 쪽인지 알 길이 없어 값을 하나씩 갈아 끼우게 된다.
+       *
+       * 이 문구는 참가자에게도 보이므로 열쇠 값은 담기지 않는다 — Cloudinary가
+       * 주는 것은 사유뿐이다.
+       */
+      const why = await res
+        .json()
+        .then((e: { error?: { message?: string } }) => e?.error?.message)
+        .catch(() => null);
+      return {
+        ok: false,
+        message: why
+          ? `업로드가 거절됐어요 (${res.status}) — ${why}`
+          : `업로드가 거절됐어요 (${res.status}). 운영진에 알려주세요.`,
+      };
+    }
     const json = (await res.json()) as {
       public_id: string;
       width: number;
