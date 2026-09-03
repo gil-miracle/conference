@@ -27,23 +27,25 @@ export default async function GuestbookPage() {
             기도제목이 오가는 자리라 로그인한 분만 읽을 수 있어요.
           </Locked>
         ) : (
-          <div className="reveal">
-            {entries.map((entry) => (
-              <div className="gb" key={entry.id}>
-                <div className="row">
-                  <b>{entry.display_name}</b>
-                  <time>{fmtDateTime(entry.created_at)}</time>
+          <>
+            {/* 글보다 위에 둔다 — 밑에 두면 방명록이 쌓일수록
+                쓰러 온 사람이 끝까지 스크롤해야 버튼을 만난다 */}
+            <div className="reveal">
+              <GuestbookWriteCta />
+            </div>
+            <div className="reveal">
+              {entries.map((entry) => (
+                <div className="gb" key={entry.id}>
+                  <div className="row">
+                    <b>{entry.display_name}</b>
+                    <time>{fmtDateTime(entry.created_at)}</time>
+                  </div>
+                  <p>{entry.content}</p>
+                  <GuestbookDelete id={entry.id} ownerId={entry.participant_id} />
                 </div>
-                <p>{entry.content}</p>
-                <GuestbookDelete id={entry.id} ownerId={entry.participant_id} />
-              </div>
-            ))}
-          </div>
-        )}
-        {ctx.authed && (
-          <div className="reveal">
-            <GuestbookWriteCta />
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </section>
