@@ -109,10 +109,14 @@ export async function getPublicSettings(): Promise<SiteSettings> {
 
 /**
  * 방명록 목록 — limit으로 메인 요약(3개)과 전체 페이지(30개)를 겸한다.
- * 공개 읽기라 쿠키 없는 클라이언트를 쓴다 (RLS가 숨김 글을 걸러준다).
+ *
+ * 반드시 쿠키를 진 클라이언트여약 한다. 기도제목이 오가는 자리라 읽기를
+ * 로그인한 사람으로 좌렸고(0020), 그 정책은 authenticated 역할에만 열린다 —
+ * 익명 클라이언트로 물으면 오류 없이 빈 목록이 돌아온다. 쓰기는 세션
+ * 클라이언트라 멀지게 동작해서, 글은 등록되는데 목록만 비었다.
  */
 export async function getGuestbook(limit = 30): Promise<GuestbookEntry[]> {
-  const supabase = getSupabaseAnon();
+  const supabase = await getSupabaseServer();
   if (!supabase) return GUESTBOOK_FALLBACK.slice(0, limit);
 
   const { data } = await supabase
