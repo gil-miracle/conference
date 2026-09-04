@@ -8,8 +8,8 @@ import { getSpeaker, type TimetableItem } from "@/lib/content";
  * 시간은 제목 위에 작게 올린다. 왼쪽에 시간 칸을 따로 세우면 어느 줄이든
  * 그 폭을 내줘야 해서, 정작 읽어야 할 제목이 좁은 칸으로 밀린다.
  *
- * 설교자가 연결된 세션은 **행 전체**가 그 사람의 소개로 가는 링크다.
- * 사진만 누르게 두면 표적이 작고, 사진이 없는 설교자는 누를 곳이 없어진다.
+ * 집회 줄은 누를 수 없다. 제목·말씀 여는 사람·소속까지 표에 다 나와 있어
+ * 들어가서 더 알 것이 없다 — 눌리는 것처럼 보이기만 하면 오히려 헷갈린다.
  */
 export default function SessionRow({
   item,
@@ -40,8 +40,8 @@ export default function SessionRow({
   const speaker = item.speakerId ? getSpeaker(item.speakerId) : null;
   const role = item.role ?? "설교";
 
-  const inner = (
-    <>
+  return (
+    <div className={`ss-row main${speaker ? " has-speaker" : ""}`}>
       <div className="ss-main-body">
         {showTime && <time className="ss-time">{item.time}</time>}
         {/* 설교 제목이 있으면 그게 본문이다 — 순서명(저녁 예배)은
@@ -50,13 +50,25 @@ export default function SessionRow({
           {item.sermon ?? item.title}
         </b>
         {speaker ? (
-          /* 본문 말씀은 강사 상세에서 본다 — 표에서는 누가 여는지만 남긴다.
-             소속은 이름 뒤에 세로줄로 붙인다 */
+          /* 본문 말씀은 빼고 누가 여는지만 남긴다. 소속은 이름 아래 줄에,
+             이름 첫 글자에 맞춰 선다 */
           <small className="preacher">
             <span className="role">{role}</span>
             <span className="who">
               {speaker.name}
-              {speaker.org && <span className="org">{speaker.org}</span>}
+              {speaker.org && (
+                /* '사송영락교회 담임목사 · 예람워십 대표'처럼 소속이 둘일 때,
+                   그냥 흘리면 '대표'만 떨어져 내려간다. 가운뎃점에서만 나뉘게
+                   조각을 묶어 둔다 — 한 소속은 통째로 붙어 다닌다 */
+                <span className="org">
+                  {speaker.org.split("·").map((part, i) => (
+                    <span key={part}>
+                      {i > 0 && <span className="dot"> · </span>}
+                      <span className="one">{part.trim()}</span>
+                    </span>
+                  ))}
+                </span>
+              )}
             </span>
           </small>
         ) : (
@@ -68,20 +80,6 @@ export default function SessionRow({
           <SpeakerPhoto speaker={speaker} />
         </span>
       )}
-    </>
-  );
-
-  const className = `ss-row main${speaker ? " has-speaker" : ""}`;
-
-  if (!speaker) return <div className={className}>{inner}</div>;
-
-  return (
-    <Link
-      className={`${className} linked`}
-      href={`/speakers/${speaker.id}`}
-      aria-label={`${item.sermon ?? item.title} — ${speaker.name} 소개`}
-    >
-      {inner}
-    </Link>
+    </div>
   );
 }
