@@ -31,7 +31,7 @@ export default function GuestbookForm() {
     return (
       <>
         <button className="gb-write" onClick={() => setOpenForm(true)}>
-          방명록 남기기
+          한 줄 노트 남기기
         </button>
         {state.status === "ok" && <p className="msg ok">{state.message}</p>}
       </>

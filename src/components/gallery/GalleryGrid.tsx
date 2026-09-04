@@ -12,6 +12,26 @@ import type { Photo } from "@/lib/types";
 
 const PAGE = 24;
 
+/** 행사 사흘. 사진이 어느 날 것인지는 찍힌 시각으로 가른다 */
+const DAYS = ["2026-09-11", "2026-09-12", "2026-09-13"] as const;
+
+/**
+ * 사진 한 장이 속한 날.
+ *
+ * 행사 전에 올라온 시험 사진이나 새벽 2시에 찍혀 날짜가 넘어간 사진이
+ * 어느 탭에도 없으면 올린 사람은 사라졌다고 여긴다. 범위 밖은 가까운
+ * 쪽 끝날로 붙여 어디서든 보이게 한다.
+ */
+function dayOf(createdAt: string): number {
+  // 한국 시간 기준으로 날짜만 뽑는다 — 서버·브라우저 시간대가 달라도 같게 나온다
+  const date = new Date(createdAt).toLocaleDateString("sv-SE", {
+    timeZone: "Asia/Seoul",
+  });
+  const i = DAYS.indexOf(date as (typeof DAYS)[number]);
+  if (i >= 0) return i;
+  return date < DAYS[0] ? 0 : DAYS.length - 1;
+}
+
 export default function GalleryGrid({
   initialPhotos,
   myId,
@@ -22,6 +42,8 @@ export default function GalleryGrid({
   cloudName: string | null;
 }) {
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
+  /* 오늘이 행사 중이면 오늘 탭으로 연다 — 현장에서 열면 방금 찍은 것이 보여야 한다 */
+  const [day, setDay] = useState(() => dayOf(new Date().toISOString()));
   const [hasMore, setHasMore] = useState(initialPhotos.length === PAGE);
   const [uploading, setUploading] = useState<string | null>(null);
   const { toast, showToast } = useToast();
@@ -68,8 +90,22 @@ export default function GalleryGrid({
     setHasMore(more.length === PAGE);
   }
 
+  const shown = photos.filter((p) => dayOf(p.created_at) === day);
+
   return (
     <div className="reveal">
+      <div className="day-tabs gal-tabs">
+        {DAYS.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            className={day === i ? "on" : ""}
+            onClick={() => setDay(i)}
+          >
+            DAY {i + 1}
+          </button>
+        ))}
+      </div>
       {photos.length === 0 ? (
         <div className="locked">
           <CameraIcon />
@@ -77,7 +113,7 @@ export default function GalleryGrid({
         </div>
       ) : (
         <div className="gal-grid">
-          {photos.map((photo) => (
+          {shown.map((photo) => (
             <div className="cell" key={photo.id}>
               <a
                 href={fullUrl(photo.cloudinary_public_id)}
@@ -94,6 +130,9 @@ export default function GalleryGrid({
               )}
             </div>
           ))}
+          {shown.length === 0 && (
+            <p className="msg gal-empty">이 날 올라온 사진이 아직 없어요.</p>
+          )}
         </div>
       )}
       {hasMore && (

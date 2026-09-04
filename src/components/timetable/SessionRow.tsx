@@ -50,19 +50,13 @@ export default function SessionRow({
           {item.sermon ?? item.title}
         </b>
         {speaker ? (
-          <>
-            {/* 본문 말씀이 먼저, 사람이 그다음 — 무엇을 여느냐가 누가 여느냐보다 앞선다 */}
-            {item.verse && (
-              <small className="preacher">
-                <span className="role">말씀</span>
-                {item.verse}
-              </small>
-            )}
-            <small className="preacher">
-              <span className="role">{role}</span>
-              {speaker.name}
-            </small>
-          </>
+          /* 본문 말씀은 강사 상세에서 본다 — 표에서는 누가 여는지만 남긴다.
+             소속은 이름 뒤에 세로줄로 붙인다 */
+          <small className="preacher">
+            <span className="role">{role}</span>
+            {speaker.name}
+            {speaker.org && <span className="org"> | {speaker.org}</span>}
+          </small>
         ) : (
           item.sub && <small>{item.sub}</small>
         )}

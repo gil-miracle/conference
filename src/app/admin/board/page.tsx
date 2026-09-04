@@ -38,9 +38,9 @@ export default async function AdminBoardPage() {
   return (
     <>
       <div className="sec-title">
-        <b>방명록 관리</b>
+        <b>한 줄 노트 관리</b>
       </div>
-      {entries.length === 0 && <p className="msg">아직 방명록이 없어요.</p>}
+      {entries.length === 0 && <p className="msg">아직 남긴 노트가 없어요.</p>}
       {entries.map((entry) => (
         <GuestbookModItem key={entry.id} entry={entry} />
       ))}

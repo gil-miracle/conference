@@ -7,7 +7,7 @@ import Locked from "@/components/Locked";
 import { TabIcon } from "@/components/nav/TabIcons";
 import { getGuestbook, getSiteContext } from "@/lib/data/site";
 
-export const metadata: Metadata = { title: "방명록 — MIRACLE 2026" };
+export const metadata: Metadata = { title: "한 줄 노트 — MIRACLE 2026" };
 // 로그인 여부에 따라 내용이 갈리므로 캐시하지 않는다
 export const dynamic = "force-dynamic";
 
@@ -19,8 +19,8 @@ export default async function GuestbookPage() {
     <section id="guestbook">
       <div className="container">
         <PageHead
-          title="방명록"
-          lede="함께 나누고 싶은 기대와 기도를 남겨주세요."
+          title="한 줄 노트"
+          lede="컨퍼런스를 통해 함께 나누고 싶은 기대와 기도 제목을 남겨주세요."
         />
         {!ctx.authed ? (
           <Locked icon={<TabIcon name="pen" />} showLogin>
@@ -28,7 +28,7 @@ export default async function GuestbookPage() {
           </Locked>
         ) : (
           <>
-            {/* 글보다 위에 둔다 — 밑에 두면 방명록이 쌓일수록
+            {/* 글보다 위에 둔다 — 밑에 두면 노트가 쌓일수록
                 쓰러 온 사람이 끝까지 스크롤해야 버튼을 만난다 */}
             <div className="reveal">
               <GuestbookWriteCta />

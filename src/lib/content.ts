@@ -58,7 +58,8 @@ export const THEME_VERSE = {
 };
 
 export const ABOUT_LEDE =
-  "하늘과 땅, 바다와 모든 깊은 곳에서 일하시는 하나님의 기적을 함께 목격하는 3일. (임시 소개 문구)";
+  "기적의 자리에 오신 여러분을 환영합니다. " +
+  "당신의 삶에 시작될 가장 위대한 기적을 꿈꾸십시오.";
 
 // 설교자·강사 6인. 사진은 public/speakers/ 아래 파일명으로 연결된다.
 // 일정 순서대로 나열한다 (금 → 토 → 주일).
@@ -164,7 +165,7 @@ export const TIMETABLE: TimetableDay[] = [
         badge: "MIRACLE 1",
         speakerId: "choi-jaeyoon",
         title: "저녁 예배",
-        sermon: "성령의 불을 받으십시오",
+        sermon: "생명",
         verse: "사도행전 2:3–4",
         verseText: [
           {
@@ -247,7 +248,7 @@ export const TIMETABLE: TimetableDay[] = [
         speakerId: "cho-youngchan",
         title: "오전 예배",
         // ⚠️ 설교 제목·본문은 예시다. 확정되면 교체할 것.
-        sermon: "내가 새 일을 행하리라",
+        sermon: "말씀",
         verse: "이사야 43:19",
         verseText: [
           {
@@ -269,6 +270,7 @@ export const TIMETABLE: TimetableDay[] = [
         speakerId: "lee-giljae",
         role: "강사",
         title: "선교 특강",
+        sermon: "교회",
         main: true,
       },
       { time: "18:00–19:30", title: "저녁식사" },
@@ -287,7 +289,7 @@ export const TIMETABLE: TimetableDay[] = [
         joinPrev: true,
         speakerId: "jeon-hyeok",
         title: "저녁 예배",
-        sermon: "깊은 곳까지 물이 이르러",
+        sermon: "제자",
         verse: "에스겔 47:5",
         verseText: [
           {
@@ -363,7 +365,7 @@ export const TIMETABLE: TimetableDay[] = [
         badge: "MIRACLE 5",
         speakerId: "bae-haengsam",
         title: "주일 예배",
-        sermon: "일어나 빛을 발하라",
+        sermon: "사명",
         verse: "이사야 60:1",
         verseText: [
           {
