@@ -146,6 +146,28 @@ function SessionEditor({
                 />
               </label>
               <label>
+                {/* 고르기 전에 읽을 몇 줄. 없으면 카드에서 그 줄이 통째로 빠진다 */}
+                <span>강의 소개</span>
+                <textarea
+                  name="intro"
+                  defaultValue={session?.intro ?? ""}
+                  placeholder="어떤 이야기를 나누는 시간인지 두세 문장으로"
+                  maxLength={300}
+                  rows={3}
+                />
+              </label>
+              <label>
+                {/* 갤러리에 쓰는 Cloudinary에 올리고 그 주소를 넣으면 된다 */}
+                <span>사진 주소</span>
+                <input
+                  name="photo_url"
+                  type="url"
+                  defaultValue={session?.photo_url ?? ""}
+                  placeholder="https://res.cloudinary.com/…"
+                  maxLength={500}
+                />
+              </label>
+              <label>
                 <span>장소</span>
                 <input
                   name="place"

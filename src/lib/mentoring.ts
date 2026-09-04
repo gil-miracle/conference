@@ -3,6 +3,10 @@ export type MentorSession = {
   id: string;
   mentor_name: string;
   title: string;
+  /** 강의 소개 — 고르기 전에 읽을 몇 줄 */
+  intro: string | null;
+  /** 멘토 사진 주소. 없으면 이름만 보인다 */
+  photo_url: string | null;
   place: string | null;
   starts_at: string;
   capacity: number;
