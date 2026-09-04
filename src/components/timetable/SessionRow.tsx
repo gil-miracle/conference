@@ -54,8 +54,10 @@ export default function SessionRow({
              소속은 이름 뒤에 세로줄로 붙인다 */
           <small className="preacher">
             <span className="role">{role}</span>
-            {speaker.name}
-            {speaker.org && <span className="org"> | {speaker.org}</span>}
+            <span className="who">
+              {speaker.name}
+              {speaker.org && <span className="org">{speaker.org}</span>}
+            </span>
           </small>
         ) : (
           item.sub && <small>{item.sub}</small>

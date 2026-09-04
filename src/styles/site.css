@@ -1056,9 +1056,21 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   letter-spacing: 0.12em;
   color: var(--ink-60);
 }
-/* 설교자 줄 — '설교' 라벨 + 이름이 한 글줄로 흘러간다. flex로 두면 좁은
-   폭에서 글자 단위로 쪼개지므로 인라인으로 흘리고 keep-all로 낱말을 지킨다. */
-.ss-main-body .preacher { display: block; word-break: keep-all; }
+/* 설교자 줄 — '설교' 라벨 옆에 이름, 그 아래 소속.
+   한 글줄로 흘리면 소속이 접힐 때 라벨 아래까지 내려와 어디부터가 소속인지
+   흐려진다. 두 칸으로 나눠 접히든 말든 이름 첫 글자에 맞춰 선다. */
+.ss-main-body .preacher {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  word-break: keep-all;
+}
+.ss-main-body .preacher .who { min-width: 0; }
+.ss-main-body .preacher .org {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-40);
+}
 /* '설교'·'말씀' 라벨 폭을 맞춰 두 줄의 이름·본문이 같은 x에서 시작하게 */
 .ss-main-body .preacher .role {
   display: inline-block;
@@ -1610,7 +1622,7 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 }
 
 /* 소속 — 이름보다 한 단계 물러서게. 좁은 화면에서는 이름 아래로 접힌다 */
-.ss-main-body .preacher .org { color: var(--ink-40); }
+
 
 /* 갤러리 날짜 탭 — 일정표와 같은 모양. 위쪽 여백만 줄인다 */
 .gal-tabs { margin: 0 0 18px; }
