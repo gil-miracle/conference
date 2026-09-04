@@ -12,6 +12,10 @@ function readSession(formData: FormData) {
   const mentor_name = String(formData.get("mentor_name") ?? "").trim();
   const title = String(formData.get("title") ?? "").trim();
   const place = String(formData.get("place") ?? "").trim() || null;
+  const intro = String(formData.get("intro") ?? "").trim() || null;
+  // 주소 모양이 아니면 넣지 않는다 — 깨진 이미지가 카드에 남는 것보다 없는 편이 낫다
+  const rawPhoto = String(formData.get("photo_url") ?? "").trim();
+  const photo_url = /^https:\/\//.test(rawPhoto) ? rawPhoto.slice(0, 500) : null;
   const mentor_id = String(formData.get("mentor_id") ?? "") || null;
   const capacity = Number(formData.get("capacity") ?? 20) || 20;
   const sort_order = Number(formData.get("sort_order") ?? 0) || 0;
@@ -29,6 +33,8 @@ function readSession(formData: FormData) {
     mentor_name,
     title,
     place,
+    intro,
+    photo_url,
     mentor_id,
     capacity,
     sort_order,

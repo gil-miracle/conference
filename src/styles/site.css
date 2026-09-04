@@ -1514,19 +1514,60 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   margin-top: 12px;
 }
 .ms.mine { border-color: var(--coral); border-width: 2px; padding: 17px 19px; }
-.ms-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.ms-top b { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
-.ms-cap {
+/* 사진 — 없는 분도 있어서 자리를 비우지 않고 이름 앞 글자를 세운다 */
+.ms-photo {
+  aspect-ratio: 16 / 10;
+  background: #e8dfd2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: -16px -18px 14px;
+}
+.ms.mine .ms-photo { margin: -17px -19px 14px; }
+.ms-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ms-nophoto {
   font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
+  font-size: 0.9rem;
+  letter-spacing: 0.14em;
   color: var(--ink-60);
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
+}
+.ms-name { display: block; font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
+
+/* 강의 주제·소개 — 라벨 폭을 맞춰 두 줄의 값이 같은 x에서 시작하게 */
+.ms-detail { margin: 10px 0 0; }
+.ms-detail > div { display: flex; gap: 10px; margin-top: 6px; }
+.ms-detail dt {
+  flex: none;
+  width: 4.4em;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--coral);
+  padding-top: 2px;
+}
+.ms-detail dd {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  word-break: keep-all;
 }
 .ms-title { margin: 8px 0 0; font-size: 0.92rem; word-break: keep-all; }
 .ms-meta { margin: 4px 0 0; font-size: 0.78rem; color: var(--ink-60); }
-.ms-pick { width: 100%; margin-top: 14px; }
+/* 누르기 전에 자리가 있는지 같은 자리에서 보이게 — 인원을 버튼 안에 둔다 */
+.ms-pick {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.ms-pick em {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.82rem;
+  opacity: 0.8;
+}
 .ms-actions {
   display: flex;
   align-items: center;

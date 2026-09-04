@@ -21,7 +21,7 @@ export default async function AdminMentoringPage() {
       ctx.supabase
         .from("mentor_sessions")
         .select(
-          "id,mentor_id,mentor_name,title,place,starts_at,capacity,opens_at,closes_at,sort_order"
+          "id,mentor_id,mentor_name,title,intro,photo_url,place,starts_at,capacity,opens_at,closes_at,sort_order"
         )
         .order("starts_at")
         .order("sort_order"),
