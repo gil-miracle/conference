@@ -1616,3 +1616,6 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 .gal-tabs { margin: 0 0 18px; }
 /* 그 날만 비었을 때 — 격자 안에서 한 줄을 통째로 쓴다 */
 .gal-empty { grid-column: 1 / -1; text-align: center; padding: 26px 0; }
+
+/* 적어 둔 줄바꿈을 그대로 살린다 — 문장마다 줄을 나누는 문구에만 붙인다 */
+.keep-lines { white-space: pre-line; }

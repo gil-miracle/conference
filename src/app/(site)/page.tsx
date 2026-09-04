@@ -28,7 +28,7 @@ export default async function HomePage() {
         <div className="container">
           <FlowHead title="초대" />
           {EVENT.teaserVideo && <TeaserVideo src={EVENT.teaserVideo} />}
-          <p className="lede reveal">{ABOUT_LEDE}</p>
+          <p className="lede reveal keep-lines">{ABOUT_LEDE}</p>
           <div className="verse reveal">
             <p>{THEME_VERSE.text}</p>
             <span className="ref">{THEME_VERSE.ref}</span>
