@@ -45,7 +45,7 @@ export default async function AdminSettingsPage() {
       <ToggleSettingCard
         settingKey="gallery_open"
         title="갤러리 오픈"
-        description="참가자 사진 업로드·열람 허용 (컨퍼런스 시작할 때 켜기)"
+        description="관리자만 업로드 가능. 저장 불가. 로그인 참가자 열람 허용"
         initialOn={settings.galleryOpen}
       />
       <ToggleSettingCard
@@ -56,7 +56,7 @@ export default async function AdminSettingsPage() {
       />
       <ToggleSettingCard
         settingKey="guestbook_open"
-        title="방명록 작성"
+        title="한 줄 노트 작성"
         description="로그인 참가자 작성 허용"
         initialOn={settings.guestbookOpen}
       />

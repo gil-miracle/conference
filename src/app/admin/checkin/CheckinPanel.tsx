@@ -40,17 +40,23 @@ export default function CheckinPanel({
      실제로 뽑는 건 "아직 안 온 사람", "아직 연결 안 한 사람" 쪽이다 */
   const [joined, setJoined] = useState("");
   const [checked, setChecked] = useState("");
+  const [tshirt, setTshirt] = useState("");
+  const [transport, setTransport] = useState("");
   const [onlyAdmin, setOnlyAdmin] = useState(false);
 
   /* 걸어 둔 것이 하나라도 있으면 초기화를 낸다 — 다섯 개를 하나씩
      되돌리다 보면 어느 것이 남았는지 모른다 */
-  const filtered = Boolean(cell || arrive || stay || joined || checked || onlyAdmin);
+  const filtered = Boolean(
+    cell || arrive || stay || tshirt || transport || joined || checked || onlyAdmin
+  );
   const clearFilters = () => {
     setCell("");
     setArrive("");
     setStay("");
     setJoined("");
     setChecked("");
+    setTshirt("");
+    setTransport("");
     setOnlyAdmin(false);
   };
   const { toast, showToast } = useToast();
@@ -132,6 +138,9 @@ export default function CheckinPanel({
       )
     ),
   ].sort();
+  /* 티셔츠는 사이즈별로 몇 장인지 세야 하고, 교통편은 버스 인원을 잡아야 한다 */
+  const tshirts = uniq((p) => p.tshirt);
+  const transports = uniq((p) => p.transport);
 
   /* 신청 항목은 자유 문구라 고정 선택지를 둘 수 없다 — 이미 쓰인 값을 폼에
      후보로 넘겨 손으로 넣는 사람도 같은 문구를 쓰게 한다 */
@@ -150,6 +159,8 @@ export default function CheckinPanel({
     // 숙박일은 "9월 11일(금), 9월 12일(토)"처럼 여러 날이 한 칸에 들어온다 —
     // 고른 날이 포함되면 잡는다
     if (stay && !(p.stay ?? "").includes(stay)) return false;
+    if (tshirt && p.tshirt !== tshirt) return false;
+    if (transport && p.transport !== transport) return false;
     if (joined && (joined === "y") !== Boolean(p.auth_user_id)) return false;
     if (checked && (checked === "y") !== Boolean(p.checked_in_at)) return false;
     if (onlyAdmin && p.role !== "admin") return false;
@@ -215,6 +226,30 @@ export default function CheckinPanel({
           ))}
         </select>
         <select
+          className={tshirt ? "on" : undefined}
+          value={tshirt}
+          onChange={(e) => setTshirt(e.target.value)}
+        >
+          <option value="">티셔츠 전체</option>
+          {tshirts.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        <select
+          className={transport ? "on" : undefined}
+          value={transport}
+          onChange={(e) => setTransport(e.target.value)}
+        >
+          <option value="">교통편 전체</option>
+          {transports.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        <select
           className={joined ? "on" : undefined}
           value={joined}
           onChange={(e) => setJoined(e.target.value)}>
@@ -263,7 +298,7 @@ export default function CheckinPanel({
           <div className="p-row">
             <div className="info">
               <small>
-                {q || cell || arrive || stay || joined || checked || onlyAdmin
+                {q || cell || arrive || stay || tshirt || transport || joined || checked || onlyAdmin
                   ? "조건에 맞는 사람이 없어요."
                   : "참가자 명단이 비어 있어요 — 설정 탭에서 동기화하세요."}
               </small>

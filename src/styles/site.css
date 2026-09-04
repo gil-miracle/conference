@@ -1567,3 +1567,11 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   color: var(--ink-60);
   word-break: keep-all;
 }
+
+/* 소속 — 이름보다 한 단계 물러서게. 좁은 화면에서는 이름 아래로 접힌다 */
+.ss-main-body .preacher .org { color: var(--ink-40); }
+
+/* 갤러리 날짜 탭 — 일정표와 같은 모양. 위쪽 여백만 줄인다 */
+.gal-tabs { margin: 0 0 18px; }
+/* 그 날만 비었을 때 — 격자 안에서 한 줄을 통째로 쓴다 */
+.gal-empty { grid-column: 1 / -1; text-align: center; padding: 26px 0; }

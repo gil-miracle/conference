@@ -9,7 +9,7 @@ import { saveSetting } from "../actions/settings";
 const LABELS: { key: MenuKey; label: string; hint: string }[] = [
   { key: "timetable", label: "일정표", hint: "3일 일정" },
   { key: "songs", label: "찬양", hint: "집회별 곡 목록" },
-  { key: "guestbook", label: "방명록", hint: "인사 남기기" },
+  { key: "guestbook", label: "한 줄 노트", hint: "기대와 기도 제목" },
   { key: "gallery", label: "갤러리", hint: "행사 사진" },
   { key: "mentoring", label: "멘토님과의 시간", hint: "프로필 메뉴에 신청 링크" },
   { key: "standings", label: "레크리에이션 점수", hint: "프로필 메뉴에 순위 링크" },

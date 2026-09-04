@@ -33,7 +33,7 @@ export default function GuestbookDelete({
       disabled={pending}
       onClick={async () => {
         const ok = await confirm({
-          message: "이 방명록을 삭제할까요?",
+          message: "이 노트를 삭제할까요?",
           confirmLabel: "삭제",
           danger: true,
         });

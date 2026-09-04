@@ -43,7 +43,7 @@ export async function addGuestbookEntry(
     };
 
   revalidatePath("/");
-  return { status: "ok", message: "방명록이 등록됐어요." };
+  return { status: "ok", message: "노트를 남겼어요." };
 }
 
 /**

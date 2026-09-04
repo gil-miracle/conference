@@ -25,7 +25,7 @@ export type TabIcon = "home" | "clock" | "user" | "music" | "pen" | "camera" | "
 export const MENU: readonly MenuItem[] = [
   { href: "/timetable", label: "일정표", short: "일정", icon: "clock", key: "timetable" },
   { href: "/songs", label: "찬양", short: "찬양", icon: "music", key: "songs" },
-  { href: "/guestbook", label: "방명록", short: "방명록", icon: "pen", key: "guestbook", locked: true },
+  { href: "/guestbook", label: "한 줄 노트", short: "노트", icon: "pen", key: "guestbook", locked: true },
   { href: "/gallery", label: "갤러리", short: "갤러리", icon: "camera", key: "gallery", locked: true },
 ];
 

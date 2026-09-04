@@ -20,14 +20,14 @@ export default function GuestbookWriteCta() {
   if (!session.authed)
     return (
       <button className="gb-write" onClick={() => openLogin()}>
-        방명록 남기기 — 로그인 후 작성할 수 있어요
+        한 줄 노트 남기기 — 로그인 후 작성할 수 있어요
       </button>
     );
 
   if (!session.bound)
     return (
       <Link className="gb-write block center" href="/connect">
-        방명록 남기기 — 신청 명단 연결 후 작성할 수 있어요
+        한 줄 노트 남기기 — 신청 명단 연결 후 작성할 수 있어요
       </Link>
     );
 
