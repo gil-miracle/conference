@@ -23,6 +23,9 @@ const SECURITY_HEADERS = [
   },
 ];
 
+/** 정본은 miracle2026.org 하나다. 여기로 들어오면 전부 그쪽으로 넘긴다 */
+const OTHER_HOSTS = ["www.miracle2026.org", "miracle-conference.vercel.app"];
+
 const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: SECURITY_HEADERS }];
@@ -43,21 +46,21 @@ const nextConfig: NextConfig = {
       { source: "/bind", destination: "/connect", permanent: false },
 
       /*
-       * Vercel 기본 주소로 들어와도 우리 도메인으로 보낸다.
+       * 다른 주소로 들어와도 miracle2026.org 하나로 모은다.
        *
-       * 주소가 둘이면 나쁜 게 몇 가지 겹친다 — 카톡으로 오가는 링크가 두
-       * 종류가 되고, 로그인 세션 쿠키는 도메인마다 따로라 이쪽에서 로그인한
-       * 사람이 저쪽에서는 손님이 된다. 미리보기 이미지도 두 벌이 된다.
+       * 주소가 여럿이면 나쁜 게 겹친다 — 카톡으로 오가는 링크가 여러 종류가
+       * 되고, 로그인 세션 쿠키는 도메인마다 따로라 이쪽에서 로그인한 사람이
+       * 저쪽에서는 손님이 된다. 미리보기 이미지도 여러 벌이 된다.
        *
        * 미리보기 배포(...-git-xxx.vercel.app)는 건드리지 않는다. 그건 배포
        * 전에 확인하려고 여는 주소라 막으면 확인할 길이 없어진다.
        */
-      {
+      ...OTHER_HOSTS.map((host) => ({
         source: "/:path*",
-        has: [{ type: "host", value: "miracle-conference.vercel.app" }],
+        has: [{ type: "host" as const, value: host }],
         destination: "https://miracle2026.org/:path*",
         permanent: false,
-      },
+      })),
     ];
   },
 };
