@@ -1066,9 +1066,18 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   word-break: keep-all;
 }
 .ss-main-body .preacher .who { min-width: 0; }
+/*
+ * 소속은 이름과 한 줄로 흐르되, 자리가 모자라면 통째로 다음 줄로 내려간다.
+ *
+ * inline-block이라 줄바꿈에서 쪼갤 수 없는 한 덩어리로 다뤄진다 — 그래서
+ * 먼저 '이름 / 소속'으로 갈리고, 내려간 뒤에도 폭이 모자랄 때에야 그 안에서
+ * 가운뎃점을 찾아 나뉜다. 그냥 흘리면 '사송영락교회 담임목사 ·'까지 이름
+ * 옆에 붙고 '예람워십 대표'만 떨어져 내려간다.
+ */
 .ss-main-body .preacher .org {
-  display: block;
-  margin-top: 2px;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
   color: var(--ink-40);
 }
 /* 소속 하나는 쪼개지지 않는다. 나뉘는 자리는 가운뎃점뿐 */

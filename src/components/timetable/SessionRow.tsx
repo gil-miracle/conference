@@ -50,12 +50,17 @@ export default function SessionRow({
           {item.sermon ?? item.title}
         </b>
         {speaker ? (
-          /* 본문 말씀은 빼고 누가 여는지만 남긴다. 소속은 이름 아래 줄에,
-             이름 첫 글자에 맞춰 선다 */
+          /* 본문 말씀은 빼고 누가 여는지만 남긴다. 소속은 이름과 한 줄로
+             흐르다가, 자리가 모자라면 통째로 다음 줄로 내려간다 */
           <small className="preacher">
             <span className="role">{role}</span>
             <span className="who">
-              {speaker.name}
+              {/* 이름은 쪼개지지 않는다. 세로줄을 붙여 두어 줄이 나뉘어도
+                  다음 줄 맨 앞에 홀로 남지 않는다 */}
+              <span className="one">
+                {speaker.name}
+                {speaker.org && " |"}
+              </span>{" "}
               {speaker.org && (
                 /* '사송영락교회 담임목사 · 예람워십 대표'처럼 소속이 둘일 때,
                    그냥 흘리면 '대표'만 떨어져 내려간다. 가운뎃점에서만 나뉘게
