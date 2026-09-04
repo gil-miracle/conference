@@ -1071,6 +1071,8 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   margin-top: 2px;
   color: var(--ink-40);
 }
+/* 소속 하나는 쪼개지지 않는다. 나뉘는 자리는 가운뎃점뿐 */
+.ss-main-body .preacher .org .one { white-space: nowrap; }
 /* '설교'·'말씀' 라벨 폭을 맞춰 두 줄의 이름·본문이 같은 x에서 시작하게 */
 .ss-main-body .preacher .role {
   display: inline-block;
