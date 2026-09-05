@@ -15,6 +15,9 @@ export type DeckVideo = { src: string; poster?: string; label?: string };
  * 다른 방법이 없고, 소리를 켜거나 되감을 사람을 위해 컨트롤은 남긴다.
  * 썸네일을 눌러 넘길 때는 사람이 누른 것이라 소리 상태를 그대로 물려준다.
  *
+ * 썸네일은 그 편의 첫 프레임이다. 중간의 좋은 장면을 골라 두면 눌렀을 때
+ * 다른 그림이 나와 「엉뚱한 걸 눌렀나」 싶다.
+ *
  * 파일이 없는 편은 그 자리만 빠지고, 다 없으면 통째로 사라진다 — 영상은
  * 나중에 손으로 넣는 자산이라 "없는 상태"가 기본이다.
  */
@@ -128,8 +131,6 @@ export default function VideoDeck({ videos }: { videos: DeckVideo[] }) {
           ))}
         </div>
       )}
-
-      {current.label && <p className="vd-cap">{current.label}</p>}
     </div>
   );
 }
