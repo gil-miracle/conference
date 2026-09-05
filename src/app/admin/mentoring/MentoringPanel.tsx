@@ -326,12 +326,17 @@ export default function MentoringPanel({
           {notYet.length === 0 ? (
             <p className="hint-sm">전원 신청 완료.</p>
           ) : (
-            <div className="members mt-10">
-              {notYet.map((p) => (
-                <span className="mchip" key={p.id}>
-                  {p.name}
-                </span>
-              ))}
+            /* 숙소·팀 화면과 같은 틀이다 — 칩 생김새가 .un-group 안에서만
+               살아나고, 같은 일을 하는 목록은 같은 모양이어야 한다 */
+            <div className="un-group">
+              <small>교역자·멘토는 제외</small>
+              <div className="members">
+                {notYet.map((p) => (
+                  <span className="mchip" key={p.id}>
+                    {p.name}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>

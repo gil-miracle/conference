@@ -28,12 +28,21 @@ function readSession(formData: FormData) {
   const capacity = Number(formData.get("capacity") ?? 35) || 35;
   const sort_order = Number(formData.get("sort_order") ?? 0) || 0;
 
-  // datetime-local은 지역 시각 문자열로 온다. Date가 브라우저 시간대로 읽고
-  // toISOString이 UTC로 바꾼다 — 서버와 참가자가 같은 순간을 본다.
+  /*
+   * datetime-local은 시간대가 없는 문자열("2026-09-06T21:00")로 온다.
+   *
+   * 이 함수는 서버 액션이라 서버 시간대로 읽힌다. 로컬은 한국이라 맞게 나오는데
+   * Vercel은 UTC여서, 한국에서 적은 시각이 배포본에서만 9시간 밀렸다.
+   * 화면에서는 21:00으로 넣었는데 다음 날 06:00으로 저장되는 식이다.
+   *
+   * 행사도 운영진도 한국에 있다. +09:00으로 못 박아 어디서 돌든 같게 만든다.
+   */
   const at = (key: string) => {
     const raw = String(formData.get(key) ?? "").trim();
     if (!raw) return null;
-    const d = new Date(raw);
+    const zoned = /(?:[+-]\d\d:?\d\d|Z)$/.test(raw);
+    const withSec = /T\d\d:\d\d$/.test(raw) ? `${raw}:00` : raw;
+    const d = new Date(zoned ? raw : `${withSec}+09:00`);
     return Number.isNaN(d.getTime()) ? null : d.toISOString();
   };
 

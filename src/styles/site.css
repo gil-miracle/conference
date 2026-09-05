@@ -1720,3 +1720,43 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 @media (max-width: 359px) {
   .ms-grid { grid-template-columns: 1fr; }
 }
+
+/* ── 앱 설치 ──
+   브라우저 메뉴 안에 숨은 기능이라, 둘 수 있다고 아는 사람만 쓴다.
+   사흘 내내 열 화면이니 눈에 보이는 자리에 둔다. */
+.install-btn {
+  flex: none;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 6px 11px;
+  margin-right: 10px;
+  border: 1px solid var(--coral);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--coral);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.16s;
+}
+.install-btn:hover { background: var(--coral); color: var(--paper); }
+
+/* iOS는 설치 이벤트를 주지 않는다 — 어디를 눌러야 하는지 말해 주는 수밖에 */
+.install-tip {
+  position: fixed;
+  left: 50%;
+  bottom: 88px;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(320px, calc(100vw - 32px));
+  padding: 16px 18px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 0 10px 30px rgba(33, 29, 25, 0.18);
+  text-align: center;
+}
+.install-tip p { margin: 0 0 12px; font-size: 0.86rem; line-height: 1.7; }
+
+/* 카드 높이가 달라도 단추는 바닥에 — 나란히 놓으면 같은 높이에 선다 */
+.ms { display: flex; flex-direction: column; }
+.ms-body { flex: 1; }
