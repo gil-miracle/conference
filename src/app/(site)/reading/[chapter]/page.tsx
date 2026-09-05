@@ -68,7 +68,7 @@ export default async function ReadingChapterPage({ params }: Props) {
   return (
     <section id="reading">
       <div className="container">
-        <BackLink href="/timetable?day=2">9.12 (토) 일정</BackLink>
+        <BackLink href="/timetable/2">9.12 (토) 일정</BackLink>
 
         <PageHead
           title={`${READING_BOOK} 통독`}

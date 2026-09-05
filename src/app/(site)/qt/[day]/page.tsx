@@ -31,7 +31,7 @@ export default async function QtPage({ params }: Props) {
   return (
     <section>
       <div className="container">
-        <BackLink href={`/timetable?day=${found.day}`}>
+        <BackLink href={`/timetable/${found.day}`}>
           {found.label} 일정
         </BackLink>
 

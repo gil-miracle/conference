@@ -29,7 +29,7 @@ export default async function SpeakerDetailPage({ params }: Props) {
 
   // 목록 페이지가 없으므로 일정표로 되돌아간다 — 그것도 이 사람이 있는 날짜 탭으로.
   const placed = getSpeakerSession(speaker.id);
-  const backHref = placed ? `/timetable?day=${placed.day.day}` : "/timetable";
+  const backHref = placed ? `/timetable/${placed.day.day}` : "/timetable";
 
   return (
     <section>

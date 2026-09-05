@@ -1,23 +1,7 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
-import PageHead from "@/components/PageHead";
-import TimetableTabs from "@/components/TimetableTabs";
+import { redirect } from "next/navigation";
+import { TIMETABLE } from "@/lib/content";
 
-export const metadata: Metadata = { title: "일정표 — MIRACLE 2026" };
-/** 콘텐츠가 코드에서만 오므로 매 요청 렌더링할 필요가 없다 */
-export const revalidate = 3600;
-
+/** /timetable 은 첫 날로 — 메뉴에서 오는 링크가 이 주소다 */
 export default function TimetablePage() {
-  return (
-    <section id="timetable">
-      <div className="container">
-        <PageHead title="일정표" />
-        {/* useSearchParams(?day=)를 쓰므로 Suspense가 필요하다.
-            대신 페이지는 계속 정적으로 남는다. */}
-        <Suspense fallback={null}>
-          <TimetableTabs />
-        </Suspense>
-      </div>
-    </section>
-  );
+  redirect(`/timetable/${TIMETABLE[0].day}`);
 }

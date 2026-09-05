@@ -46,6 +46,17 @@ const nextConfig: NextConfig = {
       { source: "/bind", destination: "/connect", permanent: false },
 
       /*
+       * 일정표 날짜가 물음표 뒤에서 경로로 옮겨 갔다. `?day=2`가 붙은 링크가
+       * 이미 카톡으로 오갔을 수 있어 그대로 받아 넘긴다.
+       */
+      {
+        source: "/timetable",
+        has: [{ type: "query", key: "day", value: "(?<day>\\d+)" }],
+        destination: "/timetable/:day",
+        permanent: false,
+      },
+
+      /*
        * 다른 주소로 들어와도 miracle2026.org 하나로 모은다.
        *
        * 주소가 여럿이면 나쁜 게 겹친다 — 카톡으로 오가는 링크가 여러 종류가

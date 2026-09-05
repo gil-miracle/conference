@@ -268,7 +268,8 @@ nav.site {
 #timetable { border-top: 1px solid var(--hair); }
 /* 제목 아래 여백(40px)과 같은 값으로 — 리드 문단 위아래가 같게 보이도록 */
 .day-tabs { display: flex; margin: 40px 0; border: 1px solid var(--hair); }
-.day-tabs button {
+.day-tabs button,
+.day-tabs a {
   flex: 1;
   padding: 13px 0;
   border: none;
@@ -278,9 +279,13 @@ nav.site {
   font-size: 0.84rem;
   transition: 0.2s;
   letter-spacing: 0.02em;
+  text-align: center;
+  text-decoration: none;
 }
-.day-tabs button + button { border-left: 1px solid var(--hair); }
-.day-tabs button.on { background: var(--ink); color: var(--cream); }
+.day-tabs button + button,
+.day-tabs a + a { border-left: 1px solid var(--hair); }
+.day-tabs button.on,
+.day-tabs a.on { background: var(--ink); color: var(--cream); }
 .tt-list { margin-top: 0; }
 .tt {
   display: grid;
