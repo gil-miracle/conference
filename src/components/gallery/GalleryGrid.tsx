@@ -1,16 +1,26 @@
 "use client";
 
 import { useRef, useState } from "react";
+import PageHead from "@/components/PageHead";
 import Toast from "@/components/Toast";
+import PhotoViewer from "@/components/gallery/PhotoViewer";
 import { useConfirm } from "@/components/Confirm";
 import { CameraIcon } from "@/components/icons";
 import { useToast } from "@/hooks/useToast";
 import { deletePhoto } from "@/app/actions/gallery";
-import { fullUrl, thumbUrl } from "@/lib/cloudinary";
+import { thumbUrl } from "@/lib/cloudinary";
 import { uploadOnePhoto } from "@/lib/gallery-upload";
 import type { Photo } from "@/lib/types";
 
-const PAGE = 24;
+/**
+ * 한 번에 받아 오는 장수.
+ *
+ * 사흘짜리 행사라 사진이 몇백 장을 넘기 어렵고, 한 줄이 200바이트 남짓이라
+ * 넉넉히 받아도 몇십 KB다. 그림 자체는 보이는 것만 받으므로(lazy) 무겁지
+ * 않다. 잘게 나눠 받으면 「더 보기」를 누를 때마다 오래된 사진이 위에
+ * 끼어들어 읽던 자리를 잃는다.
+ */
+const PAGE = 200;
 
 /** 행사 사흘. 사진이 어느 날 것인지는 찍힌 시각으로 가른다 */
 const DAYS = ["2026-09-11", "2026-09-12", "2026-09-13"] as const;
@@ -46,6 +56,7 @@ export default function GalleryGrid({
   const [day, setDay] = useState(() => dayOf(new Date().toISOString()));
   const [hasMore, setHasMore] = useState(initialPhotos.length === PAGE);
   const [uploading, setUploading] = useState<string | null>(null);
+  const [viewing, setViewing] = useState<number | null>(null);
   const { toast, showToast } = useToast();
   const confirm = useConfirm();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -54,7 +65,7 @@ export default function GalleryGrid({
     if (!files || files.length === 0) return;
     const list = Array.from(files).slice(0, 10);
     for (let i = 0; i < list.length; i++) {
-      setUploading(`${i + 1}/${list.length} 업로드 중…`);
+      setUploading(`${i + 1}/${list.length}`);
       const result = await uploadOnePhoto(list[i]);
       if (!result.ok) {
         showToast(result.message, true);
@@ -79,10 +90,10 @@ export default function GalleryGrid({
   }
 
   async function loadMore() {
-    const last = photos[photos.length - 1];
-    if (!last) return;
+    // 서버는 최신순으로 준다 — 가장 오래된 것보다 더 이전을 청한다
+    const oldest = photos.reduce((a, b) => (a.created_at <= b.created_at ? a : b));
     const res = await fetch(
-      `/api/photos?before=${encodeURIComponent(last.created_at)}`
+      `/api/photos?before=${encodeURIComponent(oldest.created_at)}`
     );
     if (!res.ok) return;
     const more = (await res.json()) as Photo[];
@@ -90,10 +101,44 @@ export default function GalleryGrid({
     setHasMore(more.length === PAGE);
   }
 
-  const shown = photos.filter((p) => dayOf(p.created_at) === day);
+  /* 찍힌 순서대로 — 그날을 처음부터 따라가며 보게 된다 */
+  const shown = photos
+    .filter((p) => dayOf(p.created_at) === day)
+    .sort((a, b) => a.created_at.localeCompare(b.created_at));
+
+  const move = (next: number) => {
+    if (next >= 0 && next < shown.length) setViewing(next);
+  };
 
   return (
     <div className="reveal">
+      <PageHead
+        title="우리의 순간들"
+        action={
+          <>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => onFiles(e.target.files)}
+            />
+            <button
+              type="button"
+              className="head-action"
+              disabled={uploading !== null || !cloudName}
+              onClick={() => fileRef.current?.click()}
+            >
+              {uploading ? `올리는 중 ${uploading}` : "사진 올리기"}
+            </button>
+          </>
+        }
+      />
+      {!cloudName && (
+        <p className="msg err">Cloudinary 설정 전이라 업로드가 꺼져 있어요.</p>
+      )}
+
       <div className="day-tabs gal-tabs">
         {DAYS.map((_, i) => (
           <button
@@ -113,16 +158,12 @@ export default function GalleryGrid({
         </div>
       ) : (
         <div className="gal-grid">
-          {shown.map((photo) => (
+          {shown.map((photo, i) => (
             <div className="cell" key={photo.id}>
-              <a
-                href={fullUrl(photo.cloudinary_public_id)}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <button type="button" className="cell-open" onClick={() => setViewing(i)}>
                 {/* Cloudinary CDN 썸네일 — next/image 미사용 (v1 단순화) */}
                 <img src={thumbUrl(photo.cloudinary_public_id)} alt="" loading="lazy" />
-              </a>
+              </button>
               {myId === photo.participant_id && (
                 <button className="del" onClick={() => onDelete(photo.id)}>
                   DEL
@@ -137,31 +178,18 @@ export default function GalleryGrid({
       )}
       {hasMore && (
         <button className="btn ghost full mt-14" onClick={loadMore}>
-          더 보기
+          이전 사진 더 보기
         </button>
       )}
-      <div className="center mt-30">
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          multiple
-          className="hidden"
-          onChange={(e) => onFiles(e.target.files)}
+
+      {viewing !== null && (
+        <PhotoViewer
+          photos={shown}
+          at={viewing}
+          onMove={move}
+          onClose={() => setViewing(null)}
         />
-        <button
-          className="btn accent"
-          disabled={uploading !== null || !cloudName}
-          onClick={() => fileRef.current?.click()}
-        >
-          {uploading ?? "사진 올리기"}
-        </button>
-        {!cloudName && (
-          <p className="msg err mt-14">
-            Cloudinary 설정 전이라 업로드가 꺼져 있어요.
-          </p>
-        )}
-      </div>
+      )}
       <Toast toast={toast} />
     </div>
   );

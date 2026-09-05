@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-const PAGE = 24;
+const PAGE = 200;
 
 /** 갤러리 페이지네이션 — RLS가 로그인·오픈 여부를 걸러준다 */
 export async function GET(request: Request) {
