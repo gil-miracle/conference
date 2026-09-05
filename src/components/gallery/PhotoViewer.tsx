@@ -95,12 +95,20 @@ export default function PhotoViewer({
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        <img
-          key={photo.id}
-          src={fullUrl(photo.cloudinary_public_id)}
-          alt=""
-          onClick={(e) => e.stopPropagation()}
-        />
+        {/*
+          한 겹 더 두는 이유 — 자리를 절대 위치로 못 박아야 높이가 정해진다.
+          정해지지 않은 칸 안에서 max-height:100%는 「그림 제 높이의 100%」로
+          풀려 세로로 긴 사진이 아래로 삐져나갔다.
+          그림 상자는 사진 크기 그대로라, 옆 빈자리를 누르면 닫힌다.
+        */}
+        <div className="pv-frame">
+          <img
+            key={photo.id}
+            src={fullUrl(photo.cloudinary_public_id)}
+            alt=""
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
       </div>
 
       {/* 앞뒤 한 장씩 미리 받아 둔다 — 넘겼는데 흰 화면이면 넘긴 보람이 없다 */}
