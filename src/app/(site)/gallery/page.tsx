@@ -50,7 +50,7 @@ export default async function GalleryPage({
         ) : (
           <GalleryGrid
             initialPhotos={photos}
-            myId={ctx.summary?.id ?? null}
+            isAdmin={ctx.summary?.role === "admin"}
             cloudName={getCloudName()}
           />
         )}

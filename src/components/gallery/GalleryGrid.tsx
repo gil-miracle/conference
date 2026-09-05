@@ -4,10 +4,8 @@ import { useRef, useState } from "react";
 import PageHead from "@/components/PageHead";
 import Toast from "@/components/Toast";
 import PhotoViewer from "@/components/gallery/PhotoViewer";
-import { useConfirm } from "@/components/Confirm";
 import { CameraIcon } from "@/components/icons";
 import { useToast } from "@/hooks/useToast";
-import { deletePhoto } from "@/app/actions/gallery";
 import { thumbUrl } from "@/lib/cloudinary";
 import { uploadOnePhoto } from "@/lib/gallery-upload";
 import type { Photo } from "@/lib/types";
@@ -44,11 +42,13 @@ function dayOf(createdAt: string): number {
 
 export default function GalleryGrid({
   initialPhotos,
-  myId,
+  isAdmin,
   cloudName,
 }: {
   initialPhotos: Photo[];
-  myId: string | null;
+  /* 사진은 운영진이 올린다. 여기 없는 사람에게는 올리는 길도, 지우는 길도
+     보이지 않는다 — 보는 자리다 */
+  isAdmin: boolean;
   cloudName: string | null;
 }) {
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
@@ -58,7 +58,6 @@ export default function GalleryGrid({
   const [uploading, setUploading] = useState<string | null>(null);
   const [viewing, setViewing] = useState<number | null>(null);
   const { toast, showToast } = useToast();
-  const confirm = useConfirm();
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function onFiles(files: FileList | null) {
@@ -77,18 +76,6 @@ export default function GalleryGrid({
     if (fileRef.current) fileRef.current.value = "";
   }
 
-  async function onDelete(id: string) {
-    const ok = await confirm({
-      message: "이 사진을 삭제할까요?",
-      confirmLabel: "삭제",
-      danger: true,
-    });
-    if (!ok) return;
-    const res = await deletePhoto(id);
-    if (res.ok) setPhotos((prev) => prev.filter((p) => p.id !== id));
-    else showToast("삭제에 실패했어요.", true);
-  }
-
   async function loadMore() {
     // 서버는 최신순으로 준다 — 가장 오래된 것보다 더 이전을 청한다
     const oldest = photos.reduce((a, b) => (a.created_at <= b.created_at ? a : b));
@@ -101,10 +88,15 @@ export default function GalleryGrid({
     setHasMore(more.length === PAGE);
   }
 
-  /* 찍힌 순서대로 — 그날을 처음부터 따라가며 보게 된다 */
+  /* 운영진이 정한 차례대로. 사진은 여러 사람 폰에서 모여 와서 올린 시각이
+     찍은 시각과 다르다 — 저녁 사진이 아침 사진 앞에 서는 일이 생긴다 */
   const shown = photos
     .filter((p) => dayOf(p.created_at) === day)
-    .sort((a, b) => a.created_at.localeCompare(b.created_at));
+    .sort(
+      (a, b) =>
+        (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
+        a.created_at.localeCompare(b.created_at)
+    );
 
   const move = (next: number) => {
     if (next >= 0 && next < shown.length) setViewing(next);
@@ -115,27 +107,29 @@ export default function GalleryGrid({
       <PageHead
         title="우리의 순간들"
         action={
-          <>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={(e) => onFiles(e.target.files)}
-            />
-            <button
-              type="button"
-              className="head-action"
-              disabled={uploading !== null || !cloudName}
-              onClick={() => fileRef.current?.click()}
-            >
-              {uploading ? `올리는 중 ${uploading}` : "사진 올리기"}
-            </button>
-          </>
+          isAdmin ? (
+            <>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => onFiles(e.target.files)}
+              />
+              <button
+                type="button"
+                className="head-action"
+                disabled={uploading !== null || !cloudName}
+                onClick={() => fileRef.current?.click()}
+              >
+                {uploading ? `올리는 중 ${uploading}` : "사진 올리기"}
+              </button>
+            </>
+          ) : undefined
         }
       />
-      {!cloudName && (
+      {isAdmin && !cloudName && (
         <p className="msg err">Cloudinary 설정 전이라 업로드가 꺼져 있어요.</p>
       )}
 
@@ -154,7 +148,11 @@ export default function GalleryGrid({
       {photos.length === 0 ? (
         <div className="locked">
           <CameraIcon />
-          <p>아직 올라온 사진이 없어요. 첫 사진을 올려주세요!</p>
+          <p>
+            {isAdmin
+              ? "아직 올라온 사진이 없어요. 첫 사진을 올려주세요!"
+              : "아직 올라온 사진이 없어요. 운영진이 올리면 여기 쌓입니다."}
+          </p>
         </div>
       ) : (
         <div className="gal-grid">
@@ -164,11 +162,6 @@ export default function GalleryGrid({
                 {/* Cloudinary CDN 썸네일 — next/image 미사용 (v1 단순화) */}
                 <img src={thumbUrl(photo.cloudinary_public_id)} alt="" loading="lazy" />
               </button>
-              {myId === photo.participant_id && (
-                <button className="del" onClick={() => onDelete(photo.id)}>
-                  DEL
-                </button>
-              )}
             </div>
           ))}
           {shown.length === 0 && (

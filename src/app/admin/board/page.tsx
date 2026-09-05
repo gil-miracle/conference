@@ -1,18 +1,18 @@
 import { requireAdmin } from "@/lib/admin";
 import { demoBoardGuestbook } from "@/lib/demo";
-import { getCloudName, thumbUrl } from "@/lib/cloudinary";
+import { getCloudName } from "@/lib/cloudinary";
 import GuestbookModItem, { type ModEntry } from "./GuestbookModItem";
-import PhotoModCell from "./PhotoModCell";
+import GalleryPanel from "./GalleryPanel";
 
 export const dynamic = "force-dynamic";
 
-type PhotoRow = { id: string; cloudinary_public_id: string; hidden: boolean };
+import type { Photo } from "@/lib/types";
 
 export default async function AdminBoardPage() {
   const ctx = await requireAdmin();
 
   let entries: ModEntry[];
-  let photos: PhotoRow[] = [];
+  let photos: Photo[] = [];
 
   if (ctx.demo) {
     entries = demoBoardGuestbook();
@@ -25,12 +25,16 @@ export default async function AdminBoardPage() {
         .limit(200),
       ctx.supabase
         .from("photos")
-        .select("id,cloudinary_public_id,hidden")
-        .order("created_at", { ascending: false })
-        .limit(60),
+        .select(
+          "id,participant_id,cloudinary_public_id,width,height,hidden,sort_order,created_at"
+        )
+        // 참가자가 보는 것과 같은 차례로 늘어놓는다 — 끌어서 고치는 자리라
+        // 여기서 보이는 순서가 곧 저기서 보이는 순서여야 한다
+        .order("sort_order", { ascending: true })
+        .limit(500),
     ]);
     entries = (entriesRes.data ?? []) as ModEntry[];
-    photos = (photosRes.data ?? []) as PhotoRow[];
+    photos = (photosRes.data ?? []) as Photo[];
   }
 
   const cloudName = getCloudName();
@@ -45,23 +49,7 @@ export default async function AdminBoardPage() {
         <GuestbookModItem key={entry.id} entry={entry} />
       ))}
 
-      <div className="sec-title mt-38">
-        <b>갤러리 관리</b>
-      </div>
-      {photos.length === 0 ? (
-        <p className="msg">아직 올라온 사진이 없어요.</p>
-      ) : (
-        <div className="gal-mod">
-          {photos.map((photo) => (
-            <PhotoModCell
-              key={photo.id}
-              id={photo.id}
-              hidden={photo.hidden}
-              thumb={cloudName ? thumbUrl(photo.cloudinary_public_id) : null}
-            />
-          ))}
-        </div>
-      )}
+      <GalleryPanel initial={photos} cloudName={cloudName} demo={ctx.demo} />
     </>
   );
 }

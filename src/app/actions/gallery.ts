@@ -21,9 +21,15 @@ export type UploadSignature = {
 
 /**
  * Cloudinary signed upload 서명 발급 (설계서 6장 — unsigned preset 금지).
- * 세션 + 명단 바인딩 + 갤러리 오픈 확인 후, 참가자별 고유 public_id에
- * 스코프된 서명을 발급한다 — 재사용해도 같은 asset을 덮어쓸 뿐,
- * 무제한 신규 업로드에는 쓸 수 없다.
+ *
+ * 사진은 운영진만 올린다. 갤러리는 「우리의 순간들」 한 곳뿐이라 아무나
+ * 올린 것이 곧 공식 기록이 된다.
+ *
+ * 갤러리 오픈 여부는 묻지 않는다 — 그건 참가자에게 보일지 말지이고,
+ * 운영진은 열기 전에 미리 채워 둘 수 있어야 한다.
+ *
+ * 발급하는 서명은 그 사람의 고유 public_id에 묶인다 — 재사용해도 같은
+ * asset을 덮어쓸 뿐, 무제한 신규 업로드에는 쓸 수 없다.
  */
 export async function getUploadSignature(): Promise<
   { ok: true; sig: UploadSignature } | { ok: false; message: string }
@@ -35,16 +41,9 @@ export async function getUploadSignature(): Promise<
     return { ok: false, message: "Cloudinary 설정 전이에요." };
 
   const ctx = await getBoundParticipant();
-  if (!ctx)
-    return { ok: false, message: NEED_BIND };
-
-  const { data: setting } = await ctx.supabase
-    .from("site_settings")
-    .select("value")
-    .eq("key", "gallery_open")
-    .maybeSingle();
-  const open = (setting?.value as { value?: boolean } | null)?.value === true;
-  if (!open) return { ok: false, message: "갤러리가 아직 열리지 않았어요." };
+  if (!ctx) return { ok: false, message: NEED_BIND };
+  if (ctx.me.role !== "admin")
+    return { ok: false, message: "사진은 운영진만 올릴 수 있어요." };
 
   const timestamp = Math.floor(Date.now() / 1000);
   const publicId = `${ctx.me.id}-${timestamp}-${randomUUID().slice(0, 8)}`;
@@ -70,9 +69,12 @@ export async function getUploadSignature(): Promise<
 
 /**
  * 업로드 완료 후 메타데이터 저장.
- * public_id가 이 참가자에게 발급된 형식인지 검증하고
- * (임의 public_id로 숨김 사진 재노출·타인 사진 도용 차단),
+ * public_id가 이 사람에게 발급된 형식인지 검증하고
+ * (임의 public_id로 숨김 사진 재노출·남의 사진 도용 차단),
  * DB unique 제약이 동일 public_id 재등록을 막는다.
+ *
+ * 여기서도 운영진인지 다시 본다 — 서명만 막고 저장을 열어 두면 남이 올린
+ * 파일을 주워 등록할 수 있다. 정책(0038)이 마지막으로 한 번 더 막는다.
  */
 export async function savePhoto(input: {
   public_id: string;
@@ -80,7 +82,7 @@ export async function savePhoto(input: {
   height: number | null;
 }) {
   const ctx = await getBoundParticipant();
-  if (!ctx) return { ok: false as const };
+  if (!ctx || ctx.me.role !== "admin") return { ok: false as const };
 
   const expectedPrefix = `${FOLDER}/${ctx.me.id}-`;
   if (
@@ -111,7 +113,7 @@ export async function savePhoto(input: {
 export async function deletePhoto(id: string) {
   const supabase = await getSupabaseServer();
   if (!supabase) return { ok: false };
-  // DB에서만 제거 (RLS: 본인 또는 admin). Cloudinary 원본 정리는 콘솔에서 일괄.
+  // DB에서만 제거 (RLS: admin). Cloudinary 원본 정리는 콘솔에서 일괄.
   // 정책에 막히면 오류가 아니라 0행으로 돌아온다 — 확인하지 않으면 남의 사진을
   // 지운 척하게 된다.
   const { data, error } = await supabase
