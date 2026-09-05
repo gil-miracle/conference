@@ -1,9 +1,8 @@
 import HeroSection from "@/components/sections/HeroSection";
 import FlowHead from "@/components/FlowHead";
-import TeaserVideo from "@/components/TeaserVideo";
 import NextSessions from "@/components/home/NextSessions";
 import KakaoMap from "@/components/KakaoMap";
-import PromoSection from "@/components/home/PromoSection";
+import VideoDeck from "@/components/home/VideoDeck";
 import { EVENT, THEME_VERSE, ABOUT_LEDE } from "@/lib/content";
 import { getPublicSettings } from "@/lib/data/site";
 
@@ -28,9 +27,8 @@ export default async function HomePage() {
       <section id="about" className="flow">
         <div className="container">
           <FlowHead title="초대" />
-          {EVENT.teaserVideo && (
-            <TeaserVideo src={EVENT.teaserVideo} poster={EVENT.teaserPoster} />
-          )}
+          {/* 초대 영상 + 홍보 영상 — 한 재생기에 걸고 썸네일로 넘긴다 */}
+          <VideoDeck videos={EVENT.videos} />
           <p className="lede reveal keep-lines">{ABOUT_LEDE}</p>
           <div className="verse reveal">
             <p>{THEME_VERSE.text}</p>
@@ -47,12 +45,6 @@ export default async function HomePage() {
             <NextSessions />
           </div>
         </section>
-      )}
-
-      {/* 홍보 영상 — 누를 때 시작한다. 위 초대 영상과 함께 돌면 어느 쪽
-          소리인지 모른다 */}
-      {EVENT.promoVideos.length > 0 && (
-        <PromoSection videos={EVENT.promoVideos} title="홍보 영상" />
       )}
 
       {/* 장소 · 오시는 길 — 늘 보인다. 못 찾아오면 다른 게 다 소용없다 */}

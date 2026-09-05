@@ -39,18 +39,15 @@ export const EVENT = {
   /** 홍보 영상 YouTube ID — 나오면 채우기 (예: "dQw4w9WgXcQ") */
   youtubeId: null as string | null,
   /**
-   * 메인에 넣는 홍보 영상 파일. public/ 아래에 두고 경로를 적는다.
-   * 파일이 없으면 화면에서 알아서 빠지므로 미리 적어둬도 안전하다.
+   * 초대 자리에 거는 영상들. 첫 번째가 기본으로 뜨고, 아래 썸네일이나
+   * 스와이프로 넘긴다. public/ 아래에 파일을 두고 경로를 적는다 —
+   * 없는 편은 그 자리만 빠지고, 다 없으면 통째로 사라진다.
+   * label은 영상 아래 붙는 이름이다.
    */
-  teaserVideo: "/teaser.mp4",
-  /* 첫 화면. 없으면 아이폰이 검은 판을 보여준다 */
-  teaserPoster: "/teaser-poster.jpg",
-  /* 오시는 길 아래 홍보 영상. public에 파일을 넣으면 나타나고, 없으면 그
-     자리만 빠진다. 둘 다 없으면 제목까지 통째로 사라진다.
-     label을 적으면 영상 아래 이름이 붙는다 — 두 편이 뭐가 다른지 알려 준다 */
-  promoVideos: [
-    { src: "/promo.mp4", poster: "/promo-poster.jpg" },
-    { src: "/promo-2.mp4", poster: "/promo-2-poster.jpg" },
+  videos: [
+    { src: "/teaser.mp4", poster: "/teaser-poster.jpg", label: "초대 영상" },
+    { src: "/promo.mp4", poster: "/promo-poster.jpg", label: "홍보 영상" },
+    { src: "/promo-2.mp4", poster: "/promo-2-poster.jpg", label: "홍보 영상 2" },
   ] as { src: string; poster?: string; label?: string }[],
 };
 
