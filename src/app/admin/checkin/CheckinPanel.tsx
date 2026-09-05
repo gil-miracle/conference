@@ -22,6 +22,18 @@ import QrScanner from "./QrScanner";
 
 const DEMO_MSG = "미리보기 모드 — 변경사항은 저장되지 않아요.";
 
+/** 티셔츠 사이즈 차례. 여기 없는 값은 뒤로 밀린다 */
+const SIZES = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL"];
+
+/**
+ * 괄호 안 안내를 뗀 짧은 이름.
+ *
+ * '공동체 버스(9/11(금) 오후 7시30분, 혜화 이룸에서 출발 예정)'가 통째로
+ * 셀렉트에 들어가면 목록이 화면을 넘는다. 고를 때 필요한 건 앞의 낱말뿐이다.
+ * 거르는 값은 원래 값 그대로라 명단과 어긋나지 않는다.
+ */
+const shortLabel = (v: string) => v.split("(")[0].trim() || v;
+
 export default function CheckinPanel({
   rooms,
   teams,
@@ -121,6 +133,16 @@ export default function CheckinPanel({
   );
 
   /* 고를 값은 명단에서 뽑는다 — 폼 선택지가 바뀌어도 따라간다 */
+  /* 사이즈는 글자순이 아니다 — 그냥 정렬하면 4XL이 L보다 앞에 선다.
+     아는 사이즈를 먼저 순서대로, 모르는 값은 뒤에 가나다순으로 */
+  const bySize = (a: string, b: string) => {
+    const i = SIZES.indexOf(a.toUpperCase());
+    const j = SIZES.indexOf(b.toUpperCase());
+    if (i < 0 && j < 0) return a.localeCompare(b);
+    if (i < 0) return 1;
+    if (j < 0) return -1;
+    return i - j;
+  };
   const uniq = (get: (p: AdminParticipant) => string | null) =>
     [...new Set((data ?? []).map(get).filter(Boolean))].sort() as string[];
   /* 목록 배지와 같은 판단을 쓴다 — 다락방이 없으면 "초청자"로 묶인다.
@@ -139,7 +161,7 @@ export default function CheckinPanel({
     ),
   ].sort();
   /* 티셔츠는 사이즈별로 몇 장인지 세야 하고, 교통편은 버스 인원을 잡아야 한다 */
-  const tshirts = uniq((p) => p.tshirt);
+  const tshirts = [...uniq((p) => p.tshirt)].sort(bySize);
   const transports = uniq((p) => p.transport);
 
   /* 신청 항목은 자유 문구라 고정 선택지를 둘 수 없다 — 이미 쓰인 값을 폼에
@@ -210,7 +232,7 @@ export default function CheckinPanel({
           <option value="">도착 전체</option>
           {arriveDays.map((d) => (
             <option key={d} value={d}>
-              {d} 도착
+              {d}
             </option>
           ))}
         </select>
@@ -245,7 +267,7 @@ export default function CheckinPanel({
           <option value="">교통편 전체</option>
           {transports.map((t) => (
             <option key={t} value={t}>
-              {t}
+              {shortLabel(t)}
             </option>
           ))}
         </select>

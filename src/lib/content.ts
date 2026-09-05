@@ -247,6 +247,8 @@ export const TIMETABLE: TimetableDay[] = [
         time: "09:00–10:30",
         badge: "MIRACLE 2",
         speakerId: "cho-youngchan",
+        // 이 시간은 성경 통독이다 — 눌러 본문을 볼 수 있게 한다
+        href: "/reading",
         title: "오전 예배",
         // ⚠️ 설교 제목·본문은 예시다. 확정되면 교체할 것.
         sermon: "말씀",
@@ -262,9 +264,14 @@ export const TIMETABLE: TimetableDay[] = [
         main: true,
       },
       // 눌러서 신청 화면으로 — 이 순서만 미리 정해두는 것이 있다
-      { time: "10:30–12:30", title: "멘토님 타임", href: "/mentoring" },
+      {
+        time: "10:30–12:30",
+        title: "멘토의 TMI",
+        sub: "Too Meaningful Information",
+        href: "/mentoring",
+      },
       { time: "12:30–14:00", title: "점심식사" },
-      { time: "14:00–16:00", title: "프로그램" },
+      { time: "14:00–16:00", title: "리그 오브 미라클" },
       {
         time: "16:00–18:00",
         badge: "MIRACLE 3",
@@ -358,7 +365,7 @@ export const TIMETABLE: TimetableDay[] = [
     items: [
       { time: "07:00–08:30", title: "QT 및 아침식사", href: "/qt/3" },
       { time: "08:30–10:00", title: "혜화로 이동" },
-      { time: "10:00–12:00", title: "영화 관람" },
+      { time: "10:00–12:00", title: "방구석 미라클 1열" },
       { time: "12:00–13:30", title: "점심식사" },
       { time: "13:30–14:00", title: "예배당 입장" },
       {

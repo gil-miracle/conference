@@ -40,8 +40,8 @@ export default function SessionRow({
   const speaker = item.speakerId ? getSpeaker(item.speakerId) : null;
   const role = item.role ?? "설교";
 
-  return (
-    <div className={`ss-row main${speaker ? " has-speaker" : ""}`}>
+  const body = (
+    <>
       <div className="ss-main-body">
         {showTime && <time className="ss-time">{item.time}</time>}
         {/* 설교 제목이 있으면 그게 본문이다 — 순서명(저녁 예배)은
@@ -85,6 +85,17 @@ export default function SessionRow({
           <SpeakerPhoto speaker={speaker} />
         </span>
       )}
-    </div>
+    </>
+  );
+
+  /* 갈 곳이 있는 집회만 눌린다 — 성경 통독처럼 본문이 따로 있는 순서다.
+     설교자 소개로 가는 링크는 없다 — 표에 다 나와 있어 들어가도 더 알 것이 없다 */
+  const className = `ss-row main${speaker ? " has-speaker" : ""}`;
+  return item.href ? (
+    <Link className={`${className} linked`} href={item.href}>
+      {body}
+    </Link>
+  ) : (
+    <div className={className}>{body}</div>
   );
 }

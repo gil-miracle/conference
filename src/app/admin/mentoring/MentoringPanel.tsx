@@ -279,7 +279,7 @@ export default function MentoringPanel({
   return (
     <>
       <div className="sec-title">
-        <b>멘토님들과의 시간</b>
+        <b>멘토의 TMI</b>
       </div>
 
       <SessionEditor people={people} />
