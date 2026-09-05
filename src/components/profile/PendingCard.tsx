@@ -16,10 +16,15 @@ export default function PendingCard({ summary }: { summary: MySummary }) {
             </>
           )}
           <br />
-          착오라고 생각되시면 운영진에 문의해주세요.
+          잘못 적은 곳이 있으면 고쳐서 다시 보낼 수 있어요.
         </p>
-        <Link className="btn" href="/">
-          행사 안내 보기
+        <small className="pending-note">
+          맞게 적었는데도 반려됐다면 운영진에 문의해주세요.
+        </small>
+        {/* 반려로 끝나면 안 된다 — 대개는 이름·전화를 잘못 적은 것이라
+            고칠 자리를 여기서 열어 준다 */}
+        <Link className="btn accent" href="/connect">
+          다시 요청하기
         </Link>
       </div>
     );
