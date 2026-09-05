@@ -4,6 +4,7 @@ import "@/styles/base.css";
 
 import ConfirmProvider from "@/components/Confirm";
 import ServiceWorker from "@/components/ServiceWorker";
+import OpenInBrowser from "@/components/OpenInBrowser";
 
 /**
  * 배포 도메인. 환경변수가 비어 있거나(Vercel에 값 없이 등록한 경우) 형식이
@@ -95,6 +96,9 @@ export default function RootLayout({
       <body>
         <div className="grain" aria-hidden="true" />
         <ConfirmProvider>{children}</ConfirmProvider>
+        {/* 카톡 안에서 열렸으면 바로 기본 브라우저로 — 여기서는 구글 로그인도,
+            앱 설치도, 알림도 안 된다 */}
+        <OpenInBrowser />
         <ServiceWorker />
       </body>
     </html>

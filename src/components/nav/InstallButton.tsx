@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { detectInAppBrowser, kakaoExternalUrl } from "@/lib/browser-env";
 
 /** 크롬 계열이 설치할 수 있을 때 던지는 이벤트 — 표준이 아니라 타입이 없다 */
 type InstallPrompt = Event & {
@@ -142,6 +143,19 @@ export default function InstallButton() {
                 <li key={s}>{s}</li>
               ))}
             </ol>
+            {/* 카톡이면 눌러서 바로 나갈 수 있게 — 글로만 알려 주면 메뉴를
+                찾아 헤맨다 */}
+            {detectInAppBrowser(navigator.userAgent) === "kakaotalk" && (
+              <button
+                type="button"
+                className="btn accent full mb-10"
+                onClick={() => {
+                  location.href = kakaoExternalUrl(location.href);
+                }}
+              >
+                기본 브라우저로 열기
+              </button>
+            )}
             <button type="button" className="btn sm ghost full" onClick={() => setTip(null)}>
               닫기
             </button>
