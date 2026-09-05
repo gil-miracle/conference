@@ -1,0 +1,96 @@
+/*
+ * 사진 크게 보기.
+ *
+ * 참가자 갤러리(site.css)와 운영진 갤러리 관리(admin.css) 두 곳에서 쓴다.
+ * 어느 한쪽 파일에 넣어 두면 다른 쪽에서는 스타일 없이 뼈대만 떠서, 단추와
+ * 사진이 본문 한가운데 흩어진다 — 실제로 그렇게 깨졌다.
+ * 그래서 이 파일은 컴포넌트가 직접 불러온다.
+ */
+
+/* ── 사진 크게 보기 ──
+   예전엔 원본 주소를 새 탭으로 열었다. 한 장 보려고 화면을 나갔다 오면
+   갤러리는 맨 위로 돌아가 있고 다음 장을 또 찾아야 했다. 폰 갤러리처럼
+   옆으로 넘기게 한다. */
+.pv {
+  position: fixed;
+  inset: 0;
+  z-index: 96;
+  display: flex;
+  flex-direction: column;
+  background: rgba(20, 17, 14, 0.96);
+  color: var(--cream);
+}
+.pv-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
+}
+.pv-count { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; opacity: 0.75; }
+.pv-x {
+  border: 0;
+  background: none;
+  color: var(--cream);
+  font-size: 1.05rem;
+  line-height: 1;
+  padding: 6px 8px;
+}
+/* 운영진용 — 손톱만 한 칸에서는 무슨 사진인지 보고 판단할 수가 없어서,
+   크게 본 그 자리에 내리고 지우는 길을 둔다 */
+.pv-acts { display: flex; align-items: center; gap: 4px; }
+.pv-acts > button:not(.pv-x) {
+  font: inherit;
+  font-size: 0.76rem;
+  padding: 6px 10px;
+  border: 1px solid rgba(250, 246, 238, 0.4);
+  background: none;
+  color: var(--cream);
+}
+.pv-acts > button:not(.pv-x):hover { border-color: var(--cream); }
+.pv-acts > button.danger { border-color: var(--coral); color: var(--coral); }
+.pv-acts > button.danger:hover { background: var(--coral); color: var(--cream); }
+/* 숨긴 사진은 크게 봐도 숨긴 티가 나야 한다 */
+.pv-frame.hidden-mark img { opacity: 0.45; }
+
+/* 사진은 잘리지 않게 — 세로 사진도 가로 사진도 통째로 보여야 한다.
+   높이를 못 박은 자리 안에 넣는다. 높이가 정해지지 않은 칸에서는
+   max-height:100%가 「그림 제 높이의 100%」로 풀려서 아무것도 막지 못한다. */
+.pv-stage { flex: 1; min-height: 0; position: relative; }
+.pv-frame {
+  position: absolute;
+  inset: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pv-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* 아래 띠 — 어디쯤인지 보이고, 눌러서 건너뛴다 */
+.pv-strip {
+  flex: none;
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.pv-strip::-webkit-scrollbar { display: none; }
+.pv-thumb {
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0.5;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.pv-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pv-thumb.on { opacity: 1; border-color: var(--coral); }
+.pv-thumb:hover { opacity: 0.85; }

@@ -1,13 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import PageHead from "@/components/PageHead";
-import Toast from "@/components/Toast";
 import PhotoViewer from "@/components/gallery/PhotoViewer";
 import { CameraIcon } from "@/components/icons";
-import { useToast } from "@/hooks/useToast";
 import { thumbUrl } from "@/lib/cloudinary";
-import { uploadOnePhoto } from "@/lib/gallery-upload";
 import type { Photo } from "@/lib/types";
 
 /**
@@ -40,41 +37,19 @@ function dayOf(createdAt: string): number {
   return date < DAYS[0] ? 0 : DAYS.length - 1;
 }
 
-export default function GalleryGrid({
-  initialPhotos,
-  isAdmin,
-  cloudName,
-}: {
-  initialPhotos: Photo[];
-  /* 사진은 운영진이 올린다. 여기 없는 사람에게는 올리는 길도, 지우는 길도
-     보이지 않는다 — 보는 자리다 */
-  isAdmin: boolean;
-  cloudName: string | null;
-}) {
+/**
+ * 우리의 순간들 — 보는 자리다.
+ *
+ * 올리는 일도 내리는 일도 운영진 화면(관리자 → 게시판 → 갤러리 관리)에만
+ * 있다. 갤러리는 여기 한 곳뿐이라 아무나 올린 것이 곧 공식 기록이 되고,
+ * 올린 사람이 지우면 남들이 이미 본 것이 말없이 사라진다.
+ */
+export default function GalleryGrid({ initialPhotos }: { initialPhotos: Photo[] }) {
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
   /* 오늘이 행사 중이면 오늘 탭으로 연다 — 현장에서 열면 방금 찍은 것이 보여야 한다 */
   const [day, setDay] = useState(() => dayOf(new Date().toISOString()));
   const [hasMore, setHasMore] = useState(initialPhotos.length === PAGE);
-  const [uploading, setUploading] = useState<string | null>(null);
   const [viewing, setViewing] = useState<number | null>(null);
-  const { toast, showToast } = useToast();
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  async function onFiles(files: FileList | null) {
-    if (!files || files.length === 0) return;
-    const list = Array.from(files).slice(0, 10);
-    for (let i = 0; i < list.length; i++) {
-      setUploading(`${i + 1}/${list.length}`);
-      const result = await uploadOnePhoto(list[i]);
-      if (!result.ok) {
-        showToast(result.message, true);
-        break;
-      }
-      setPhotos((prev) => [result.photo, ...prev]);
-    }
-    setUploading(null);
-    if (fileRef.current) fileRef.current.value = "";
-  }
 
   async function loadMore() {
     // 서버는 최신순으로 준다 — 가장 오래된 것보다 더 이전을 청한다
@@ -104,34 +79,7 @@ export default function GalleryGrid({
 
   return (
     <div className="reveal">
-      <PageHead
-        title="우리의 순간들"
-        action={
-          isAdmin ? (
-            <>
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={(e) => onFiles(e.target.files)}
-              />
-              <button
-                type="button"
-                className="head-action"
-                disabled={uploading !== null || !cloudName}
-                onClick={() => fileRef.current?.click()}
-              >
-                {uploading ? `올리는 중 ${uploading}` : "사진 올리기"}
-              </button>
-            </>
-          ) : undefined
-        }
-      />
-      {isAdmin && !cloudName && (
-        <p className="msg err">Cloudinary 설정 전이라 업로드가 꺼져 있어요.</p>
-      )}
+      <PageHead title="우리의 순간들" />
 
       <div className="day-tabs gal-tabs">
         {DAYS.map((_, i) => (
@@ -148,11 +96,7 @@ export default function GalleryGrid({
       {photos.length === 0 ? (
         <div className="locked">
           <CameraIcon />
-          <p>
-            {isAdmin
-              ? "아직 올라온 사진이 없어요. 첫 사진을 올려주세요!"
-              : "아직 올라온 사진이 없어요. 운영진이 올리면 여기 쌓입니다."}
-          </p>
+          <p>아직 올라온 사진이 없어요. 운영진이 올리면 여기 쌓입니다.</p>
         </div>
       ) : (
         <div className="gal-grid">
@@ -183,7 +127,6 @@ export default function GalleryGrid({
           onClose={() => setViewing(null)}
         />
       )}
-      <Toast toast={toast} />
     </div>
   );
 }

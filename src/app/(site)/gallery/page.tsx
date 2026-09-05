@@ -4,7 +4,6 @@ import Locked from "@/components/Locked";
 import { CameraIcon } from "@/components/icons";
 import GalleryDemoGrid from "@/components/gallery/GalleryDemoGrid";
 import GalleryGrid from "@/components/gallery/GalleryGrid";
-import { getCloudName } from "@/lib/cloudinary";
 import { getPhotos, getSiteContext } from "@/lib/data/site";
 import { NEED_BIND, NEED_LOGIN } from "@/lib/messages";
 
@@ -48,11 +47,7 @@ export default async function GalleryPage({
         ) : ctx.demoMode ? (
           <GalleryDemoGrid />
         ) : (
-          <GalleryGrid
-            initialPhotos={photos}
-            isAdmin={ctx.summary?.role === "admin"}
-            cloudName={getCloudName()}
-          />
+          <GalleryGrid initialPhotos={photos} />
         )}
       </div>
     </section>

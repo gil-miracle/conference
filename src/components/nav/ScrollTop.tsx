@@ -10,16 +10,18 @@ import { useEffect, useState } from "react";
  * 손가락으로 한참 쓸어 올려야 한다. 웹에서 그 동작을 되살릴 방법이 없으니
  * 단추를 둔다.
  *
- * 한참 내려갔을 때만 나온다 — 늘 떠 있으면 화면만 가린다. 자리는 하단
- * 탭바 위, 오른쪽 끝이다. 탭바와 겹치지 않게 탭바 높이(60px)와 홈 인디케이터
- * 영역만큼 띄운다.
+ * 맨 위가 아니면 나온다. 처음엔 한참 내려갔을 때만 띄웠는데, 조금 내려간
+ * 자리에서 올라가고 싶을 때 없어서 되레 답답했다. 40px은 고무줄 스크롤과
+ * 반올림 때문에 깜빡이지 않을 만큼만 둔 여유다.
+ *
+ * 자리는 하단 탭바 위, 오른쪽 끝이다. 탭바와 겹치지 않게 탭바 높이(60px)와
+ * 홈 인디케이터 영역만큼 띄운다.
  */
 export default function ScrollTop() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    // 한 화면 반쯤 내려갔으면 「돌아갈 길」이 필요한 깊이로 본다
-    const onScroll = () => setShow(window.scrollY > window.innerHeight * 1.5);
+    const onScroll = () => setShow(window.scrollY > 40);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);

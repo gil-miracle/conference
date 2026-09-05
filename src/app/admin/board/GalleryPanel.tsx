@@ -38,16 +38,24 @@ export default function GalleryPanel({
   demo: boolean;
 }) {
   const [rows, setRows] = useState<Photo[]>(initial);
+  const rowsRef = useRef(rows);
+  rowsRef.current = rows;
   const [uploading, setUploading] = useState<string | null>(null);
   const [viewing, setViewing] = useState<number | null>(null);
   const [held, setHeld] = useState<string | null>(null);
+  /* 같은 손짓 안에서 바로 읽어야 해서 ref로도 들고 있는다 — 상태는 다음
+     그림에나 반영되는데, 자리 맞바꿈은 이 이벤트 안에서 끝나야 한다 */
+  const heldRef = useRef<string | null>(null);
   const { toast, showToast } = useToast();
   const confirm = useConfirm();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const down = useRef<{ x: number; y: number; id: string } | null>(null);
+  const down = useRef<{ x: number; y: number; id: string; touch: boolean } | null>(null);
   const moved = useRef(false);
+  /* 끌고 놓은 손짓 뒤에는 브라우저가 클릭을 한 번 더 준다. 그대로 두면
+     사진을 옮겨 놓자마자 그 사진이 크게 열린다 */
+  const dragged = useRef(false);
 
   /*
    * 집고 있는 동안에는 화면이 따라 굴러다니면 안 된다. touch-action으로
@@ -57,7 +65,14 @@ export default function GalleryPanel({
     if (!held) return;
     const stop = (e: TouchEvent) => e.preventDefault();
     document.addEventListener("touchmove", stop, { passive: false });
-    return () => document.removeEventListener("touchmove", stop);
+    // 격자 밖에서 손을 떼도 놓아 준다 — 안 그러면 집힌 채로 남는다
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
+    return () => {
+      document.removeEventListener("touchmove", stop);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+    };
   }, [held]);
 
   const guard = () => {
@@ -106,39 +121,46 @@ export default function GalleryPanel({
   /* ── 끌어서 차례 바꾸기 ─────────────────────────────────────── */
 
   const pick = (id: string) => {
+    heldRef.current = id;
     setHeld(id);
     moved.current = false;
   };
 
   const onPointerDown = (e: React.PointerEvent, id: string) => {
     if (demo) return;
-    down.current = { x: e.clientX, y: e.clientY, id };
-    if (e.pointerType === "mouse") return pick(id);
-    timer.current = setTimeout(() => pick(id), HOLD_MS);
+    const touch = e.pointerType !== "mouse";
+    down.current = { x: e.clientX, y: e.clientY, id, touch };
+    // 손가락은 잠깐 누르고 있어야 집힌다. 마우스는 움직이기 시작해야 집힌다 —
+    // 누르자마자 집으면 그냥 눌러서 크게 보는 일이 영영 안 된다
+    if (touch) timer.current = setTimeout(() => pick(id), HOLD_MS);
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
     const start = down.current;
     if (!start) return;
+    const far = Math.hypot(e.clientX - start.x, e.clientY - start.y) > SLOP;
 
-    // 아직 안 집혔는데 움직였으면 넘기려는 것이다 — 집기를 그만둔다
-    if (!held) {
-      if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > SLOP && timer.current) {
-        clearTimeout(timer.current);
+    if (!heldRef.current) {
+      if (!far) return;
+      if (start.touch) {
+        // 길게 누르기 전에 움직였다 = 화면을 넘기려는 것이다
+        if (timer.current) clearTimeout(timer.current);
         timer.current = null;
         down.current = null;
+        return;
       }
-      return;
+      pick(start.id);
     }
 
     const under = document
       .elementFromPoint(e.clientX, e.clientY)
       ?.closest<HTMLElement>("[data-photo]");
     const overId = under?.dataset.photo;
-    if (!overId || overId === held) return;
+    const holding = heldRef.current;
+    if (!overId || !holding || overId === holding) return;
 
     setRows((prev) => {
-      const from = prev.findIndex((p) => p.id === held);
+      const from = prev.findIndex((p) => p.id === holding);
       const to = prev.findIndex((p) => p.id === overId);
       if (from < 0 || to < 0) return prev;
       const next = [...prev];
@@ -154,12 +176,15 @@ export default function GalleryPanel({
       timer.current = null;
     }
     down.current = null;
-    if (!held) return;
+    if (!heldRef.current) return;
+    heldRef.current = null;
     setHeld(null);
+    // 집었다 놓은 손짓이면 뒤따라오는 클릭은 무시한다
+    dragged.current = true;
     if (!moved.current) return;
     moved.current = false;
     // 화면은 이미 바뀐 차례를 보여주고 있다 — 저장은 뒤따라간다
-    reorderPhotos(rows.map((p) => p.id));
+    reorderPhotos(rowsRef.current.map((p) => p.id));
   };
 
   return (
@@ -193,7 +218,7 @@ export default function GalleryPanel({
         <p className="msg">아직 올라온 사진이 없어요.</p>
       ) : (
         <>
-          <p className="msg note-left">
+          <p className="msg">
             끌어서 차례를 바꿉니다. 손가락으로는 잠깐 누르고 있으면 집혀요.
             사진을 누르면 크게 보이고, 거기서 숨기거나 지울 수 있어요.
           </p>
@@ -215,7 +240,10 @@ export default function GalleryPanel({
                 <button
                   type="button"
                   className="cell-open"
-                  onClick={() => !held && setViewing(i)}
+                  onClick={() => {
+                    if (dragged.current) return void (dragged.current = false);
+                    setViewing(i);
+                  }}
                 >
                   {cloudName && (
                     <img
