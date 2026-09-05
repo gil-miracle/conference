@@ -5,7 +5,7 @@ import MentoringPanel from "./MentoringPanel";
 
 export const dynamic = "force-dynamic";
 
-type Person = Pick<AdminParticipant, "id" | "name">;
+type Person = Pick<AdminParticipant, "id" | "name" | "applicant_type">;
 export type SignupRow = { participant_id: string; session_id: string };
 
 /** 멘토링 세션 만들기와 신청자 확인 — 관리자 */
@@ -25,7 +25,7 @@ export default async function AdminMentoringPage() {
         )
         .order("starts_at")
         .order("sort_order"),
-      ctx.supabase.from("participants").select("id,name").order("name"),
+      ctx.supabase.from("participants").select("id,name,applicant_type").order("name"),
       ctx.supabase.from("mentor_signups").select("participant_id,session_id"),
     ]);
     // taken은 목록 RPC가 세는 값이라 여기서는 신청 행으로 직접 센다
