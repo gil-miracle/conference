@@ -46,14 +46,26 @@ export const metadata: Metadata = {
     title: "MIRACLE",
     statusBarStyle: "default",
   },
+  /*
+   * 탭 아이콘은 app/icon.svg — 빨간 바탕에 M 한 자다. 앱 아이콘(사진)을 여기
+   * 쓰면 16px로 줄었을 때 뭉갠다. 작은 자리에서는 글자 한 자가 사진보다 잘
+   * 읽힌다. 홈 화면·설치 아이콘은 매니페스트가 따로 맡는다.
+   *
+   * icons를 적는 순간 파일 규약(app/icon.svg 자동 인식)이 통째로 꺼지므로
+   * 여기에 직접 적어 준다 — 안 적으면 탭 아이콘이 아예 사라진다.
+   */
   icons: {
-    icon: "/icons/icon-192.png",
+    icon: { url: "/icon.svg", type: "image/svg+xml" },
     apple: "/icons/apple-touch-icon.png",
   },
   openGraph: {
     title: "MIRACLE — 2026 GIL Community Conference",
     description: "9.11(금)–13(주일) · ACTS29 비전 빌리지",
-    images: ["/poster.jpg"],
+    /*
+     * 링크는 거의 카톡으로 오간다. 세로 포스터(5:7)를 주면 카톡 카드가
+     * 위아래를 잘라 먹어 MIRACLE만 남는다. 가로로 짠 판을 따로 둔다.
+     */
+    images: [{ url: "/og.jpg", width: 1200, height: 675 }],
   },
 };
 
