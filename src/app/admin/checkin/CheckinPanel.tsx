@@ -34,6 +34,63 @@ const SIZES = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL"];
  */
 const shortLabel = (v: string) => v.split("(")[0].trim() || v;
 
+/**
+ * 여러 개를 고르는 거르개.
+ *
+ * `<select multiple>`은 폰에서 쓸 것이 못 된다 — 목록이 통째로 펼쳐져 화면을
+ * 먹고, 여러 개를 고르려면 길게 눌러야 한다. 고르는 일은 평범한 셀렉트에
+ * 맡기고, 고른 것은 옆에 조각으로 세워 둔다. 조각을 누르면 빠진다.
+ */
+function MultiFilter({
+  label,
+  options,
+  value,
+  onChange,
+  format,
+}: {
+  label: string;
+  options: string[];
+  value: string[];
+  onChange: (next: string[]) => void;
+  format?: (v: string) => string;
+}) {
+  const show = (v: string) => (format ? format(v) : v);
+  return (
+    // display:contents — 조각들이 부모 필터 줄에 그대로 흘러 들어간다
+    <div className="mfilter">
+      <select
+        className={value.length ? "on" : undefined}
+        value=""
+        onChange={(e) => {
+          if (e.target.value) onChange([...value, e.target.value]);
+        }}
+      >
+        <option value="">
+          {label} 전체{value.length ? ` · ${value.length}개` : ""}
+        </option>
+        {options
+          .filter((o) => !value.includes(o))
+          .map((o) => (
+            <option key={o} value={o}>
+              {show(o)}
+            </option>
+          ))}
+      </select>
+      {value.map((v) => (
+        <button
+          key={v}
+          type="button"
+          className="fchip"
+          aria-label={`${show(v)} 빼기`}
+          onClick={() => onChange(value.filter((x) => x !== v))}
+        >
+          {show(v)} <span aria-hidden="true">✕</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function CheckinPanel({
   rooms,
   teams,
@@ -45,30 +102,32 @@ export default function CheckinPanel({
   const [scanning, setScanning] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
-  const [cell, setCell] = useState("");
-  const [arrive, setArrive] = useState("");
-  const [stay, setStay] = useState("");
+  /* 여러 개를 한꺼번에 고른다 — 데스크에서 「A·B 다락방만」, 「L·XL만」처럼
+     묶어 뽑는 일이 잦은데, 하나씩만 고를 수 있으면 세 번 훑어야 했다 */
+  const [cell, setCell] = useState<string[]>([]);
+  const [arrive, setArrive] = useState<string[]>([]);
+  const [stay, setStay] = useState<string[]>([]);
   /* 있음/없음 둘 다 필요해서 토글이 아니라 셋 중 하나로 둔다 — 데스크에서
      실제로 뽑는 건 "아직 안 온 사람", "아직 연결 안 한 사람" 쪽이다 */
   const [joined, setJoined] = useState("");
   const [checked, setChecked] = useState("");
-  const [tshirt, setTshirt] = useState("");
-  const [transport, setTransport] = useState("");
+  const [tshirt, setTshirt] = useState<string[]>([]);
+  const [transport, setTransport] = useState<string[]>([]);
   const [onlyAdmin, setOnlyAdmin] = useState(false);
 
   /* 걸어 둔 것이 하나라도 있으면 초기화를 낸다 — 다섯 개를 하나씩
      되돌리다 보면 어느 것이 남았는지 모른다 */
-  const filtered = Boolean(
-    cell || arrive || stay || tshirt || transport || joined || checked || onlyAdmin
-  );
+  const picked =
+    cell.length + arrive.length + stay.length + tshirt.length + transport.length;
+  const filtered = Boolean(picked || joined || checked || onlyAdmin);
   const clearFilters = () => {
-    setCell("");
-    setArrive("");
-    setStay("");
+    setCell([]);
+    setArrive([]);
+    setStay([]);
     setJoined("");
     setChecked("");
-    setTshirt("");
-    setTransport("");
+    setTshirt([]);
+    setTransport([]);
     setOnlyAdmin(false);
   };
   const { toast, showToast } = useToast();
@@ -147,13 +206,15 @@ export default function CheckinPanel({
     [...new Set((data ?? []).map(get).filter(Boolean))].sort() as string[];
   /* 목록 배지와 같은 판단을 쓴다 — 다락방이 없으면 "초청자"로 묶인다.
      초청자는 다락방 이름들 뒤에 둔다 */
-  const groups = [...new Set((data ?? []).map(groupTag).filter(Boolean) as string[])].sort(
-    (a, b) => (a === INVITED ? 1 : b === INVITED ? -1 : a.localeCompare(b))
-  );
-  const arriveDays = uniq((p) => p.arrive_day);
+  const byGroupName = (a: string, b: string) =>
+    a === INVITED ? 1 : b === INVITED ? -1 : a.localeCompare(b);
+  const cellOpts = [
+    ...new Set((data ?? []).map(groupTag).filter(Boolean) as string[]),
+  ].sort(byGroupName);
+  const arriveOpts = uniq((p) => p.arrive_day);
   /* 숙박일은 "9월 11일(금), 9월 12일(토)"처럼 여러 날이 한 칸에 들어온다.
      날짜 하나씩 고를 수 있어야 "금요일 자는 사람"을 뽑을 수 있다 */
-  const stays = [
+  const stayOpts = [
     ...new Set(
       (data ?? []).flatMap((p) =>
         (p.stay ?? "").split(",").map((x) => x.trim()).filter(Boolean)
@@ -161,8 +222,8 @@ export default function CheckinPanel({
     ),
   ].sort();
   /* 티셔츠는 사이즈별로 몇 장인지 세야 하고, 교통편은 버스 인원을 잡아야 한다 */
-  const tshirts = [...uniq((p) => p.tshirt)].sort(bySize);
-  const transports = uniq((p) => p.transport);
+  const tshirtOpts = [...uniq((p) => p.tshirt)].sort(bySize);
+  const transportOpts = uniq((p) => p.transport);
 
   /* 신청 항목은 자유 문구라 고정 선택지를 둘 수 없다 — 이미 쓰인 값을 폼에
      후보로 넘겨 손으로 넣는 사람도 같은 문구를 쓰게 한다 */
@@ -176,18 +237,36 @@ export default function CheckinPanel({
   }, [data]);
 
   const shown = (data ?? []).filter((p) => {
-    if (cell && groupTag(p) !== cell) return false;
-    if (arrive && p.arrive_day !== arrive) return false;
+    if (cell.length && !cell.includes(groupTag(p) ?? "")) return false;
+    if (arrive.length && !arrive.includes(p.arrive_day ?? "")) return false;
     // 숙박일은 "9월 11일(금), 9월 12일(토)"처럼 여러 날이 한 칸에 들어온다 —
-    // 고른 날이 포함되면 잡는다
-    if (stay && !(p.stay ?? "").includes(stay)) return false;
-    if (tshirt && p.tshirt !== tshirt) return false;
-    if (transport && p.transport !== transport) return false;
+    // 고른 날 중 하나라도 들어 있으면 잡는다
+    if (stay.length && !stay.some((d) => (p.stay ?? "").includes(d))) return false;
+    if (tshirt.length && !tshirt.includes(p.tshirt ?? "")) return false;
+    if (transport.length && !transport.includes(p.transport ?? "")) return false;
     if (joined && (joined === "y") !== Boolean(p.auth_user_id)) return false;
     if (checked && (checked === "y") !== Boolean(p.checked_in_at)) return false;
     if (onlyAdmin && p.role !== "admin") return false;
     return true;
   });
+
+  /*
+   * 다락방으로 나눠 놓는다.
+   *
+   * 체크인 데스크는 다락방 단위로 몰려온다 — 한 방이 우르르 와서 이름을
+   * 대는데, 이름이 통짜로 늘어서 있으면 매번 전체를 훑어야 했다. 나눠 두면
+   * 그 방만 보면 되고, 몇 명 중 몇 명이 왔는지도 그 자리에서 보인다.
+   */
+  const sections = (() => {
+    const by = new Map<string, AdminParticipant[]>();
+    for (const p of shown) {
+      const key = groupTag(p) ?? INVITED;
+      const list = by.get(key);
+      if (list) list.push(p);
+      else by.set(key, [p]);
+    }
+    return [...by.entries()].sort((a, b) => byGroupName(a[0], b[0]));
+  })();
 
   return (
     <>
@@ -214,63 +293,17 @@ export default function CheckinPanel({
       </div>
       {/* 걸어 둔 조건이 하나라도 있으면 초기화가 나온다 */}
       <div className="filters">
-        <select
-          className={cell ? "on" : undefined}
-          value={cell}
-          onChange={(e) => setCell(e.target.value)}>
-          <option value="">다락방 전체</option>
-          {groups.map((g) => (
-            <option key={g} value={g}>
-              {g}
-            </option>
-          ))}
-        </select>
-        <select
-          className={arrive ? "on" : undefined}
-          value={arrive}
-          onChange={(e) => setArrive(e.target.value)}>
-          <option value="">도착 전체</option>
-          {arriveDays.map((d) => (
-            <option key={d} value={d}>
-              {d}
-            </option>
-          ))}
-        </select>
-        <select
-          className={stay ? "on" : undefined}
-          value={stay}
-          onChange={(e) => setStay(e.target.value)}>
-          <option value="">숙박 전체</option>
-          {stays.map((d) => (
-            <option key={d} value={d}>
-              {d}
-            </option>
-          ))}
-        </select>
-        <select
-          className={tshirt ? "on" : undefined}
-          value={tshirt}
-          onChange={(e) => setTshirt(e.target.value)}
-        >
-          <option value="">티셔츠 전체</option>
-          {tshirts.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-        <select
-          className={transport ? "on" : undefined}
+        <MultiFilter label="다락방" options={cellOpts} value={cell} onChange={setCell} />
+        <MultiFilter label="도착" options={arriveOpts} value={arrive} onChange={setArrive} />
+        <MultiFilter label="숙박" options={stayOpts} value={stay} onChange={setStay} />
+        <MultiFilter label="티셔츠" options={tshirtOpts} value={tshirt} onChange={setTshirt} />
+        <MultiFilter
+          label="교통편"
+          options={transportOpts}
           value={transport}
-          onChange={(e) => setTransport(e.target.value)}
-        >
-          <option value="">교통편 전체</option>
-          {transports.map((t) => (
-            <option key={t} value={t}>
-              {shortLabel(t)}
-            </option>
-          ))}
-        </select>
+          onChange={setTransport}
+          format={shortLabel}
+        />
         <select
           className={joined ? "on" : undefined}
           value={joined}
@@ -320,20 +353,30 @@ export default function CheckinPanel({
           <div className="p-row">
             <div className="info">
               <small>
-                {q || cell || arrive || stay || tshirt || transport || joined || checked || onlyAdmin
+                {q || filtered
                   ? "조건에 맞는 사람이 없어요."
                   : "참가자 명단이 비어 있어요 — 설정 탭에서 동기화하세요."}
               </small>
             </div>
           </div>
         )}
-        {shown.map((participant) => (
-          <ParticipantRow
-            key={participant.id}
-            participant={participant}
-            onToggleCheckin={() => onToggleCheckin(participant)}
-            onOpen={() => setDetailId(participant.id)}
-          />
+        {sections.map(([name, list]) => (
+          <div key={name} className="pgroup">
+            <div className="pgroup-head">
+              <b>{name}</b>
+              <span>
+                {list.filter((p) => p.checked_in_at).length} / {list.length}
+              </span>
+            </div>
+            {list.map((participant) => (
+              <ParticipantRow
+                key={participant.id}
+                participant={participant}
+                onToggleCheckin={() => onToggleCheckin(participant)}
+                onOpen={() => setDetailId(participant.id)}
+              />
+            ))}
+          </div>
         ))}
       </div>
       <ParticipantDetail

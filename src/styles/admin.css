@@ -911,6 +911,24 @@
   color: var(--ink);
   font-weight: 700;
 }
+/* 여러 개 고르는 거르개 — 셀렉트와 고른 조각들이 필터 줄에 나란히 흘러간다 */
+.mfilter { display: contents; }
+.fchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 7px 9px 7px 11px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--cream);
+  white-space: nowrap;
+}
+.fchip span { opacity: 0.7; font-weight: 400; }
+.fchip:hover { background: var(--coral); border-color: var(--coral); }
+
 .chip-toggle {
   font: inherit;
   font-size: 0.78rem;
@@ -969,4 +987,29 @@
 .tagit[data-g="숙박 안 함"] {
   color: var(--ink-60);
   border-style: dashed;
+}
+
+/* ── 명단을 다락방으로 나눈다 ──
+   체크인 데스크는 다락방 단위로 몰려온다. 이름이 통짜로 늘어서 있으면
+   매번 전체를 훑어야 했다. 나눠 두면 그 방만 보면 되고, 몇 명 중 몇 명이
+   왔는지도 그 자리에서 보인다. */
+.pgroup + .pgroup { margin-top: 18px; }
+.pgroup-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 2px;
+  border-bottom: 1px solid var(--ink);
+  background: var(--cream);
+}
+.pgroup-head b { font-size: 0.88rem; letter-spacing: -0.02em; }
+.pgroup-head span {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-60);
 }
