@@ -75,8 +75,8 @@ export default async function HomePage() {
       </section>
 
       {/* 홍보 영상 — 내려온 사람이 보고 싶어 내려온 것이라 누를 때 시작한다 */}
-      {EVENT.promoVideo && (
-        <PromoSection src={EVENT.promoVideo} title="홍보 영상" />
+      {EVENT.promoVideos.length > 0 && (
+        <PromoSection videos={EVENT.promoVideos} title="홍보 영상" />
       )}
     </>
   );

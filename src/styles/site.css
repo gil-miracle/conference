@@ -668,6 +668,20 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   object-fit: cover;
 }
 
+/* 두 편이어도 위아래로 쌓는다.
+   본문 폭이 640px이라 나란히 놓으면 한 편이 311px — 데스크톱에서 보는 영상이
+   폰에서 보는 것보다 작아진다. 영상은 크기가 곧 값어치라 폭을 양보하지 않고,
+   대신 아래 이름을 붙여 두 편이 뭐가 다른지 알린다. 이 섹션은 페이지 맨
+   아래라 조금 길어지는 건 값이 싸다. */
+.promo-item { margin: 0 0 30px; }
+.promo-item .teaser { margin-bottom: 0; }
+.promo-cap {
+  margin-top: 9px;
+  font-size: 0.86rem;
+  color: var(--ink-60);
+  letter-spacing: -0.01em;
+}
+
 .sub-head { margin: 44px 0 16px; border-bottom: 1px solid var(--hair); padding-bottom: 10px; }
 .sub-head h3 { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
 .body-text { font-size: 0.92rem; line-height: 1.95; word-break: keep-all; color: var(--ink); }
