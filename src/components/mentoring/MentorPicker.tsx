@@ -80,24 +80,28 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
                 )}
               </div>
 
-              <b className="ms-name">{s.mentor_name}</b>
+              {/* 위쪽 내용을 한 덩이로 묶는다 — 소개 길이가 달라도 단추는
+                  카드 바닥에 붙어, 나란히 놓았을 때 같은 높이에 선다 */}
+              <div className="ms-body">
+                <b className="ms-name">{s.mentor_name}</b>
 
-              <dl className="ms-detail">
-                <div>
-                  <dt>강의 주제</dt>
-                  <dd>{s.title}</dd>
-                </div>
-                {s.intro && (
+                <dl className="ms-detail">
                   <div>
-                    <dt>강의 소개</dt>
-                    <dd>{s.intro}</dd>
+                    <dt>강의 주제</dt>
+                    <dd>{s.title}</dd>
                   </div>
-                )}
-              </dl>
+                  {s.intro && (
+                    <div>
+                      <dt>강의 소개</dt>
+                      <dd>{s.intro}</dd>
+                    </div>
+                  )}
+                </dl>
 
-              {/* 강의 시각은 적지 않는다 — 두 세션이 같은 시간에 열려 고르는 데
-                  쓰이지 않고, 일정표에 이미 있다 */}
-              {s.place && <p className="ms-meta">{s.place}</p>}
+                {/* 강의 시각은 적지 않는다 — 두 세션이 같은 시간에 열려 고르는 데
+                    쓰이지 않고, 일정표에 이미 있다 */}
+                {s.place && <p className="ms-meta">{s.place}</p>}
+              </div>
 
               {mine ? (
                 <div className="ms-actions">
