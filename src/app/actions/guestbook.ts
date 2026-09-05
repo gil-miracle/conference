@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { NEED_BIND } from "@/lib/messages";
 import { getBoundParticipant } from "@/lib/participant";
 import { GUESTBOOK_MAX, GUESTBOOK_NAME_MAX } from "@/lib/guestbook";
 
@@ -19,7 +20,7 @@ export async function addGuestbookEntry(
   if (!ctx)
     return {
       status: "error",
-      message: "로그인하고 신청 명단과 연결한 뒤 작성할 수 있어요.",
+      message: NEED_BIND,
     };
 
   // 작성자는 명단의 그 사람이다 — 로그인해야 쓸 수 있으니 물어볼 것이 없다

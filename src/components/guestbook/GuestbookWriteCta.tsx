@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { openLogin } from "@/lib/ui";
+import { NEED_BIND, NEED_LOGIN } from "@/lib/messages";
 import { useSession } from "@/components/SessionProvider";
 import GuestbookForm from "./GuestbookForm";
 
@@ -20,14 +21,14 @@ export default function GuestbookWriteCta() {
   if (!session.authed)
     return (
       <button className="gb-write" onClick={() => openLogin()}>
-        한 줄 노트 남기기 — 로그인 후 작성할 수 있어요
+        한 줄 노트 남기기 — {NEED_LOGIN}
       </button>
     );
 
   if (!session.bound)
     return (
       <Link className="gb-write block center" href="/connect">
-        한 줄 노트 남기기 — 신청 명단 연결 후 작성할 수 있어요
+        한 줄 노트 남기기 — {NEED_BIND}
       </Link>
     );
 

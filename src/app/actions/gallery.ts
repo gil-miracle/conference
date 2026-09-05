@@ -3,6 +3,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { NEED_BIND } from "@/lib/messages";
 import { getBoundParticipant } from "@/lib/participant";
 
 const FOLDER = "miracle2026";
@@ -35,7 +36,7 @@ export async function getUploadSignature(): Promise<
 
   const ctx = await getBoundParticipant();
   if (!ctx)
-    return { ok: false, message: "로그인 후 명단 연결이 필요해요." };
+    return { ok: false, message: NEED_BIND };
 
   const { data: setting } = await ctx.supabase
     .from("site_settings")

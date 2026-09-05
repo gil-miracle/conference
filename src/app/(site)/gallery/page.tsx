@@ -6,6 +6,7 @@ import GalleryDemoGrid from "@/components/gallery/GalleryDemoGrid";
 import GalleryGrid from "@/components/gallery/GalleryGrid";
 import { getCloudName } from "@/lib/cloudinary";
 import { getPhotos, getSiteContext } from "@/lib/data/site";
+import { NEED_BIND, NEED_LOGIN } from "@/lib/messages";
 
 export const metadata: Metadata = { title: "갤러리 — MIRACLE 2026" };
 export const dynamic = "force-dynamic";
@@ -28,7 +29,7 @@ export default async function GalleryPage({
             시작되면 열려요"라고 하면, 정작 지금 필요한 것이 무엇인지 안 보인다 */}
         {!ctx.authed ? (
           <Locked icon={<CameraIcon />} showLogin>
-            로그인이 필요합니다.
+            {NEED_LOGIN}
           </Locked>
         ) : !ctx.galleryOpen ? (
           <Locked icon={<CameraIcon />}>
@@ -37,7 +38,9 @@ export default async function GalleryPage({
             현장에서 찍은 사진을 함께 올리고 볼 수 있어요.
           </Locked>
         ) : !bound ? (
-          <Locked icon={<CameraIcon />} showBind>신청 명단과 연결하면 사진을 올리고 볼 수 있어요.</Locked>
+          <Locked icon={<CameraIcon />} showBind>
+            {NEED_BIND}
+          </Locked>
         ) : ctx.demoMode ? (
           <GalleryDemoGrid />
         ) : (

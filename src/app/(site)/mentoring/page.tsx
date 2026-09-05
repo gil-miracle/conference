@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHead from "@/components/PageHead";
 import Locked from "@/components/Locked";
 import { TabIcon } from "@/components/nav/TabIcons";
+import { NEED_BIND, NEED_LOGIN } from "@/lib/messages";
 import { getSiteContext } from "@/lib/data/site";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import type { MentorBoard } from "@/lib/mentoring";
@@ -31,18 +32,24 @@ export default async function MentoringPage() {
   return (
     <section id="mentoring">
       <div className="container">
+        {/* 안내 문구도 로그인 뒤에 — 들어오지도 못하는 사람에게
+            "세션 전날까지는 바꿀 수 있어요"를 먼저 말할 이유가 없다 */}
         <PageHead
           title="멘토의 TMI"
-          lede="한 분을 골라 신청해주세요. 세션 전날까지는 바꿀 수 있어요."
+          lede={
+            ctx.authed
+              ? "한 분을 골라 신청해주세요. 세션 전날까지는 바꿀 수 있어요."
+              : undefined
+          }
         />
 
         {!ctx.authed ? (
           <Locked icon={<TabIcon name="user" />} showLogin>
-            로그인하면 신청할 수 있어요.
+            {NEED_LOGIN}
           </Locked>
         ) : !bound ? (
           <Locked icon={<TabIcon name="user" />} showBind>
-            신청 명단과 연결하면 신청할 수 있어요.
+            {NEED_BIND}
           </Locked>
         ) : board.sessions.length === 0 ? (
           <p className="lede">아직 열린 세션이 없어요. 곧 올라옵니다.</p>

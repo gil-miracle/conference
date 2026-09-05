@@ -17,7 +17,7 @@ function readSession(formData: FormData) {
   const rawPhoto = String(formData.get("photo_url") ?? "").trim();
   const photo_url = /^https:\/\//.test(rawPhoto) ? rawPhoto.slice(0, 500) : null;
   const mentor_id = String(formData.get("mentor_id") ?? "") || null;
-  const capacity = Number(formData.get("capacity") ?? 20) || 20;
+  const capacity = Number(formData.get("capacity") ?? 35) || 35;
   const sort_order = Number(formData.get("sort_order") ?? 0) || 0;
 
   // datetime-local은 지역 시각 문자열로 온다. Date가 브라우저 시간대로 읽고

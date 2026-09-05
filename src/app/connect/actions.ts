@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { NEED_LOGIN } from "@/lib/messages";
 import { parseBirth8 } from "@/lib/format";
 
 /** 조회 결과 — 요청을 보낼 수 있는 상태인지 판별한다 */
@@ -37,7 +38,7 @@ const MESSAGES: Record<string, { message: string; showApply?: boolean }> = {
   invalid: {
     message: "이름·생년월일·전화번호를 모두 정확히 입력해주세요.",
   },
-  unauthenticated: { message: "로그인이 필요해요." },
+  unauthenticated: { message: NEED_LOGIN },
 };
 
 /**
