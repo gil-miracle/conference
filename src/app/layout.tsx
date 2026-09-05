@@ -5,6 +5,7 @@ import "@/styles/base.css";
 import ConfirmProvider from "@/components/Confirm";
 import ServiceWorker from "@/components/ServiceWorker";
 import OpenInBrowser from "@/components/OpenInBrowser";
+import PullToRefresh from "@/components/PullToRefresh";
 
 /**
  * 배포 도메인. 환경변수가 비어 있거나(Vercel에 값 없이 등록한 경우) 형식이
@@ -113,6 +114,8 @@ export default function RootLayout({
         <ConfirmProvider>{children}</ConfirmProvider>
         {/* 카톡 안에서 열렸으면 바로 기본 브라우저로 — 여기서는 구글 로그인도,
             앱 설치도, 알림도 안 된다 */}
+        {/* 홈 화면에서 연 앱에는 주소창이 없어 새로고칠 길이 없다 */}
+        <PullToRefresh />
         <OpenInBrowser />
         <ServiceWorker />
       </body>

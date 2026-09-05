@@ -4,6 +4,7 @@ import SessionProvider from "@/components/SessionProvider";
 import Banner from "@/components/Banner";
 import Nav from "@/components/nav/Nav";
 import BottomTabs from "@/components/nav/BottomTabs";
+import ScrollTop from "@/components/nav/ScrollTop";
 import SiteFooter from "@/components/sections/SiteFooter";
 import LoginSheet from "@/components/LoginSheet";
 
@@ -24,6 +25,7 @@ export default function SiteLayout({
       <Nav />
       <main className="site-main">{children}</main>
       <SiteFooter />
+      <ScrollTop />
       <BottomTabs />
       <LoginSheet />
     </SessionProvider>
