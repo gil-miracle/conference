@@ -4,7 +4,7 @@
  * - 페이지: 네트워크 우선 → 실패 시 캐시 → 오프라인 안내
  * - 개인정보/관리자 경로는 캐시하지 않는다
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const STATIC_CACHE = `miracle-static-${VERSION}`;
 const PAGE_CACHE = `miracle-pages-${VERSION}`;
 const OFFLINE_URL = "/offline";
