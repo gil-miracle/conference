@@ -676,6 +676,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 
 .vd-thumbs {
   display: flex;
+  justify-content: center;
   gap: 7px;
   margin-top: 7px;
   /* 편이 늘면 옆으로 흐른다 — 줄바꿈하면 재생기와 떨어져 보인다 */
@@ -1814,15 +1815,114 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   background: var(--paper);
   box-shadow: 0 -10px 34px rgba(33, 29, 25, 0.22);
 }
-.install-tip ol {
-  margin: 10px 0 16px;
-  padding-left: 18px;
-  font-size: 0.88rem;
-  line-height: 1.75;
+
+.itip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.itip-head b { font-size: 1.05rem; letter-spacing: -0.02em; }
+.itip-x {
+  border: 0;
+  background: none;
+  color: var(--ink-60);
+  font-size: 0.95rem;
+  padding: 4px 6px;
+  line-height: 1;
+}
+.itip-x:hover { color: var(--ink); }
+
+/* 카톡 안에서는 어느 순서를 알려 줘도 소용없다 — 먼저 내보낸다 */
+.itip-kakao {
+  margin-bottom: 16px;
+  padding: 13px 14px;
+  border: 1px solid var(--coral);
+  background: rgba(220, 90, 81, 0.07);
+}
+.itip-kakao p {
+  margin-bottom: 10px;
+  font-size: 0.86rem;
+  line-height: 1.6;
   word-break: keep-all;
 }
-.install-tip li + li { margin-top: 4px; }
-.install-tip li::marker { color: var(--coral); }
+
+/* 쓰는 기기가 아닌 쪽도 열어 둔다 — 옆 사람 폰을 봐 줄 때가 있다 */
+.itip-tabs { display: flex; gap: 6px; }
+.itip-tabs button {
+  flex: 1;
+  padding: 9px 6px;
+  border: 1px solid var(--hair);
+  background: transparent;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--ink-60);
+  transition: 0.14s;
+}
+.itip-tabs button:hover { border-color: var(--ink-60); color: var(--ink); }
+.itip-tabs button.on {
+  border-color: var(--coral);
+  background: var(--coral);
+  color: var(--paper);
+}
+
+.itip-lead {
+  margin: 14px 0 12px;
+  font-size: 0.86rem;
+  color: var(--ink-60);
+  word-break: keep-all;
+}
+
+.itip-steps { list-style: none; margin: 0 0 14px; padding: 0; }
+.itip-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 13px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+}
+.itip-steps li + li { margin-top: 7px; }
+/* 번호는 순서를, 그림은 눌러야 할 것을 가리킨다 — 둘 다 필요하다 */
+.itip-no {
+  flex: none;
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--coral);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+.itip-ico { flex: none; width: 20px; height: 20px; color: var(--coral); }
+.itip-ico svg { width: 100%; height: 100%; display: block; }
+.itip-txt { min-width: 0; }
+.itip-txt b {
+  display: block;
+  font-size: 0.9rem;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+}
+.itip-txt small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-60);
+  word-break: keep-all;
+}
+
+.itip-foot {
+  padding-top: 12px;
+  border-top: 1px solid var(--hair);
+  font-size: 0.79rem;
+  color: var(--ink-60);
+  text-align: center;
+  word-break: keep-all;
+}
 
 /* 카드 높이가 달라도 단추는 바닥에 — 나란히 놓으면 같은 높이에 선다 */
 .ms { display: flex; flex-direction: column; }
