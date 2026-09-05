@@ -17,7 +17,10 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/icons/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      // maskable도 같은 그림이다. MIRACLE 글자가 안전 원(지름 80%) 안에
+      // 들어와 있어 안드로이드가 원·스퀴클로 잘라도 안 잘린다 — 여백 띠를
+      // 두른 판을 따로 둘 이유가 없다
+      { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
     shortcuts: [
       { name: "체크인 QR", short_name: "내 정보", url: "/profile" },
