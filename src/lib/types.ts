@@ -136,6 +136,8 @@ export type Photo = {
   width: number | null;
   height: number | null;
   hidden?: boolean;
+  /** 보여 줄 차례 — 운영진이 손으로 정한다 (0039) */
+  sort_order?: number | null;
   created_at: string;
 };
 

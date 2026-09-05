@@ -464,18 +464,60 @@
 .gal-mod .cell { position: relative; aspect-ratio: 1/1; background: #eae0cb; overflow: hidden; }
 .gal-mod .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .gal-mod .cell.dim img { opacity: 0.25; }
-.gal-mod .cell button {
-  position: absolute;
-  right: 6px;
-  top: 6px;
-  font-size: 0.6rem;
-  font-family: var(--mono);
-  letter-spacing: 0.08em;
-  background: rgba(33, 29, 25, 0.75);
-  color: var(--cream);
-  border: none;
-  padding: 4px 8px;
+.gal-mod .cell-open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
 }
+/* 집는 동안에는 그림을 브라우저가 끌고 가지 않게 */
+.gal-mod .cell img { -webkit-user-drag: none; user-select: none; }
+/* 집힌 칸 — 들려 있다는 것이 보여야 어디로 가는지 알 수 있다 */
+.gal-mod .cell.held {
+  outline: 2px solid var(--coral);
+  outline-offset: -2px;
+  opacity: 0.65;
+  transform: scale(0.96);
+  transition: transform 0.12s ease;
+}
+.gal-mod .cell-tag {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  background: rgba(33, 29, 25, 0.78);
+  color: var(--cream);
+  padding: 3px 7px;
+}
+
+/* 제목 줄에 올리기 단추 — 큐티·갤러리와 같은 자리 */
+.gal-mod-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 38px 0 14px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--ink);
+}
+.gal-mod-head b { font-size: 0.95rem; letter-spacing: -0.02em; }
+.gal-mod-head .head-action {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--coral);
+  border: 1px solid var(--coral);
+  background: transparent;
+  padding: 7px 12px;
+  white-space: nowrap;
+}
+.gal-mod-head .head-action:hover:not(:disabled) { background: var(--coral); color: var(--cream); }
+.gal-mod-head .head-action:disabled { opacity: 0.45; cursor: default; }
 
 /* 설정 */
 .set { border: 1px solid var(--ink); background: var(--paper); padding: 18px; margin-bottom: -1px; }

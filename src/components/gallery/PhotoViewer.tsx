@@ -23,11 +23,15 @@ export default function PhotoViewer({
   at,
   onMove,
   onClose,
+  admin,
 }: {
   photos: Photo[];
   at: number;
   onMove: (next: number) => void;
   onClose: () => void;
+  /* 운영진 화면에서만 — 크게 본 자리에서 바로 내리거나 지운다.
+     손톱만 한 칸에서는 무슨 사진인지 보고 판단할 수가 없다 */
+  admin?: { onHide: (p: Photo) => void; onDelete: (p: Photo) => void };
 }) {
   const strip = useRef<HTMLDivElement | null>(null);
   const photo = photos[at];
@@ -83,9 +87,21 @@ export default function PhotoViewer({
         <span className="pv-count">
           {at + 1} / {photos.length}
         </span>
-        <button type="button" className="pv-x" aria-label="닫기" onClick={onClose}>
-          ✕
-        </button>
+        <span className="pv-acts">
+          {admin && (
+            <>
+              <button type="button" onClick={() => admin.onHide(photo)}>
+                {photo.hidden ? "다시 보이기" : "숨기기"}
+              </button>
+              <button type="button" className="danger" onClick={() => admin.onDelete(photo)}>
+                삭제
+              </button>
+            </>
+          )}
+          <button type="button" className="pv-x" aria-label="닫기" onClick={onClose}>
+            ✕
+          </button>
+        </span>
       </div>
 
       {/* 사진 바깥을 누르면 닫힌다 — 사진 자체는 눌러도 닫히지 않는다 */}
@@ -101,7 +117,7 @@ export default function PhotoViewer({
           풀려 세로로 긴 사진이 아래로 삐져나갔다.
           그림 상자는 사진 크기 그대로라, 옆 빈자리를 누르면 닫힌다.
         */}
-        <div className="pv-frame">
+        <div className={`pv-frame${photo.hidden ? " hidden-mark" : ""}`}>
           <img
             key={photo.id}
             src={fullUrl(photo.cloudinary_public_id)}

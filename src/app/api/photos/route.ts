@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   let query = supabase
     .from("photos")
-    .select("id,participant_id,cloudinary_public_id,width,height,created_at")
+    .select("id,participant_id,cloudinary_public_id,width,height,hidden,sort_order,created_at")
     .eq("hidden", false)
     .order("created_at", { ascending: false })
     .limit(PAGE);

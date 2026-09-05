@@ -1796,6 +1796,22 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   line-height: 1;
   padding: 6px 8px;
 }
+/* 운영진용 — 손톱만 한 칸에서는 무슨 사진인지 보고 판단할 수가 없어서,
+   크게 본 그 자리에 내리고 지우는 길을 둔다 */
+.pv-acts { display: flex; align-items: center; gap: 4px; }
+.pv-acts > button:not(.pv-x) {
+  font: inherit;
+  font-size: 0.76rem;
+  padding: 6px 10px;
+  border: 1px solid rgba(250, 246, 238, 0.4);
+  background: none;
+  color: var(--cream);
+}
+.pv-acts > button:not(.pv-x):hover { border-color: var(--cream); }
+.pv-acts > button.danger { border-color: var(--coral); color: var(--coral); }
+.pv-acts > button.danger:hover { background: var(--coral); color: var(--cream); }
+/* 숨긴 사진은 크게 봐도 숨긴 티가 나야 한다 */
+.pv-frame.hidden-mark img { opacity: 0.45; }
 
 /* 사진은 잘리지 않게 — 세로 사진도 가로 사진도 통째로 보여야 한다.
    높이를 못 박은 자리 안에 넣는다. 높이가 정해지지 않은 칸에서는
