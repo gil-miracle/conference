@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 /** 크롬 계열이 설치할 수 있을 때 던지는 이벤트 — 표준이 아니라 타입이 없다 */
 type InstallPrompt = Event & {
@@ -121,8 +122,14 @@ export default function InstallButton() {
         앱 설치
       </button>
 
-      {tip && (
-        <div className="install-tip-back" onClick={() => setTip(null)}>
+      {/*
+        body에 직접 붙인다. position:fixed는 변형(transform)이 걸린 조상이 있으면
+        화면이 아니라 그 조상을 기준으로 잡히는데, 이 단추는 내비 안에 있어서
+        시트가 화면 위로 밀려 올라가 잘렸다.
+      */}
+      {tip &&
+        createPortal(
+          <div className="install-tip-back" onClick={() => setTip(null)}>
           <div
             className="install-tip"
             role="dialog"
@@ -139,8 +146,9 @@ export default function InstallButton() {
               닫기
             </button>
           </div>
-        </div>
-      )}
+        </div>,
+          document.body
+        )}
     </>
   );
 }
