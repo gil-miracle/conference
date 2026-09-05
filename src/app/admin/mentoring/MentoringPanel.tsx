@@ -10,11 +10,12 @@ import {
   updateMentorSession,
 } from "../actions/mentoring";
 import { fmtDateTime } from "@/lib/format";
+import { isStaff } from "@/lib/participant-fields";
 import type { AdminParticipant } from "@/lib/types";
 import type { AdminMentorSession } from "@/lib/mentoring";
 import type { SignupRow } from "./page";
 
-type Person = Pick<AdminParticipant, "id" | "name">;
+type Person = Pick<AdminParticipant, "id" | "name" | "applicant_type">;
 
 /** ISO 문자열을 datetime-local 입력이 읽는 지역 시각으로 */
 function forInput(iso: string | null | undefined) {
@@ -273,7 +274,11 @@ export default function MentoringPanel({
       .sort();
 
   const chosen = new Set(signups.map((s) => s.participant_id));
-  const notYet = people.filter((p) => !chosen.has(p.id));
+  /* 교역자·멘토는 신청 대상이 아니다 — 여기 남아 있으면 "아직 안 고른 사람"이
+     영영 0이 되지 않아 무엇이 남았는지 알 수 없다 */
+  const notYet = people.filter(
+    (p) => !chosen.has(p.id) && !isStaff(p.applicant_type)
+  );
 
   return (
     <>
