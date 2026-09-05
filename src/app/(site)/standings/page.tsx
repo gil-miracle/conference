@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHead from "@/components/PageHead";
 import Locked from "@/components/Locked";
 import { TabIcon } from "@/components/nav/TabIcons";
+import { NEED_LOGIN } from "@/lib/messages";
 import { getSiteContext } from "@/lib/data/site";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getHostContext } from "@/lib/admin";
@@ -31,11 +32,14 @@ export default async function StandingsPage() {
   return (
     <section id="standings">
       <div className="container">
-        <PageHead title="조 점수" lede="게임과 가산점을 더한 지금 순위예요." />
+        <PageHead
+          title="조 점수"
+          lede={ctx.authed ? "게임과 가산점을 더한 지금 순위예요." : undefined}
+        />
 
         {!ctx.authed ? (
           <Locked icon={<TabIcon name="user" />} showLogin>
-            로그인하면 우리 조 점수를 볼 수 있어요.
+            {NEED_LOGIN}
           </Locked>
         ) : !canSee ? (
           <Locked icon={<TabIcon name="clock" />}>

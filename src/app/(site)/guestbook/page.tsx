@@ -6,6 +6,7 @@ import { fmtDateTime } from "@/lib/format";
 import Locked from "@/components/Locked";
 import { TabIcon } from "@/components/nav/TabIcons";
 import { getGuestbook, getSiteContext } from "@/lib/data/site";
+import { NEED_LOGIN } from "@/lib/messages";
 
 export const metadata: Metadata = { title: "한 줄 노트 — MIRACLE 2026" };
 // 로그인 여부에 따라 내용이 갈리므로 캐시하지 않는다
@@ -30,7 +31,7 @@ export default async function GuestbookPage() {
         />
         {!ctx.authed ? (
           <Locked icon={<TabIcon name="pen" />} showLogin>
-            로그인이 필요합니다.
+            {NEED_LOGIN}
           </Locked>
         ) : (
           <>

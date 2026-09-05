@@ -1682,3 +1682,11 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 /* 첫 장·끝 장에서도 자리는 남긴다 — 사라지면 제목이 좌우로 흔들린다 */
 .ch-nav button:disabled { opacity: 0.22; cursor: default; }
 .ch-empty { text-align: center; padding: 40px 0; }
+
+/* 멘토 카드 — 두 분이면 나란히. 좁은 화면에서는 한 줄에 하나씩 */
+.ms-grid { display: grid; gap: 12px; }
+@media (min-width: 700px) {
+  .ms-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  /* 나란히 놓이면 위 여백은 그리드가 준다 */
+  .ms-grid .ms { margin-top: 0; }
+}

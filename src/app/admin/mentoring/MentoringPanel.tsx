@@ -182,7 +182,7 @@ function SessionEditor({
                   name="capacity"
                   type="number"
                   min={1}
-                  defaultValue={session?.capacity ?? 20}
+                  defaultValue={session?.capacity ?? 35}
                   required
                 />
               </label>
