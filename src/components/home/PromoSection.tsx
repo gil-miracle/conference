@@ -3,10 +3,10 @@
 import { useCallback, useState } from "react";
 import FlowHead from "@/components/FlowHead";
 
-export type PromoVideo = { src: string; label?: string };
+export type PromoVideo = { src: string; poster?: string; label?: string };
 
 /**
- * 홍보 영상 — 오시는 길 아래.
+ * 홍보 영상 — 일정과 오시는 길 사이.
  *
  * 초대 영상과 달리 저절로 재생하지 않는다. 화면을 열자마자 여러 영상이 함께
  * 돌면 어느 쪽 소리인지 모르고, 아래에 있는 것은 내려온 사람이 보고 싶어서
@@ -56,6 +56,8 @@ export default function PromoSection({
               ref={check(v.src)}
               className="teaser reveal"
               src={v.src}
+              // 눌러야 시작하는 영상이라, 누르기 전까지 보이는 건 이 그림뿐이다
+              poster={v.poster}
               controls
               playsInline
               // 저절로 시작하지 않으니 미리 다 받아 둘 이유가 없다 —

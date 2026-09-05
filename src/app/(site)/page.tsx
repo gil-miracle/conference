@@ -28,7 +28,9 @@ export default async function HomePage() {
       <section id="about" className="flow">
         <div className="container">
           <FlowHead title="초대" />
-          {EVENT.teaserVideo && <TeaserVideo src={EVENT.teaserVideo} />}
+          {EVENT.teaserVideo && (
+            <TeaserVideo src={EVENT.teaserVideo} poster={EVENT.teaserPoster} />
+          )}
           <p className="lede reveal keep-lines">{ABOUT_LEDE}</p>
           <div className="verse reveal">
             <p>{THEME_VERSE.text}</p>
@@ -45,6 +47,12 @@ export default async function HomePage() {
             <NextSessions />
           </div>
         </section>
+      )}
+
+      {/* 홍보 영상 — 누를 때 시작한다. 위 초대 영상과 함께 돌면 어느 쪽
+          소리인지 모른다 */}
+      {EVENT.promoVideos.length > 0 && (
+        <PromoSection videos={EVENT.promoVideos} title="홍보 영상" />
       )}
 
       {/* 장소 · 오시는 길 — 늘 보인다. 못 찾아오면 다른 게 다 소용없다 */}
@@ -73,11 +81,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* 홍보 영상 — 내려온 사람이 보고 싶어 내려온 것이라 누를 때 시작한다 */}
-      {EVENT.promoVideos.length > 0 && (
-        <PromoSection videos={EVENT.promoVideos} title="홍보 영상" />
-      )}
     </>
   );
 }
