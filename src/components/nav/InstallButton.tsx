@@ -8,64 +8,111 @@ type InstallPrompt = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 };
 
-const isStandalone = () =>
+const standalone = () =>
   window.matchMedia("(display-mode: standalone)").matches ||
   // iOS 사파리는 display-mode 대신 이 값을 쓴다
   (window.navigator as { standalone?: boolean }).standalone === true;
 
-const isIos = () =>
-  /iphone|ipad|ipod/i.test(navigator.userAgent) &&
-  !/crios|fxios/i.test(navigator.userAgent);
+/** 브라우저마다 설치하는 길이 달라, 안내도 달라야 한다 */
+function howTo(): { where: string; steps: string[] } {
+  const ua = navigator.userAgent;
+  const ios = /iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document);
+
+  if (ios && /crios|fxios|edgios/i.test(ua))
+    return {
+      where: "iPhone · iPad",
+      steps: ["이 페이지를 사파리로 열어주세요", "아래 공유 단추 → 홈 화면에 추가"],
+    };
+  if (ios)
+    return {
+      where: "iPhone · iPad",
+      steps: ["아래 가운데 공유 단추를 누르고", "「홈 화면에 추가」를 고르면 돼요"],
+    };
+  if (/kakaotalk|naver|instagram|fban|fbav|line/i.test(ua))
+    return {
+      where: "앱 안에서 열린 창",
+      steps: [
+        "여기서는 설치할 수 없어요",
+        "오른쪽 위 메뉴에서 「다른 브라우저로 열기」를 고른 뒤 다시 눌러주세요",
+      ],
+    };
+  if (/android/i.test(ua))
+    return {
+      where: "Android",
+      steps: ["오른쪽 위 점 세 개 메뉴를 누르고", "「앱 설치」 또는 「홈 화면에 추가」를 고르면 돼요"],
+    };
+  return {
+    where: "PC",
+    steps: [
+      "이미 설치돼 있다면 설치된 앱에서 열어주세요",
+      "아니라면 주소창 오른쪽 끝의 설치 아이콘, 또는 오른쪽 위 점 세 개 메뉴 → 「앱 설치」",
+    ],
+  };
+}
 
 /**
  * 홈 화면에 추가.
  *
- * 브라우저 메뉴 안에 숨어 있는 기능이라, 두어야 한다고 아는 사람만 쓴다.
- * 행사 사흘 동안 계속 열 화면이니 눈에 보이는 자리에 둔다.
+ * 브라우저 메뉴 안에 숨어 있는 기능이라, 둘 수 있다고 아는 사람만 쓴다.
+ * 사흘 내내 열 화면이니 눈에 보이는 자리에 둔다.
  *
- * 설치가 끝났거나 이미 앱으로 열었으면 사라진다 — 누를 수 없는 단추가
- * 남아 있으면 자리만 차지한다.
+ * 설치 이벤트(beforeinstallprompt)는 크롬 계열만, 그것도 조건이 맞을 때만
+ * 던진다. 그 이벤트가 있을 때만 단추를 보이면 대부분의 사람에게는 단추가
+ * 아예 없고, 눌렀을 때 이벤트가 상해 있으면 아무 일도 안 일어난다.
  *
- * iOS는 설치 이벤트를 주지 않는다. 그래서 그쪽은 「공유 → 홈 화면에 추가」를
- * 알려 주는 것 말고 할 수 있는 일이 없다.
+ * 그래서 앱으로 연 것이 아니면 언제나 보이고, 이벤트가 없거나 실패하면
+ * 그 브라우저에서 설치하는 길을 글로 알려 준다. 누르면 무엇이든 일어난다.
  */
 export default function InstallButton() {
+  const [ready, setReady] = useState(false);
   const [prompt, setPrompt] = useState<InstallPrompt | null>(null);
-  const [ios, setIos] = useState(false);
-  const [tip, setTip] = useState(false);
+  const [tip, setTip] = useState<ReturnType<typeof howTo> | null>(null);
 
   useEffect(() => {
-    if (isStandalone()) return;
+    if (standalone()) return;
+    setReady(true);
+
+    // 머리에서 미리 받아 둔 것이 있으면 그것부터 쓴다
+    const held = (window as { __installPrompt?: InstallPrompt }).__installPrompt;
+    if (held) setPrompt(held);
 
     const onPrompt = (e: Event) => {
       // 브라우저 기본 배너를 막고 우리 단추로 연다
       e.preventDefault();
       setPrompt(e as InstallPrompt);
     };
+    const onReady = () =>
+      setPrompt((window as { __installPrompt?: InstallPrompt }).__installPrompt ?? null);
     const onInstalled = () => {
+      setReady(false);
       setPrompt(null);
-      setIos(false);
+      setTip(null);
+      delete (window as { __installPrompt?: InstallPrompt }).__installPrompt;
     };
 
     window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("installpromptready", onReady);
     window.addEventListener("appinstalled", onInstalled);
-    if (isIos()) setIos(true);
-
     return () => {
       window.removeEventListener("beforeinstallprompt", onPrompt);
+      window.removeEventListener("installpromptready", onReady);
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);
 
-  if (!prompt && !ios) return null;
+  if (!ready) return null;
 
   const install = async () => {
-    if (!prompt) return setTip(true);
-    await prompt.prompt();
-    const { outcome } = await prompt.userChoice;
-    // 한 번 쓰면 다시 못 쓰는 이벤트다 — 거절해도 버린다
-    if (outcome === "accepted") setPrompt(null);
-    else setPrompt(null);
+    if (!prompt) return setTip(howTo());
+    try {
+      await prompt.prompt();
+      await prompt.userChoice;
+    } catch {
+      // 이벤트는 한 번만 쓸 수 있다. 상했으면 글로 안내한다
+      setTip(howTo());
+    }
+    // 써 버린 이벤트는 다시 쓸 수 없다
+    setPrompt(null);
   };
 
   return (
@@ -75,15 +122,23 @@ export default function InstallButton() {
       </button>
 
       {tip && (
-        <div className="install-tip" role="dialog">
-          <p>
-            사파리 아래쪽 <b>공유</b> 단추를 누르고
-            <br />
-            <b>홈 화면에 추가</b>를 고르면 돼요.
-          </p>
-          <button type="button" className="btn sm ghost" onClick={() => setTip(false)}>
-            닫기
-          </button>
+        <div className="install-tip-back" onClick={() => setTip(null)}>
+          <div
+            className="install-tip"
+            role="dialog"
+            aria-label="앱 설치 방법"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="eyebrow">{tip.where}</div>
+            <ol>
+              {tip.steps.map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ol>
+            <button type="button" className="btn sm ghost full" onClick={() => setTip(null)}>
+              닫기
+            </button>
+          </div>
         </div>
       )}
     </>

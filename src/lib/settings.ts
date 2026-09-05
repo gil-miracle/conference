@@ -21,6 +21,8 @@ export const DEFAULT_MENUS: MenuVisibility = {
   // 때가 되면 켠다 — 신청은 정해진 날 열리고, 점수는 레크리에이션 때만 쓴다
   mentoring: false,
   standings: false,
+  /* 말씀카드는 배경 그림이 준비되면 켜다 */
+  wordcard: false,
 };
 
 type SettingRow = { key: string; value: unknown };

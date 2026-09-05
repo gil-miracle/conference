@@ -93,3 +93,48 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
+/*
+ * 웹 푸시 — 관리자에게 가입 요청을 알린다.
+ *
+ * 알림은 앱이 닫혀 있어도 온다. 그래서 여기(서비스 워커)가 받는다.
+ * 눌렀을 때 이미 열려 있는 창이 있으면 그 창을 쓰고, 없을 때만 새로 연다 —
+ * 알림을 누를 때마다 탭이 하나씩 늘면 곤란하다.
+ */
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = {};
+  }
+  const title = data.title || "MIRACLE";
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body: data.body || "",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      // 같은 tag면 덮어쓴다 — 여러 건이 쌓여 알림창을 채우지 않게
+      tag: data.tag || "miracle",
+      renotify: true,
+      data: { url: data.url || "/" },
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const target = (event.notification.data && event.notification.data.url) || "/";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      for (const client of list) {
+        if (client.url.includes(new URL(target, self.location.origin).pathname)) {
+          return client.focus();
+        }
+      }
+      const open = list.find((c) => "navigate" in c);
+      if (open) return open.navigate(target).then((c) => c && c.focus());
+      return self.clients.openWindow(target);
+    })
+  );
+});

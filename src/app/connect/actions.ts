@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { NEED_LOGIN } from "@/lib/messages";
+import { notifyAdmins } from "@/lib/push";
 import { parseBirth8 } from "@/lib/format";
 
 /** 조회 결과 — 요청을 보낼 수 있는 상태인지 판별한다 */
@@ -119,6 +120,16 @@ export async function requestAction(
     return { kind: "error", message: "요청 중 오류가 났어요. 잠시 후 다시 시도해주세요." };
 
   const status = (data as { status?: string } | null)?.status ?? "error";
+  if (status === "requested") {
+    /* 알림은 곁일이다 — 여기서 터져도 가입 요청은 이미 들어갔다.
+       기다리게 하지 않도록 await 하되 실패는 삼킨다 */
+    await notifyAdmins({
+      title: "가입 요청",
+      body: `${name} 님이 명단 연결을 요청했어요.`,
+      url: "/admin/approvals",
+      tag: "join-request",
+    }).catch(() => null);
+  }
   if (status === "requested" || status === "already_requested") redirect("/profile");
 
   const key = staff && status === "not_found" ? "not_found_staff" : status;

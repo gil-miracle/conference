@@ -43,6 +43,9 @@ export const EVENT = {
    * 파일이 없으면 화면에서 알아서 빠지므로 미리 적어둬도 안전하다.
    */
   teaserVideo: "/teaser.mp4",
+  /* 오시는 길 아래 홍보 영상. public에 파일을 넣으면 나타나고,
+     없으면 제목까지 통째로 사라진다 */
+  promoVideo: "/promo.mp4",
 };
 
 export const THEME_VERSE = {

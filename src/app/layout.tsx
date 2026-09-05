@@ -1,3 +1,4 @@
+import Script from "next/script";
 import type { Metadata, Viewport } from "next";
 import "@/styles/base.css";
 
@@ -69,6 +70,17 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        {/*
+          설치 이벤트(beforeinstallprompt)는 페이지가 뜨자마자 한 번 던져진다.
+          리액트가 붙은 뒤에 듣기 시작하면 이미 지나간 뒤라 영영 못 받는다 —
+          크롬인데도 "설치할 수 없다"고 안내하게 된다.
+
+          App Router는 layout의 head에 적은 날 script 태그를 지운다.
+          next/script의 beforeInteractive로 넣어야 실제로 실린다.
+        */}
+        <Script id="install-prompt" strategy="beforeInteractive">
+          {`window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__installPrompt=e;window.dispatchEvent(new Event('installpromptready'))});`}
+        </Script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link

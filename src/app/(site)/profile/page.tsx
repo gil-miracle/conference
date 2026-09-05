@@ -23,6 +23,7 @@ export default async function ProfilePage({
   const { demo } = await searchParams;
   const ctx = await getSiteContext(demo === "1");
   const summary = ctx.summary;
+  const menus = ctx.menus;
 
   // 비로그인 방문자에게는 예시 화면을 보여준다 — 잠긴 화면만 띄우면
   // "로그인하면 뭐가 나오는지"를 알 수 없어 연결까지 가지 않는다.
@@ -66,8 +67,13 @@ export default async function ProfilePage({
               open={summary.rooms_open === true}
             />
             <TeamCard team={summary.team} open={summary.teams_open === true} />
-            <WordCard name={summary.name} />
-            <WordcardSave name={summary.name} />
+            {/* 배경 그림이 준비되기 전에는 꺼 둔다 */}
+            {menus.wordcard && (
+              <>
+                <WordCard name={summary.name} />
+                <WordcardSave name={summary.name} />
+              </>
+            )}
           </div>
         )}
       </div>
