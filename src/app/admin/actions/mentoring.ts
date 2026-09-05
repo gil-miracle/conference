@@ -13,9 +13,17 @@ function readSession(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const place = String(formData.get("place") ?? "").trim() || null;
   const intro = String(formData.get("intro") ?? "").trim() || null;
-  // 주소 모양이 아니면 넣지 않는다 — 깨진 이미지가 카드에 남는 것보다 없는 편이 낫다
+  /*
+   * 사진은 두 가지로 온다 — public 아래 올린 정적 파일(`/mentors/문경숙.jpg`)이나
+   * 바깥 주소(`https://…`). 둘 다 받되 그 밖의 모양은 넣지 않는다.
+   *
+   * `//`로 시작하는 것은 막는다. 경로처럼 보이지만 남의 서버를 가리킨다.
+   */
   const rawPhoto = String(formData.get("photo_url") ?? "").trim();
-  const photo_url = /^https:\/\//.test(rawPhoto) ? rawPhoto.slice(0, 500) : null;
+  const okPhoto =
+    /^https:\/\/\S+$/.test(rawPhoto) ||
+    (rawPhoto.startsWith("/") && !rawPhoto.startsWith("//"));
+  const photo_url = okPhoto ? rawPhoto.slice(0, 500) : null;
   const mentor_id = String(formData.get("mentor_id") ?? "") || null;
   const capacity = Number(formData.get("capacity") ?? 35) || 35;
   const sort_order = Number(formData.get("sort_order") ?? 0) || 0;

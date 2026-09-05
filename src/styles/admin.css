@@ -29,9 +29,18 @@
   display: flex;
   max-width: 640px;
   margin: 0 auto;
+  /* 칸이 늘면 좁은 화면에서 넘친다 — 접히게 두면 줄이 둘로 갈라져
+     밑줄과 어긋난다. 접지 말고 옆으로 밀게 한다 */
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.admin .tabs::-webkit-scrollbar { display: none; }
 .admin .tabs a {
-  flex: 1;
+  flex: 1 0 auto;
+  min-width: 0;
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: nowrap;
   text-align: center;
   padding: 13px 0;
   font-weight: 600;

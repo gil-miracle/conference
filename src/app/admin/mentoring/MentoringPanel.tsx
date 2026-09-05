@@ -157,13 +157,12 @@ function SessionEditor({
                 />
               </label>
               <label>
-                {/* 갤러리에 쓰는 Cloudinary에 올리고 그 주소를 넣으면 된다 */}
-                <span>사진 주소</span>
+                {/* public 아래 올린 파일이면 `/mentors/이름.jpg` 처럼 경로만 */}
+                <span>사진</span>
                 <input
                   name="photo_url"
-                  type="url"
                   defaultValue={session?.photo_url ?? ""}
-                  placeholder="https://res.cloudinary.com/…"
+                  placeholder="/mentors/문경숙.jpg"
                   maxLength={500}
                 />
               </label>
@@ -302,7 +301,13 @@ export default function MentoringPanel({
                 {members.length === 0 ? (
                   <span className="mchip-empty">아직 신청자가 없어요</span>
                 ) : (
-                  members.map((name) => <span key={name}>{name}</span>)
+                  /* 숙소·팀 화면과 같은 칩 — 이름이 줄글로 이어지면 몇 명인지
+                     세어지지도, 누가 있는지 훑어지지도 않는다 */
+                  members.map((name) => (
+                    <span className="mchip" key={name}>
+                      {name}
+                    </span>
+                  ))
                 )}
               </div>
             </div>
@@ -318,7 +323,9 @@ export default function MentoringPanel({
           ) : (
             <div className="members mt-10">
               {notYet.map((p) => (
-                <span key={p.id}>{p.name}</span>
+                <span className="mchip" key={p.id}>
+                  {p.name}
+                </span>
               ))}
             </div>
           )}
