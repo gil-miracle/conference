@@ -1542,9 +1542,11 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   margin-top: 12px;
 }
 .ms.mine { border-color: var(--coral); border-width: 2px; padding: 17px 19px; }
-/* 사진 — 없는 분도 있어서 자리를 비우지 않고 이름 앞 글자를 세운다 */
+/* 사진 — 인물 사진 비율(2:3)에 맞춘다. 가로형 칸에 세로 사진을 넣으면
+   위아래가 잘려 이마와 턱이 날아간다.
+   없는 분도 있어서 자리를 비우지 않고 이름 앞 글자를 세운다 */
 .ms-photo {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 2 / 3;
   background: #e8dfd2;
   display: flex;
   align-items: center;
@@ -1683,10 +1685,38 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 .ch-nav button:disabled { opacity: 0.22; cursor: default; }
 .ch-empty { text-align: center; padding: 40px 0; }
 
-/* 멘토 카드 — 두 분이면 나란히. 좁은 화면에서는 한 줄에 하나씩 */
-.ms-grid { display: grid; gap: 12px; }
-@media (min-width: 700px) {
-  .ms-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-  /* 나란히 놓이면 위 여백은 그리드가 준다 */
-  .ms-grid .ms { margin-top: 0; }
+/* 멘토 카드 — 두 개씩 나란히.
+   고르는 일은 견주어 보는 일이라, 폰에서도 둘이 한눈에 들어와야 한다. */
+.ms-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+/* 나란히 놓이면 위 여백은 그리드가 준다 */
+.ms-grid .ms { margin-top: 0; }
+
+/* 폰에서 반 폭이 되면 카드 안이 좁아진다 — 여백과 글자를 같이 줄인다 */
+@media (max-width: 560px) {
+  .ms-grid .ms { padding: 12px 13px; }
+  .ms-grid .ms.mine { padding: 11px 12px; }
+  .ms-grid .ms-photo { margin: -12px -13px 11px; }
+  .ms-grid .ms.mine .ms-photo { margin: -11px -12px 11px; }
+  .ms-grid .ms-name { font-size: 0.94rem; }
+  /* 라벨을 값 위로 올린다 — 옆에 두면 값이 한 글자씩 쪼개진다 */
+  .ms-grid .ms-detail > div { display: block; }
+  .ms-grid .ms-detail dt { width: auto; padding-top: 0; }
+  .ms-grid .ms-detail dd { font-size: 0.85rem; margin-top: 1px; }
+  .ms-grid .ms-meta { font-size: 0.72rem; }
+  /* 「09.06 21:00부터 0 / 35」가 한 줄에 안 들어간다 — 접히게 둔다 */
+  .ms-grid .ms-pick {
+    flex-wrap: wrap;
+    gap: 2px 8px;
+    font-size: 0.82rem;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+/* 정말 좁은 화면에서는 둘로 나누는 것이 더 못 읽힌다 */
+@media (max-width: 359px) {
+  .ms-grid { grid-template-columns: 1fr; }
 }

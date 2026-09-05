@@ -95,10 +95,9 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
                 )}
               </dl>
 
-              <p className="ms-meta">
-                {fmtDateTime(s.starts_at)}
-                {s.place && ` · ${s.place}`}
-              </p>
+              {/* 강의 시각은 적지 않는다 — 두 세션이 같은 시간에 열려 고르는 데
+                  쓰이지 않고, 일정표에 이미 있다 */}
+              {s.place && <p className="ms-meta">{s.place}</p>}
 
               {mine ? (
                 <div className="ms-actions">
