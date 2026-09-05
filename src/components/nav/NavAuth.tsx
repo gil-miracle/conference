@@ -78,7 +78,7 @@ export default function NavAuth() {
           {/* 메뉴 노출은 설정에서 켠다 — 때가 되기 전에는 자리조차 없다 */}
           {session.menus.mentoring && (
             <Link href="/mentoring" role="menuitem">
-              멘토님과의 시간
+              멘토의 TMI
             </Link>
           )}
           {session.menus.standings && (

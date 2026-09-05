@@ -25,7 +25,10 @@ export type TabIcon = "home" | "clock" | "user" | "music" | "pen" | "camera" | "
 export const MENU: readonly MenuItem[] = [
   { href: "/timetable", label: "일정표", short: "일정", icon: "clock", key: "timetable" },
   { href: "/songs", label: "찬양", short: "찬양", icon: "music", key: "songs" },
-  { href: "/guestbook", label: "한 줄 노트", short: "노트", icon: "pen", key: "guestbook", locked: true },
+  { href: "/guestbook", /* 메뉴에서는 익숙한 이름으로 부른다 — 처음 보는 사람이 무엇인지 알아야
+     들어온다. 안에 들어가면 제목이 「한 줄 노트」로 무엇을 남기는 자리인지
+     말해 준다 */
+  label: "방명록", short: "방명록", icon: "pen", key: "guestbook", locked: true },
   { href: "/gallery", label: "갤러리", short: "갤러리", icon: "camera", key: "gallery", locked: true },
 ];
 

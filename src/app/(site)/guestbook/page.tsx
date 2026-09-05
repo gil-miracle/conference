@@ -18,13 +18,19 @@ export default async function GuestbookPage() {
   return (
     <section id="guestbook">
       <div className="container">
+        {/* 안내 문구도 로그인 뒤에 — 무엇을 남기는 자리인지가 이미 기도제목이
+            오가는 자리라는 뜻이라, 밖에서 읽힐 이유가 없다 */}
         <PageHead
           title="한 줄 노트"
-          lede="컨퍼런스를 통해 함께 나누고 싶은 기대와 기도 제목을 남겨주세요."
+          lede={
+            ctx.authed
+              ? "컨퍼런스를 통해 함께 나누고 싶은 기대와 기도 제목을 남겨주세요."
+              : undefined
+          }
         />
         {!ctx.authed ? (
           <Locked icon={<TabIcon name="pen" />} showLogin>
-            기도제목이 오가는 자리라 로그인한 분만 읽을 수 있어요.
+            로그인이 필요합니다.
           </Locked>
         ) : (
           <>

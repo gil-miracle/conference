@@ -7,11 +7,11 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import type { MentorBoard } from "@/lib/mentoring";
 import MentorPicker from "@/components/mentoring/MentorPicker";
 
-export const metadata: Metadata = { title: "멘토님들과의 시간 — MIRACLE 2026" };
+export const metadata: Metadata = { title: "멘토의 TMI — MIRACLE 2026" };
 export const dynamic = "force-dynamic";
 
 /**
- * 멘토님들과의 시간 — 신청.
+ * 멘토의 TMI — 신청.
  *
  * 세션은 한 타임에 다 열리므로 한 사람이 하나만 듣는다. 다른 카드를 누르면
  * 옮겨간다 — 취소하고 다시 신청하는 게 아니라 한 번에 옮긴다.
@@ -32,7 +32,7 @@ export default async function MentoringPage() {
     <section id="mentoring">
       <div className="container">
         <PageHead
-          title="멘토님들과의 시간"
+          title="멘토의 TMI"
           lede="한 분을 골라 신청해주세요. 세션 전날까지는 바꿀 수 있어요."
         />
 

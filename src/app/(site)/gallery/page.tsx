@@ -24,15 +24,17 @@ export default async function GalleryPage({
     <section id="gallery">
       <div className="container">
         <PageHead title="우리의 순간들" />
-        {!ctx.galleryOpen ? (
-          <Locked icon={<CameraIcon />} showLogin={!ctx.authed}>
+        {/* 로그인 여부를 먼저 본다 — 아직 안 열린 갤러리를 두고 "컨퍼런스가
+            시작되면 열려요"라고 하면, 정작 지금 필요한 것이 무엇인지 안 보인다 */}
+        {!ctx.authed ? (
+          <Locked icon={<CameraIcon />} showLogin>
+            로그인이 필요합니다.
+          </Locked>
+        ) : !ctx.galleryOpen ? (
+          <Locked icon={<CameraIcon />}>
             컨퍼런스가 시작되면 열려요.
             <br />
             현장에서 찍은 사진을 함께 올리고 볼 수 있어요.
-          </Locked>
-        ) : !ctx.authed ? (
-          <Locked icon={<CameraIcon />} showLogin>
-            갤러리가 열렸어요! 로그인하고 우리의 순간들을 함께 나눠요.
           </Locked>
         ) : !bound ? (
           <Locked icon={<CameraIcon />} showBind>신청 명단과 연결하면 사진을 올리고 볼 수 있어요.</Locked>
