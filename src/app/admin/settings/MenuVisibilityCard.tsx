@@ -13,6 +13,7 @@ const LABELS: { key: MenuKey; label: string; hint: string }[] = [
   { key: "gallery", label: "갤러리", hint: "행사 사진" },
   { key: "mentoring", label: "멘토의 TMI", hint: "프로필 메뉴에 신청 링크" },
   { key: "standings", label: "레크리에이션 점수", hint: "프로필 메뉴에 순위 링크" },
+  { key: "wordcard", label: "말씀카드", hint: "내 정보 맨 아래 카드와 저장" },
 ];
 
 /**

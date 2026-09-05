@@ -260,5 +260,6 @@ export type MenuKey =
   | "guestbook"
   | "gallery"
   | "mentoring"
-  | "standings";
+  | "standings"
+  | "wordcard";
 export type MenuVisibility = Record<MenuKey, boolean>;

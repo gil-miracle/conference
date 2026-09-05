@@ -4,6 +4,8 @@ import BannerSettingCard from "./BannerSettingCard";
 import ToggleSettingCard from "./ToggleSettingCard";
 import SheetSync from "./SheetSync";
 import MenuVisibilityCard from "./MenuVisibilityCard";
+import PushCard from "./PushCard";
+import { isPushConfigured } from "@/lib/push";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +30,8 @@ export default async function AdminSettingsPage() {
 
   return (
     <>
+      {/* 이 카드만 사이트 설정이 아니라 「지금 이 기기」 설정이다 */}
+      <PushCard configured={isPushConfigured()} />
       <BannerSettingCard banner={settings.banner} />
       {/* 숙소는 며칠 전에 확정되는데 조는 당일까지 바뀐다 — 따로 연다 */}
       <ToggleSettingCard

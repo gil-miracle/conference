@@ -3,6 +3,7 @@ import FlowHead from "@/components/FlowHead";
 import TeaserVideo from "@/components/TeaserVideo";
 import NextSessions from "@/components/home/NextSessions";
 import KakaoMap from "@/components/KakaoMap";
+import PromoSection from "@/components/home/PromoSection";
 import { EVENT, THEME_VERSE, ABOUT_LEDE } from "@/lib/content";
 import { getPublicSettings } from "@/lib/data/site";
 
@@ -72,6 +73,11 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 홍보 영상 — 내려온 사람이 보고 싶어 내려온 것이라 누를 때 시작한다 */}
+      {EVENT.promoVideo && (
+        <PromoSection src={EVENT.promoVideo} title="홍보 영상" />
+      )}
     </>
   );
 }
