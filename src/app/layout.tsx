@@ -47,16 +47,19 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   /*
-   * 탭 아이콘은 app/icon.svg — 빨간 바탕에 M 한 자다. 앱 아이콘(사진)을 여기
-   * 쓰면 16px로 줄었을 때 뭉갠다. 작은 자리에서는 글자 한 자가 사진보다 잘
-   * 읽힌다. 홈 화면·설치 아이콘은 매니페스트가 따로 맡는다.
+   * 탭 아이콘도 앱 로고로. 16~32px까지 줄어드는 자리라 작은 판을 따로 굽는다 —
+   * 192짜리를 브라우저가 알아서 줄이면 글자가 더 뭉갠다.
    *
-   * icons를 적는 순간 파일 규약(app/icon.svg 자동 인식)이 통째로 꺼지므로
-   * 여기에 직접 적어 준다 — 안 적으면 탭 아이콘이 아예 사라진다.
+   * icons를 적는 순간 파일 규약(app/icon.svg 자동 인식)이 통째로 꺼진다.
+   * 그 빨간 M 판은 지웠다.
    */
   icons: {
-    icon: { url: "/icon.svg", type: "image/svg+xml" },
-    apple: "/icons/apple-touch-icon.png",
+    icon: [
+      { url: "/icons/favicon-32.png?v=2", sizes: "32x32", type: "image/png" },
+      { url: "/icons/favicon-48.png?v=2", sizes: "48x48", type: "image/png" },
+      { url: "/icons/icon-192.png?v=2", sizes: "192x192", type: "image/png" },
+    ],
+    apple: "/icons/apple-touch-icon.png?v=2",
   },
   openGraph: {
     title: "MIRACLE — 2026 GIL Community Conference",
