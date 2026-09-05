@@ -123,7 +123,7 @@ export default function PushCard({ configured }: { configured: boolean }) {
       {blocked && <p className="msg mt-12">{blocked}</p>}
       {!configured && (
         <p className="msg mt-12">
-          서버에 알림 키가 없어 지금은 보내지지 않아요 — SUPABASE_SERVICE_ROLE_KEY를
+          서버에 알림 키가 없어 지금은 보내지지 않아요 — PUSH_SECRET과 VAPID 키를
           채워주세요.
         </p>
       )}
