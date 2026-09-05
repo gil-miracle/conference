@@ -23,12 +23,18 @@ function howTo(): { where: string; steps: string[] } {
   if (ios && /crios|fxios|edgios/i.test(ua))
     return {
       where: "iPhone · iPad",
-      steps: ["이 페이지를 사파리로 열어주세요", "아래 공유 단추 → 홈 화면에 추가"],
+      steps: [
+        "이 페이지를 사파리로 열어주세요",
+        "아래 공유 단추 → 목록을 내려 「홈 화면에 추가」",
+      ],
     };
   if (ios)
     return {
       where: "iPhone · iPad",
-      steps: ["아래 가운데 공유 단추를 누르고", "「홈 화면에 추가」를 고르면 돼요"],
+      steps: [
+        "아래 가운데 공유 단추를 누르고",
+        "목록을 내려 「홈 화면에 추가」 — 안 보이면 「더 보기」 안에 있어요",
+      ],
     };
   if (/kakaotalk|naver|instagram|fban|fbav|line/i.test(ua))
     return {
