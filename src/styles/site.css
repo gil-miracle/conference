@@ -668,18 +668,55 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   object-fit: cover;
 }
 
-/* 두 편이어도 위아래로 쌓는다.
-   본문 폭이 640px이라 나란히 놓으면 한 편이 311px — 데스크톱에서 보는 영상이
-   폰에서 보는 것보다 작아진다. 영상은 크기가 곧 값어치라 폭을 양보하지 않고,
-   대신 아래 이름을 붙여 두 편이 뭐가 다른지 알린다. 이 섹션은 페이지 맨
-   아래라 조금 길어지는 건 값이 싸다. */
-.promo-item { margin: 0 0 30px; }
-.promo-item .teaser { margin-bottom: 0; }
-.promo-cap {
+/* 영상 여러 편을 한 재생기에.
+   편마다 재생기를 두면 같은 크기의 검은 판이 화면을 채우고, 뭐가 다른지
+   알려면 하나씩 눌러 봐야 한다. 하나만 크게 두고 나머지는 그림으로 줄인다. */
+.vdeck { margin-bottom: 30px; }
+.vdeck .teaser { margin-bottom: 0; }
+
+.vd-thumbs {
+  display: flex;
+  gap: 7px;
+  margin-top: 7px;
+  /* 편이 늘면 옆으로 흐른다 — 줄바꿈하면 재생기와 떨어져 보인다 */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.vd-thumbs::-webkit-scrollbar { display: none; }
+
+.vd-thumb {
+  flex: 0 0 auto;
+  width: 92px;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  border: 2px solid transparent;
+  background: var(--ink);
+  cursor: pointer;
+  /* 고르지 않은 편은 한 걸음 물러나 있게 */
+  opacity: 0.55;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.vd-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.vd-thumb span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: var(--paper);
+  font-size: 0.78rem;
+}
+.vd-thumb:hover { opacity: 0.8; }
+.vd-thumb.on { opacity: 1; border-color: var(--coral); }
+
+.vd-cap {
   margin-top: 9px;
   font-size: 0.86rem;
   color: var(--ink-60);
   letter-spacing: -0.01em;
+}
+
+@media (max-width: 380px) {
+  .vd-thumb { width: 78px; }
 }
 
 .sub-head { margin: 44px 0 16px; border-bottom: 1px solid var(--hair); padding-bottom: 10px; }
