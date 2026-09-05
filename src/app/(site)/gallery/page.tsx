@@ -19,12 +19,16 @@ export default async function GalleryPage({
   const { demo } = await searchParams;
   const ctx = await getSiteContext(demo === "1");
   const bound = Boolean(ctx.summary);
-  const photos = ctx.galleryOpen && bound && !ctx.demoMode ? await getPhotos(24) : [];
+  const photos = ctx.galleryOpen && bound && !ctx.demoMode ? await getPhotos(200) : [];
 
   return (
     <section id="gallery">
       <div className="container">
-        <PageHead title="우리의 순간들" />
+        {/* 제목은 잠긴 화면에서만 여기서 그린다 — 열린 화면에서는 제목 옆에
+            「사진 올리기」가 붙어야 해서 GalleryGrid가 함께 그린다 */}
+        {!(ctx.authed && ctx.galleryOpen && bound && !ctx.demoMode) && (
+          <PageHead title="우리의 순간들" />
+        )}
         {/* 로그인 여부를 먼저 본다 — 아직 안 열린 갤러리를 두고 "컨퍼런스가
             시작되면 열려요"라고 하면, 정작 지금 필요한 것이 무엇인지 안 보인다 */}
         {!ctx.authed ? (
