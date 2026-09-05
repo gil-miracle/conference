@@ -205,7 +205,7 @@ function SessionEditor({
                 />
               </label>
               <label>
-                {/* 이 시각이 지나면 신청도 취소도 변경도 막힌다 */}
+                {/* 이 시각이 지나면 신청도 취소도 변경도 막힌다 — 세션이 끝나는 시각을 넣는다 */}
                 <span>신청 마감</span>
                 <input
                   name="closes_at"
