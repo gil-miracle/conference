@@ -45,7 +45,7 @@ export default function GuestbookDelete({
         });
       }}
     >
-      {pending ? "…" : failed ? "삭제 실패" : "DELETE"}
+      {pending ? "…" : failed ? "삭제 실패" : "삭제"}
     </button>
   );
 }

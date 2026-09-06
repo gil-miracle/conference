@@ -393,6 +393,7 @@ nav.site {
 .gb:nth-of-type(5n + 4)::before { background: var(--green); }
 .gb:nth-of-type(5n + 5)::before { background: var(--pink); }
 .gb .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.gb .who { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .gb b { font-size: 0.82rem; font-weight: 700; color: var(--green); }
 .gb time {
   font-family: var(--mono);
@@ -402,15 +403,19 @@ nav.site {
   flex-shrink: 0;
 }
 .gb p { font-size: 0.92rem; margin-top: 6px; word-break: keep-all; white-space: pre-line; }
+/* 이름 옆에 붙는 작은 글씨 — 내 글에만 나오므로 눈에 띌 필요는 없다 */
 .gb .del {
+  flex: none;
   background: none;
   border: none;
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 400;
   color: var(--ink-60);
-  margin-top: 6px;
   padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--hair);
 }
 .gb .del:hover { color: var(--coral); }
 .gb-write {
@@ -427,6 +432,26 @@ nav.site {
   transition: 0.2s;
 }
 .gb-write:hover { background: var(--ink); color: var(--cream); }
+/* 등록 확인 — 잠깐 떴다 물러난다. 그 전에 닫을 수 있게 ✕를 둔다 */
+.gb-done {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  animation: reveal-in 0.24s ease both;
+}
+.gb-done button {
+  flex: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  opacity: 0.6;
+  font-size: 0.8rem;
+  line-height: 1;
+  padding: 4px 2px;
+}
+.gb-done button:hover { opacity: 1; }
+
 .gb-form { margin-top: 26px; border: 1px solid var(--ink); background: var(--cream); padding: 4px 22px 22px; }
 
 /* ── 영상 ── */

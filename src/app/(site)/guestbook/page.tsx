@@ -44,11 +44,15 @@ export default async function GuestbookPage() {
               {entries.map((entry) => (
                 <div className="gb" key={entry.id}>
                   <div className="row">
-                    <b>{entry.display_name}</b>
+                    {/* 삭제는 이름 옆에 — 글 아래에 두면 다음 노트의 것처럼
+                        보이고, 누구 글을 지우는지도 한 번 더 짚어야 한다 */}
+                    <span className="who">
+                      <b>{entry.display_name}</b>
+                      <GuestbookDelete id={entry.id} ownerId={entry.participant_id} />
+                    </span>
                     <time>{fmtDateTime(entry.created_at)}</time>
                   </div>
                   <p>{entry.content}</p>
-                  <GuestbookDelete id={entry.id} ownerId={entry.participant_id} />
                 </div>
               ))}
             </div>

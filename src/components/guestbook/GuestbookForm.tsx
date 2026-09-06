@@ -11,6 +11,9 @@ const initialState: GuestbookState = { status: "idle" };
 
 export default function GuestbookForm() {
   const [openForm, setOpenForm] = useState(false);
+  /* 「남겼어요」는 확인용이라 할 일이 끝나면 물러나야 한다 — 그대로 두면
+     다음에 들어와도 남아 있어 방금 쓴 것처럼 보인다 */
+  const [done, setDone] = useState(false);
   const [left, setLeft] = useState(GUESTBOOK_MAX);
   const [state, formAction, pending] = useActionState(
     addGuestbookEntry,
@@ -20,11 +23,14 @@ export default function GuestbookForm() {
 
   // 등록 성공 시 내용 비우고 접기
   useEffect(() => {
-    if (state.status === "ok") {
-      formRef.current?.reset();
-      setLeft(GUESTBOOK_MAX);
-      setOpenForm(false);
-    }
+    if (state.status !== "ok") return;
+    formRef.current?.reset();
+    setLeft(GUESTBOOK_MAX);
+    setOpenForm(false);
+    setDone(true);
+    // 읽고 나면 사라진다. 그 전에 닫고 싶은 사람을 위해 단추도 둔다
+    const t = setTimeout(() => setDone(false), 4000);
+    return () => clearTimeout(t);
   }, [state]);
 
   if (!openForm) {
@@ -33,7 +39,14 @@ export default function GuestbookForm() {
         <button className="gb-write" onClick={() => setOpenForm(true)}>
           한 줄 노트 남기기
         </button>
-        {state.status === "ok" && <p className="msg ok">{state.message}</p>}
+        {done && (
+          <p className="msg ok gb-done" role="status">
+            {state.message}
+            <button type="button" aria-label="닫기" onClick={() => setDone(false)}>
+              ✕
+            </button>
+          </p>
+        )}
       </>
     );
   }
