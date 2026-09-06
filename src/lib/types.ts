@@ -112,12 +112,22 @@ export type MySummary = {
     capacity: number;
     note: string | null;
   } | null;
-  mates: string[];
+  /* 옛 모양(이름만 든 문자열)도 잠시 섞여 들어온다 — 0041이 올라가기 전 */
+  mates: (RoomMate | string)[];
   team: {
     name: string;
     leader: string | null;
     note: string | null;
+    members?: (RoomMate | string)[];
   } | null;
+};
+
+/** 같은 방·같은 조 사람 한 줄 — 운영진 화면과 같은 정보를 같은 모양으로 */
+export type RoomMate = {
+  name: string;
+  gender: string | null;
+  /** 방장·조장 */
+  leader: boolean;
 };
 
 export type GuestbookEntry = {

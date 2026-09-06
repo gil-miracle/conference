@@ -1,8 +1,8 @@
 import { requireAdmin } from "@/lib/admin";
 import { demoBoardGuestbook } from "@/lib/demo";
 import { getCloudName } from "@/lib/cloudinary";
-import GuestbookModItem, { type ModEntry } from "./GuestbookModItem";
-import GalleryPanel from "./GalleryPanel";
+import BoardTabs from "./BoardTabs";
+import { type ModEntry } from "./GuestbookModItem";
 
 export const dynamic = "force-dynamic";
 
@@ -42,14 +42,14 @@ export default async function AdminBoardPage() {
   return (
     <>
       <div className="sec-title">
-        <b>한 줄 노트 관리</b>
+        <b>게시판</b>
       </div>
-      {entries.length === 0 && <p className="msg">아직 남긴 노트가 없어요.</p>}
-      {entries.map((entry) => (
-        <GuestbookModItem key={entry.id} entry={entry} />
-      ))}
-
-      <GalleryPanel initial={photos} cloudName={cloudName} demo={ctx.demo} />
+      <BoardTabs
+        entries={entries}
+        photos={photos}
+        cloudName={cloudName}
+        demo={ctx.demo}
+      />
     </>
   );
 }

@@ -27,11 +27,22 @@ export const DEMO_SUMMARY: MySummary = {
   checked_in_at: null,
   checkin_token: "00000000-0000-4000-8000-000000000000",
   room: { building: "본관", room_no: "203", capacity: 4, note: "본관에서 도보 2분 · 4인실" },
-  mates: ["김예찬", "박다윗", "이요셉", "정사무엘"],
+  mates: [
+    { name: "이요셉", gender: "남", leader: true },
+    { name: "김예찬", gender: "남", leader: false },
+    { name: "박다윗", gender: "남", leader: false },
+    { name: "정사무엘", gender: "남", leader: false },
+  ],
   team: {
     name: "오렌지조",
     leader: "이요셉",
     note: "토 14:00 잔디마당 집합",
+    members: [
+      { name: "이요셉", gender: "남", leader: true },
+      { name: "김예찬", gender: "남", leader: false },
+      { name: "한소망", gender: "여", leader: false },
+      { name: "정사무엘", gender: "남", leader: false },
+    ],
   },
 };
 
@@ -284,6 +295,21 @@ export const MY_PREVIEW: MySummary = {
     capacity: 4,
     note: "본관에서 도보 2분 · 4인실",
   },
-  mates: ["강믿음", "박소망", "이사랑", "홍길동"],
-  team: { name: "오렌지조", leader: "이사랑", note: "토 14:00 잔디마당 집합" },
+  mates: [
+    { name: "강믿음", gender: "남", leader: true },
+    { name: "박소망", gender: "남", leader: false },
+    { name: "이사랑", gender: "남", leader: false },
+    { name: "홍길동", gender: "남", leader: false },
+  ],
+  team: {
+    name: "오렌지조",
+    leader: "이사랑",
+    note: "토 14:00 잔디마당 집합",
+    members: [
+      { name: "이사랑", gender: "여", leader: true },
+      { name: "강믿음", gender: "남", leader: false },
+      { name: "홍길동", gender: "남", leader: false },
+      { name: "정기쁨", gender: "여", leader: false },
+    ],
+  },
 };

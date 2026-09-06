@@ -1,3 +1,4 @@
+import MateList from "@/components/profile/MateList";
 import type { MySummary } from "@/lib/types";
 
 export default function TeamCard({
@@ -19,11 +20,9 @@ export default function TeamCard({
       ) : team ? (
         <>
           <h3>{team.name}</h3>
-          <small>
-            {[team.leader ? `조장 ${team.leader}` : null, team.note]
-              .filter(Boolean)
-              .join(" · ") || "함께 뛰는 우리 조"}
-          </small>
+          {/* 조장 이름은 아래 목록에 표가 붙으므로 여기서는 뺀다 */}
+          <small>{team.note || "함께 뛰는 우리 조"}</small>
+          <MateList people={team.members ?? []} />
         </>
       ) : (
         <>

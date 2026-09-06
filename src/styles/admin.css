@@ -56,13 +56,25 @@
    폭을 꽉 채운 한 덩어리로 두고, 대시보드 지표 라벨과 같은 모노·자간을 써서
    관리자 화면의 다른 라벨들과 한 식구로 읽히게 한다. */
 .admin .subtabs { margin: 0 0 16px; }
+/* 갈래 이름 옆 개수 — 어느 쪽에 얼마나 쌓였는지 열기 전에 보인다 */
+.admin .subtabs em {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.86em;
+  opacity: 0.6;
+  margin-left: 4px;
+}
 .admin .subtabs-in {
   display: flex;
   border: 1px solid var(--ink);
   background: var(--paper);
 }
-.admin .subtabs a {
+.admin .subtabs a,
+.admin .subtabs button {
   flex: 1;
+  font: inherit;
+  background: none;
+  border: 0;
   text-align: center;
   padding: 11px 0;
   font-family: var(--mono);
@@ -73,11 +85,22 @@
   border-left: 1px solid var(--hair);
   transition: 0.16s;
 }
-.admin .subtabs a:first-child { border-left: 0; }
-.admin .subtabs a:hover { color: var(--ink); background: var(--cream); }
-.admin .subtabs a.on { background: var(--ink); color: var(--cream); }
+.admin .subtabs-in > :first-child { border-left: 0; }
+.admin .subtabs a:hover,
+.admin .subtabs button:hover { color: var(--ink); background: var(--cream); }
+.admin .subtabs a.on,
+.admin .subtabs button.on { background: var(--ink); color: var(--cream); }
 
 .admin .container { max-width: 640px; margin: 0 auto; padding: 28px 22px 0; }
+/*
+ * 탭 아래 첫 덩어리는 어느 화면이든 같은 자리에서 시작한다.
+ *
+ * 화면마다 맨 위에 오는 것이 달라서(갈래 · 제목 · 설정 카드) 그 첫 요소의
+ * 위 여백이 곧 탭과의 거리가 됐다 — 참가자는 0, 찬양·게시판은 26px.
+ * 탭을 옮겨 다닐 때마다 화면이 위아래로 흔들렸다.
+ * 여백은 감싸는 칸이 한 번만 준다.
+ */
+.admin .container > *:first-child { margin-top: 0; }
 .admin .sec-title { margin: 26px 0 14px; }
 .admin .sec-title b { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
 .admin .btn { padding: 13px 20px; font-size: 0.84rem; }

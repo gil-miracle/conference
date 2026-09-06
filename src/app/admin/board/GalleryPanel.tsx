@@ -190,7 +190,7 @@ export default function GalleryPanel({
   return (
     <>
       <div className="gal-mod-head">
-        <b>갤러리 관리</b>
+        <b>사진 {rows.length}장</b>
         <span>
           <input
             ref={fileRef}

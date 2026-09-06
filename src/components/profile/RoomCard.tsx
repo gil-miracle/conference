@@ -1,3 +1,4 @@
+import MateList from "@/components/profile/MateList";
 import type { MySummary } from "@/lib/types";
 
 /**
@@ -12,7 +13,7 @@ export default function RoomCard({
   open,
 }: {
   room: MySummary["room"];
-  mates: string[];
+  mates: MySummary["mates"];
   /** 관리자가 숙소·조를 공개했는가 */
   open: boolean;
 }) {
@@ -30,13 +31,7 @@ export default function RoomCard({
             {room.building} {room.room_no}호
           </h3>
           <small>{room.note ?? `${room.capacity}인실`}</small>
-          {mates.length > 0 && (
-            <div className="mates">
-              {mates.map((mate) => (
-                <span key={mate}>{mate}</span>
-              ))}
-            </div>
-          )}
+          <MateList people={mates} />
         </>
       ) : (
         <>
