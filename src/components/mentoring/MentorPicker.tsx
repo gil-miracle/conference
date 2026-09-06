@@ -36,7 +36,9 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
     setBusy(true);
     const res = await setMentorSession(id);
     setBusy(false);
-    setMsg(res.message);
+    /* 잘되면 카드가 「신청 완료」로 바뀌어 스스로 말한다 — 아래에 한 줄 더
+       적으면 이미 아는 것을 두 번 읽는다. 어긋났을 때만 적는다 */
+    setMsg(res.ok ? null : res.message);
     if (res.ok) router.refresh();
   };
 
@@ -50,7 +52,7 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
     setBusy(true);
     const res = await leaveMentorSession();
     setBusy(false);
-    setMsg(res.message);
+    setMsg(res.ok ? null : res.message);
     if (res.ok) router.refresh();
   };
 
@@ -109,7 +111,7 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
                   disabled={busy || after}
                   onClick={cancel}
                 >
-                  <span>{after ? "마감됨" : "신청함 · 취소"}</span>
+                  <span>{after ? "마감됨" : "신청 완료 · 취소"}</span>
                   <em>
                     {s.taken} / {s.capacity}
                   </em>
@@ -129,7 +131,7 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
                         : full
                           ? "자리 참"
                           : board.mine
-                            ? "이리로 옮기기"
+                            ? "강의 변경"
                             : "신청하기"}
                   </span>
                   <em>
@@ -142,7 +144,7 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
         })}
       </div>
 
-      {msg && <p className="msg mt-14">{msg}</p>}
+      {msg && <p className="msg err mt-14">{msg}</p>}
     </div>
   );
 }

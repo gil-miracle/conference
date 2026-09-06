@@ -884,7 +884,31 @@
   letter-spacing: 0.08em;
   color: var(--ink-60);
 }
+/* 폼이 길어지면 어디까지가 한 묶음인지 안 보인다 — 구역 제목으로 나눈다 */
+.pform-sec {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: var(--coral);
+  margin: 10px 0 2px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--hair);
+}
+.pform-sec:first-child { margin-top: 0; }
+.pform textarea { resize: vertical; line-height: 1.6; }
+/* 다른 세션에 있는 사람 — 체크하면 이쪽으로 옮겨 온다 */
+.fill-at {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-style: normal;
+  letter-spacing: 0.06em;
+  color: var(--ink-60);
+  margin-left: auto;
+  padding-left: 8px;
+}
+
 .pf-choice { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.pform textarea,
 .pform select,
 .pform input {
   flex: 1;

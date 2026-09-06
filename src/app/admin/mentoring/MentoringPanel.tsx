@@ -13,9 +13,10 @@ import { fmtDateTime } from "@/lib/format";
 import { isStaff } from "@/lib/participant-fields";
 import type { AdminParticipant } from "@/lib/types";
 import type { AdminMentorSession } from "@/lib/mentoring";
+import SessionFill from "./SessionFill";
 import type { SignupRow } from "./page";
 
-type Person = Pick<AdminParticipant, "id" | "name" | "applicant_type">;
+type Person = Pick<AdminParticipant, "id" | "name" | "applicant_type" | "gender">;
 
 /** ISO 문자열을 datetime-local 입력이 읽는 지역 시각으로 */
 function forInput(iso: string | null | undefined) {
@@ -40,13 +41,20 @@ function SessionEditor({
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  /* 명단에서 고르면 이름이 따라 채워진다 — 같은 이름을 두 번 적게 하면
+     한쪽만 고쳤을 때 어긋난다 */
+  const [name, setName] = useState(session?.mentor_name ?? "");
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (open && !el.open) el.showModal();
     if (!open && el.open) el.close();
-    if (open) setMsg(null);
+    if (open) {
+      setMsg(null);
+      setName(session?.mentor_name ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const submit = async (formData: FormData) => {
@@ -114,20 +122,19 @@ function SessionEditor({
             </header>
 
             <form className="pform" action={submit}>
+              <p className="pform-sec">멘토</p>
               <label>
-                <span>멘토</span>
-                <input
-                  name="mentor_name"
-                  defaultValue={session?.mentor_name ?? ""}
-                  placeholder="김멘토 목사"
-                  maxLength={30}
-                  required
-                />
-              </label>
-              <label>
-                {/* 명단에 있는 분이면 이어둔다 — 없어도 세션은 만들 수 있다 */}
+                {/* 명단에서 고르면 아래 이름이 따라 채워진다.
+                    명단에 없는 분도 있어서 이름은 손으로 고칠 수 있게 둔다 */}
                 <span>명단</span>
-                <select name="mentor_id" defaultValue={session?.mentor_id ?? ""}>
+                <select
+                  name="mentor_id"
+                  defaultValue={session?.mentor_id ?? ""}
+                  onChange={(e) => {
+                    const picked = people.find((p) => p.id === e.target.value);
+                    if (picked) setName(picked.name);
+                  }}
+                >
                   <option value="">연결 안 함</option>
                   {people.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -136,6 +143,29 @@ function SessionEditor({
                   ))}
                 </select>
               </label>
+              <label>
+                <span>표시 이름</span>
+                <input
+                  name="mentor_name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="김멘토 목사"
+                  maxLength={30}
+                  required
+                />
+              </label>
+              <label>
+                {/* public 아래 올린 파일이면 `/mentors/이름.jpg` 처럼 경로만 */}
+                <span>사진</span>
+                <input
+                  name="photo_url"
+                  defaultValue={session?.photo_url ?? ""}
+                  placeholder="/mentors/문경숙.jpg"
+                  maxLength={500}
+                />
+              </label>
+
+              <p className="pform-sec">강의</p>
               <label>
                 <span>주제</span>
                 <input
@@ -147,24 +177,14 @@ function SessionEditor({
                 />
               </label>
               <label>
-                {/* 고르기 전에 읽을 몇 줄. 없으면 카드에서 그 줄이 통째로 빠진다 */}
-                <span>강의 소개</span>
+                {/* 카드에서 이름 아래 붙는 소개. 없으면 그 줄이 통째로 빠진다 */}
+                <span>멘토 소개</span>
                 <textarea
                   name="intro"
                   defaultValue={session?.intro ?? ""}
-                  placeholder="어떤 이야기를 나누는 시간인지 두세 문장으로"
+                  placeholder="어떤 분인지, 어떤 이야기를 나누는지 두세 문장으로"
                   maxLength={300}
-                  rows={3}
-                />
-              </label>
-              <label>
-                {/* public 아래 올린 파일이면 `/mentors/이름.jpg` 처럼 경로만 */}
-                <span>사진</span>
-                <input
-                  name="photo_url"
-                  defaultValue={session?.photo_url ?? ""}
-                  placeholder="/mentors/문경숙.jpg"
-                  maxLength={500}
+                  rows={4}
                 />
               </label>
               <label>
@@ -186,6 +206,7 @@ function SessionEditor({
                   required
                 />
               </label>
+              <p className="pform-sec">시각</p>
               <label>
                 <span>세션 시각</span>
                 <input
@@ -215,6 +236,7 @@ function SessionEditor({
                 />
               </label>
               <label>
+                {/* 작은 수가 앞에 선다. 같으면 세션 시각 순 */}
                 <span>순서</span>
                 <input
                   name="sort_order"
@@ -266,12 +288,28 @@ export default function MentoringPanel({
   people: Person[];
   signups: SignupRow[];
 }) {
-  const nameOf = (id: string) => people.find((p) => p.id === id)?.name ?? "이름 없음";
+  const byId = new Map(people.map((p) => [p.id, p]));
+  const sessionOf = new Map(signups.map((s) => [s.participant_id, s.session_id]));
+  const mentorOf = new Map(sessions.map((s) => [s.id, s.mentor_name]));
+
   const membersOf = (sessionId: string) =>
     signups
       .filter((s) => s.session_id === sessionId)
-      .map((s) => nameOf(s.participant_id))
-      .sort();
+      .map((s) => byId.get(s.participant_id))
+      .filter((p): p is Person => Boolean(p))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+  /* 후보 = 아직 아무 데도 안 고른 사람 + 다른 세션에 있는 사람.
+     다른 세션 사람도 함께 두면 「저쪽에서 빼고 이쪽에 넣기」가 한 걸음이 된다 */
+  const othersFor = (sessionId: string) =>
+    people
+      .filter((p) => !isStaff(p.applicant_type) && sessionOf.get(p.id) !== sessionId)
+      .map((p) => ({
+        id: p.id,
+        name: p.name,
+        gender: p.gender,
+        atName: mentorOf.get(sessionOf.get(p.id) ?? "") ?? null,
+      }));
 
   const chosen = new Set(signups.map((s) => s.participant_id));
   /* 교역자·멘토는 신청 대상이 아니다 — 여기 남아 있으면 "아직 안 고른 사람"이
@@ -302,19 +340,15 @@ export default function MentoringPanel({
                 {session.title}
                 {session.place && ` · ${session.place}`} · {fmtDateTime(session.starts_at)}
               </small>
-              <div className="members">
-                {members.length === 0 ? (
-                  <span className="mchip-empty">아직 신청자가 없어요</span>
-                ) : (
-                  /* 숙소·팀 화면과 같은 칩 — 이름이 줄글로 이어지면 몇 명인지
-                     세어지지도, 누가 있는지 훑어지지도 않는다 */
-                  members.map((name) => (
-                    <span className="mchip" key={name}>
-                      {name}
-                    </span>
-                  ))
-                )}
-              </div>
+              {/* 숙소 화면과 같은 칩 — 눌러서 넣고 뺀다. 이름이 줄글로
+                  이어지면 몇 명인지 세어지지도, 누가 있는지 훑어지지도 않는다 */}
+              <SessionFill
+                sessionId={session.id}
+                mentorName={session.mentor_name}
+                capacity={session.capacity}
+                members={members.map((m) => ({ id: m.id, name: m.name, gender: m.gender }))}
+                others={othersFor(session.id)}
+              />
             </div>
           );
         })
@@ -332,7 +366,9 @@ export default function MentoringPanel({
               <small>교역자·멘토는 제외</small>
               <div className="members">
                 {notYet.map((p) => (
-                  <span className="mchip" key={p.id}>
+                  /* 성별로 색을 나눈다 — 숙소·팀 화면과 같은 규칙이라
+                     화면을 옮겨도 같은 색이 같은 뜻이다 */
+                  <span className="mchip" data-g={p.gender ?? ""} key={p.id}>
                     {p.name}
                   </span>
                 ))}

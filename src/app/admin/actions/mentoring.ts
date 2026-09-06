@@ -142,6 +142,48 @@ const SIGNUP_MESSAGES: Record<string, string> = {
  * 「취소하고 다시 신청」으로 나누면, 옮기려던 자리가 그 사이에 차는 순간
  * 원래 자리도 잃는다. DB 쪽에서 새 세션을 먼저 잠그고 자리가 있을 때만 옮긴다.
  */
+/**
+ * 운영진이 세션 인원을 통째로 맞춘다.
+ *
+ * 참가자 화면에서는 본인이 고르고 바꾸지만, 데스크에서는 대신 넣어 주거나
+ * 빼 주어야 할 일이 생긴다 — 신청을 못 한 채 온 사람, 자리를 바꿔 달라는
+ * 사람. 한 명씩이 아니라 한 세션을 통째로 맞춘다(숙소 화면과 같은 방식).
+ *
+ * 한 사람은 한 세션만 고를 수 있다(participant_id가 기본키). 다른 세션에
+ * 있던 사람을 넣으면 upsert가 그쪽 신청을 이쪽으로 옮긴다 — 지우고 넣는
+ * 두 걸음을 사람이 밟지 않아도 된다.
+ */
+export async function setSessionMembers(
+  sessionId: string,
+  add: string[],
+  remove: string[]
+): Promise<Result> {
+  const ctx = await getAdminContext();
+  if (!ctx) return { ok: false, message: "권한이 없어요." };
+
+  if (remove.length > 0) {
+    const { error } = await ctx.supabase
+      .from("mentor_signups")
+      .delete()
+      .eq("session_id", sessionId)
+      .in("participant_id", remove);
+    if (error) return { ok: false, message: error.message };
+  }
+  if (add.length > 0) {
+    const { error } = await ctx.supabase
+      .from("mentor_signups")
+      .upsert(
+        add.map((id) => ({ participant_id: id, session_id: sessionId })),
+        { onConflict: "participant_id" }
+      );
+    if (error) return { ok: false, message: error.message };
+  }
+
+  revalidatePath("/admin/mentoring");
+  revalidatePath("/mentoring");
+  return { ok: true, message: "저장했어요." };
+}
+
 export async function setMentorSession(sessionId: string): Promise<Result> {
   const supabase = await getSupabaseServer();
   if (!supabase) return { ok: false, message: "서버 설정 전이에요." };
