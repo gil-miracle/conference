@@ -265,7 +265,7 @@ nav.site {
 }
 
 /* ── Timetable ── */
-#timetable { border-top: 1px solid var(--hair); }
+/* 섹션 위 구분선은 긋지 않는다 — 여백으로 나눈다(.site-main > section.flow) */
 /* 제목 아래 여백(40px)과 같은 값으로 — 리드 문단 위아래가 같게 보이도록 */
 .day-tabs { display: flex; margin: 40px 0; border: 1px solid var(--hair); }
 .day-tabs button,

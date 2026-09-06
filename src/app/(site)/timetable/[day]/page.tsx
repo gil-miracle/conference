@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import PageHead from "@/components/PageHead";
-import DaySchedule from "@/components/timetable/DaySchedule";
+import DayTabs from "@/components/timetable/DayTabs";
 import { TIMETABLE } from "@/lib/content";
 
 type Props = { params: Promise<{ day: string }> };
@@ -26,8 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * 빠져 일정이 HTML에 하나도 실리지 않는다 — 행사장에서 제일 많이 여는
  * 화면인데 껍데기만 받고 JS를 기다린다.
  *
- * 탭도 단추가 아니라 링크다. 세 날이 각각 주소를 가지면 카톡으로 "토요일
- * 일정"을 그대로 나눌 수 있고, 뒤로 가기가 앞 날로 돌아간다.
+ * 세 날이 각각 주소를 가지면 카톡으로 "토요일 일정"을 그대로 나눌 수 있다.
+ * 다만 탭을 누를 때마다 그 주소로 옮겨 다니지는 않는다 — 화면이 통째로 다시
+ * 그려져서 볼 때마다 「일정표」가 사라졌다 다시 떴다. 세 날을 함께 그려 두고
+ * 보일 것만 바꾼다(DayTabs).
  */
 export default async function TimetableDayPage({ params }: Props) {
   const { day } = await params;
@@ -39,20 +40,7 @@ export default async function TimetableDayPage({ params }: Props) {
       <div className="container">
         <PageHead title="일정표" />
 
-        <div className="day-tabs">
-          {TIMETABLE.map((d) => (
-            <Link
-              key={d.day}
-              href={`/timetable/${d.day}`}
-              className={d.day === found.day ? "on" : ""}
-              aria-current={d.day === found.day ? "page" : undefined}
-            >
-              {d.label}
-            </Link>
-          ))}
-        </div>
-
-        <DaySchedule day={found} />
+        <DayTabs days={TIMETABLE} initial={found.day} />
       </div>
     </section>
   );
