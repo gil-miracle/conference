@@ -363,7 +363,35 @@ nav.site {
 
 /* ── 방명록 ── */
 #guestbook { border-top: 1px solid var(--hair); }
-.gb { padding: 22px 0; border-bottom: 1px solid var(--hair); }
+/*
+ * 한 줄 노트 — 벽에 붙인 쪽지처럼.
+ *
+ * 실선으로만 나눠 놓으니 표에 가까웠다. 짧은 글 여럿이 쌓이는 자리이므로
+ * 한 장씩 종이로 떨어져 있는 편이 읽는 눈이 덜 지친다.
+ *
+ * 위쪽 색 띠는 포스터의 찢어 붙인 능선에서 가져왔다 — 이미 팔레트에 있는
+ * 다섯 색을 돌려 쓴다. 색에 뜻은 없다. 여럿이 남긴 자리라는 것만 보이면 된다.
+ */
+.gb {
+  position: relative;
+  padding: 16px 18px;
+  margin-top: 10px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+}
+.gb::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: -1px;
+  height: 3px;
+  background: var(--coral);
+}
+.gb:nth-of-type(5n + 2)::before { background: var(--lavender); }
+.gb:nth-of-type(5n + 3)::before { background: var(--orange); }
+.gb:nth-of-type(5n + 4)::before { background: var(--green); }
+.gb:nth-of-type(5n + 5)::before { background: var(--pink); }
 .gb .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .gb b { font-size: 0.82rem; font-weight: 700; color: var(--green); }
 .gb time {
@@ -386,7 +414,9 @@ nav.site {
 }
 .gb .del:hover { color: var(--coral); }
 .gb-write {
-  margin-top: 30px;
+  /* 위 여백은 설명(.lede)이나 제목이 이미 40px을 준다 — 여기서 더 밀면
+     같은 화면 안에서 이 단추만 유난히 떨어져 보인다 */
+  margin-top: 0;
   width: 100%;
   padding: 16px;
   border: 1px solid var(--ink);
