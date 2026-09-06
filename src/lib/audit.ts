@@ -4,6 +4,7 @@ import type { AdminCtx } from "./admin";
 /** 남기는 일의 종류 — 화면에서 한국어로 풀어 쓴다 */
 export type AuditAction =
   | "approve"
+  | "approve_all"
   | "reject"
   | "unbind"
   | "checkin"
@@ -18,6 +19,12 @@ export type AuditAction =
   | "mentor_session_edit"
   | "mentor_session_delete"
   | "song_set_delete"
+  | "room_members"
+  | "room_delete"
+  | "team_members"
+  | "team_delete"
+  | "sheet_sync"
+  | "host"
   | "role";
 
 type Ctx = Extract<AdminCtx, { demo: false }> | { supabase: unknown; me: { id: string; name: string } };

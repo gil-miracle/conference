@@ -52,6 +52,8 @@ export async function approveAllPending() {
   if (!ctx) return { ok: false as const, count: 0 };
   const { data, error } = await ctx.supabase.rpc("admin_approve_all");
   if (error) return { ok: false as const, count: 0 };
+  const count = (data as { approved?: number })?.approved ?? 0;
+  if (count > 0) await logAdmin(ctx, "approve_all", null, { count });
   revalidatePath("/admin/approvals");
   revalidatePath("/admin");
   return { ok: true as const, count: (data as { approved?: number })?.approved ?? 0 };

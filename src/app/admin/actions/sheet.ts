@@ -5,6 +5,7 @@ import { getAdminContext } from "@/lib/admin";
 import { extractSheetId, readSheetValues } from "@/lib/google/sheets";
 import { getServiceAccount } from "@/lib/google/auth";
 import { parseSheetParticipants, participantKey } from "@/lib/sheet-participants";
+import { logAdmin } from "@/lib/audit";
 
 export type SheetSyncResult =
   | { ok: false; message: string }
@@ -177,6 +178,11 @@ export async function syncParticipantsFromSheet(): Promise<SheetSyncResult> {
       bound: Boolean(p.auth_user_id),
     }));
 
+  await logAdmin(ctx, "sheet_sync", null, {
+    added,
+    updated: filled.length,
+    total: parsed.rows.length,
+  });
   revalidatePath("/admin");
   return {
     ok: true,

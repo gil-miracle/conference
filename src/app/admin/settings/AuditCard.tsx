@@ -12,6 +12,7 @@ export type AuditRow = {
 /** 무엇을 한 일인지 — 코드가 아니라 사람 말로 */
 const WHAT: Record<string, string> = {
   approve: "가입 승인",
+  approve_all: "일괄 승인",
   reject: "가입 반려",
   unbind: "연결 해제",
   checkin: "체크인",
@@ -26,12 +27,21 @@ const WHAT: Record<string, string> = {
   mentor_session_edit: "멘토 세션 수정",
   mentor_session_delete: "멘토 세션 삭제",
   song_set_delete: "집회 삭제",
-  role: "권한 변경",
+  room_members: "숙소 배정",
+  room_delete: "방 삭제",
+  team_members: "조 배정",
+  team_delete: "조 삭제",
+  sheet_sync: "명단 동기화",
+  host: "진행자 지정",
+  role: "관리자 지정",
 };
 
 /** 되돌릴 수 없는 일은 눈에 먼저 들어와야 한다 */
 const HEAVY = new Set([
   "reject",
+  "room_delete",
+  "team_delete",
+  "role",
   "unbind",
   "participant_delete",
   "photo_delete",
@@ -54,6 +64,17 @@ function note(row: AuditRow): string | null {
       .filter(Boolean)
       .join(" ") || null;
   if (row.action === "reject" && typeof d.reason === "string") return d.reason;
+  if (row.action === "role") return d.role === "admin" ? "지정" : "해제";
+  if (row.action === "host") return d.on ? "지정" : "해제";
+  if (row.action === "approve_all") return `${d.count}명`;
+  if (row.action === "room_members" || row.action === "team_members")
+    return [d.added ? `+${d.added}` : null, d.removed ? `-${d.removed}` : null]
+      .filter(Boolean)
+      .join(" ") || null;
+  if (row.action === "sheet_sync")
+    return [d.added ? `추가 ${d.added}` : null, d.updated ? `갱신 ${d.updated}` : null]
+      .filter(Boolean)
+      .join(" · ") || null;
   return null;
 }
 

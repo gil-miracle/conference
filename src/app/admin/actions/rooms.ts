@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
 import { ROOM_GENDERS, type RoomGender } from "@/lib/types";
+import { logAdmin } from "@/lib/audit";
 
 export async function createRoom(formData: FormData) {
   const ctx = await getAdminContext();
@@ -66,6 +67,11 @@ export async function setRoomMembers(
     if (error) return { ok: false as const, message: error.message };
   }
 
+  await logAdmin(ctx, "room_members", null, {
+    room: roomId,
+    added: add.length,
+    removed: remove.length,
+  });
   revalidatePath("/admin/rooms");
   return { ok: true as const, message: "저장했어요." };
 }
@@ -146,8 +152,19 @@ export async function removeRoomHold(holdId: string) {
 export async function deleteRoom(roomId: string) {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false as const, message: "권한이 없어요." };
+  /* 지우기 전에 어느 방이었는지 읽어 둔다 */
+  const { data: gone } = await ctx.supabase
+    .from("rooms")
+    .select("building,room_no")
+    .eq("id", roomId)
+    .maybeSingle();
   const { error } = await ctx.supabase.from("rooms").delete().eq("id", roomId);
   if (error) return { ok: false as const, message: error.message };
+  await logAdmin(
+    ctx,
+    "room_delete",
+    gone ? `${gone.building} ${gone.room_no}` : null
+  );
   revalidatePath("/admin/rooms");
   return { ok: true as const, message: "방을 지웠어요." };
 }

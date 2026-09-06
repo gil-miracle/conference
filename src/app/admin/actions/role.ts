@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
+import { logAdmin } from "@/lib/audit";
 
 /**
  * 관리자 권한 지정·해제.
@@ -21,10 +22,11 @@ export async function setHost(participantId: string, isHost: boolean) {
     .from("participants")
     .update({ is_host: isHost })
     .eq("id", participantId)
-    .select("id");
+    .select("id,name");
   if (error) return { ok: false as const, message: error.message };
   if (!data?.length) return { ok: false as const, message: "변경되지 않았어요." };
 
+  await logAdmin(ctx, "host", data[0].name, { on: isHost });
   revalidatePath("/admin");
   return {
     ok: true as const,
@@ -47,10 +49,11 @@ export async function setRole(participantId: string, role: "admin" | "member") {
     .from("participants")
     .update({ role })
     .eq("id", participantId)
-    .select("id");
+    .select("id,name");
   if (error) return { ok: false as const, message: error.message };
   if (!data?.length) return { ok: false as const, message: "변경되지 않았어요." };
 
+  await logAdmin(ctx, "role", data[0].name, { role });
   revalidatePath("/admin");
   return { ok: true as const, message: role === "admin" ? "관리자로 지정했어요." : "관리자에서 내렸어요." };
 }

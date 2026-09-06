@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
+import { logAdmin } from "@/lib/audit";
 
 export async function createTeam(formData: FormData) {
   const ctx = await getAdminContext();
@@ -31,8 +32,14 @@ export async function updateTeam(teamId: string, formData: FormData) {
 export async function deleteTeam(teamId: string) {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false as const, message: "권한이 없어요." };
+  const { data: gone } = await ctx.supabase
+    .from("teams")
+    .select("name")
+    .eq("id", teamId)
+    .maybeSingle();
   const { error } = await ctx.supabase.from("teams").delete().eq("id", teamId);
   if (error) return { ok: false as const, message: error.message };
+  await logAdmin(ctx, "team_delete", gone?.name ?? null);
   revalidatePath("/admin/teams");
   return { ok: true as const, message: "조를 지웠어요." };
 }
@@ -64,6 +71,11 @@ export async function setTeamMembers(
     if (error) return { ok: false as const, message: error.message };
   }
 
+  await logAdmin(ctx, "team_members", null, {
+    team: teamId,
+    added: add.length,
+    removed: remove.length,
+  });
   revalidatePath("/admin/teams");
   return { ok: true as const, message: "저장했어요." };
 }

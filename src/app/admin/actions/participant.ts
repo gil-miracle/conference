@@ -5,6 +5,7 @@ import { getAdminContext } from "@/lib/admin";
 import { normalizePhone, parseBirth8 } from "@/lib/format";
 import { SIGNUP_FIELDS, isStaff } from "@/lib/participant-fields";
 import type { SignupInfo } from "@/lib/types";
+import { logAdmin } from "@/lib/audit";
 
 export type ParticipantInput = SignupInfo & {
   name: string;
@@ -120,10 +121,11 @@ export async function removeParticipant(id: string) {
     .from("participants")
     .delete()
     .eq("id", id)
-    .select("id");
+    .select("id,name,phone");
   if (error) return { ok: false as const, message: error.message };
   if (!data?.length) return { ok: false as const, message: "삭제되지 않았어요." };
 
+  await logAdmin(ctx, "participant_delete", data[0].name, { phone: data[0].phone });
   revalidatePath("/admin");
   return { ok: true as const, message: "삭제했어요." };
 }
