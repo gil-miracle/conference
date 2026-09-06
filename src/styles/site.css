@@ -1635,7 +1635,14 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 }
 
 /* 강의 주제 — 라벨 폭을 맞춰 값이 같은 x에서 시작하게 */
-.ms-detail { margin: 10px 0 0; }
+/*
+ * 「강의 주제」는 카드 아래쪽에 붙여 둘을 같은 줄에 세운다.
+ *
+ * 소개 길이가 서로 다르면(한 줄 / 두 줄) 그 아래 주제가 한 줄씩 어긋나서,
+ * 나란히 놓았을 때 두 카드가 다른 짜임처럼 보인다. 위에서부터 흘러내리게
+ * 두는 대신 바닥에 붙이면 소개가 몇 줄이든 주제는 같은 자리에 선다.
+ */
+.ms-detail { margin: 0; padding-top: 12px; }
 .ms-detail > div { display: flex; gap: 10px; margin-top: 6px; }
 .ms-detail dt {
   flex: none;
@@ -1983,4 +1990,6 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 
 /* 카드 높이가 달라도 단추는 바닥에 — 나란히 놓으면 같은 높이에 선다 */
 .ms { display: flex; flex-direction: column; }
-.ms-body { flex: 1; }
+.ms-body { flex: 1; display: flex; flex-direction: column; }
+/* 위(이름·소개)와 아래(주제) 사이를 남는 만큼 벌린다 */
+.ms-body .ms-detail { margin-top: auto; }
