@@ -1081,7 +1081,8 @@
   cursor: pointer;
   transition: 0.15s;
 }
-.fclear:hover { border-style: solid; border-color: var(--coral); color: var(--coral); }
+/* 점선을 실선으로 바꾸면 없던 선이 생긴 것처럼 보인다 — 색만 바꾼다 */
+.fclear:hover { border-color: var(--coral); color: var(--coral); }
 .fcount {
   margin-left: auto;
   font-family: var(--mono);
