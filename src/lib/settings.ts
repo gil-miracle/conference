@@ -21,6 +21,11 @@ export const DEFAULT_MENUS: MenuVisibility = {
   // 때가 되면 켠다 — 신청은 정해진 날 열리고, 점수는 레크리에이션 때만 쓴다
   mentoring: false,
   standings: false,
+  /* 숙소·조 카드는 자리부터 둔다 — 배정 전에도 「곧 나올 곳」이 보여야
+     사람이 기다린다. 아예 안 쓰기로 하면 그때 끈다.
+     (배정 내용을 공개할지는 rooms_open·teams_open이 따로 정한다) */
+  room: true,
+  team: true,
   /* 말씀카드는 배경 그림이 준비되면 켜다 */
   wordcard: false,
 };

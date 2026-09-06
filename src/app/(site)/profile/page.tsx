@@ -34,9 +34,10 @@ export default async function ProfilePage({
           <PageHead title="내 정보" />
           <PreviewNotice />
           <div className="reveal" aria-hidden="true">
-            <RoomCard room={MY_PREVIEW.room} mates={MY_PREVIEW.mates} open />
-            <TeamCard team={MY_PREVIEW.team} open />
-            <WordCard name={MY_PREVIEW.name} />
+            {/* 안 쓸 카드는 예시에서도 뺀다 — 로그인하면 나올 것처럼 보이면 안 된다 */}
+            {menus.room && <RoomCard room={MY_PREVIEW.room} mates={MY_PREVIEW.mates} open />}
+            {menus.team && <TeamCard team={MY_PREVIEW.team} open />}
+            {menus.wordcard && <WordCard name={MY_PREVIEW.name} />}
           </div>
         </div>
       </section>
@@ -60,13 +61,17 @@ export default async function ProfilePage({
                 checkedInAt={summary.checked_in_at}
               />
             )}
-            {/* 공개 전에도 자리는 둔다. 없다가 생기면 "내 건 왜 없지"가 된다 */}
-            <RoomCard
-              room={summary.room}
-              mates={summary.mates}
-              open={summary.rooms_open === true}
-            />
-            <TeamCard team={summary.team} open={summary.teams_open === true} />
+            {/* 공개 전에도 자리는 둔다. 없다가 생기면 "내 건 왜 없지"가 된다.
+                아예 안 쓰기로 한 카드는 설정에서 끈다 — 배정 공개(rooms_open)와
+                카드 노출은 다른 판단이다 */}
+            {menus.room && (
+              <RoomCard
+                room={summary.room}
+                mates={summary.mates}
+                open={summary.rooms_open === true}
+              />
+            )}
+            {menus.team && <TeamCard team={summary.team} open={summary.teams_open === true} />}
             {/* 배경 그림이 준비되기 전에는 꺼 둔다 */}
             {menus.wordcard && (
               <>
