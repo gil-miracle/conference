@@ -96,7 +96,7 @@ export default function GalleryGrid({ initialPhotos }: { initialPhotos: Photo[] 
       {photos.length === 0 ? (
         <div className="locked">
           <CameraIcon />
-          <p>아직 올라온 사진이 없어요. 운영진이 올리면 여기 쌓입니다.</p>
+          <p>아직 올라온 사진이 없어요.</p>
         </div>
       ) : (
         <div className="gal-grid">
