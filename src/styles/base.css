@@ -27,7 +27,25 @@ body {
   font-size: 15.5px;
 }
 a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; }
+/*
+ * 기기가 정하는 색을 쓰지 않는다.
+ *
+ * 단추·입력칸의 글자색을 안 정해 두면 운영체제가 제 기본색을 넣는다 —
+ * 아이폰에서는 파랑이 들어가는데 데스크톱에서는 검게 보여 눈치채기 어렵다.
+ * 곡 제목이 아이폰에서만 파랗게 나온 것이 그 경우였다.
+ *
+ * color-scheme: light — 기기가 어두운 모드면 브라우저가 입력칸·스크롤바를
+ * 어둡게 그린다. 이 사이트는 크림색 한 벌뿐이라 그 위에 어두운 칸이 얹히면
+ * 혼자 다른 화면이 된다.
+ *
+ * accent-color — 체크박스·라디오의 파랑을 사이트 색으로 바꾼다.
+ */
+:root { color-scheme: light; accent-color: var(--coral); }
+button,
+input,
+select,
+textarea { font-family: inherit; color: inherit; }
+button { cursor: pointer; }
 .disp { font-family: "Anton", sans-serif; font-weight: 400; }
 .eyebrow {
   font-family: var(--mono);

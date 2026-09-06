@@ -119,14 +119,10 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
 
       <div className="pl-set-name">
         <b>{shown.name}</b>
+        {/* 시각은 바로 위 탭이 이미 말한다. 인도자와 곡 수만 남긴다 —
+            길어지면 옆에 선 제목을 밀어 두 줄로 찌그러뜨린다 */}
         <small>
-          {[
-            shown.timeLabel,
-            shown.leader ? `찬양 인도 ${shown.leader}` : null,
-            `${shown.songs.length} SONGS`,
-          ]
-            .filter(Boolean)
-            .join(" · ")}
+          {[shown.leader, `${shown.songs.length} SONGS`].filter(Boolean).join(" · ")}
         </small>
       </div>
 

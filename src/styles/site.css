@@ -947,10 +947,16 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .pl-tabs button { font-size: 0.8rem; padding: 11px 0; }
 .pl-set-name {
   display: flex; align-items: baseline; justify-content: space-between;
-  gap: 10px; padding: 16px 2px 4px;
+  /* 위아래를 같은 값으로 — 위만 16px이면 탭에는 붙고 목록에는 떨어져 보인다 */
+  gap: 10px; padding: 14px 2px;
 }
 .pl-set-name b { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
 .pl-set-name small { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.14em; color: var(--ink-60); }
+/* 폰에서는 나란히 두면 제목이 밀려 두 줄로 접힌다 — 아래로 내린다 */
+@media (max-width: 560px) {
+  .pl-set-name { display: block; }
+  .pl-set-name small { display: block; margin-top: 4px; }
+}
 .pl-list { margin-top: 0; }
 
 /* 집회 탭 — 날짜 + 시각 두 줄 (같은 날 집회가 둘 이상이라 날짜만으론 구분 불가) */
@@ -1908,7 +1914,11 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   .ms-grid .ms-detail dt { width: auto; padding-top: 0; }
   .ms-grid .ms-detail dd { font-size: 0.85rem; margin-top: 1px; }
   .ms-grid .ms-meta { font-size: 0.72rem; }
-  /* 「09.06 21:00부터 0 / 35」가 한 줄에 안 들어간다 — 접히게 둔다 */
+  /* 「09.06 21:00부터 0 / 35」가 한 줄에 안 들어간다 — 접히게 둔다.
+     낱말 안에서 접히면(…17:00부 / 터) 읽다가 걸리므로, 글은 통째로 두고
+     줄만 나뉘게 한다 */
+  .ms-grid .ms-pick span,
+  .ms-grid .ms-pick em { white-space: nowrap; }
   .ms-grid .ms-pick {
     flex-wrap: wrap;
     gap: 2px 8px;

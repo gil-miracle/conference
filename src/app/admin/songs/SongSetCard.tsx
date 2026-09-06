@@ -1,7 +1,7 @@
 import type { SongSet } from "@/lib/content";
 import { createSong } from "../actions/songs";
 import SongItem from "./SongItem";
-import DeleteSetButton from "./DeleteSetButton";
+import SetHead from "./SetHead";
 
 /** 집회 세트 하나 — 헤더 + 곡 목록 + 곡 추가 */
 export default function SongSetCard({
@@ -15,17 +15,7 @@ export default function SongSetCard({
 
   return (
     <div className="song-set">
-      <div className="set-head">
-        <div>
-          <b>{set.name}</b>
-          <small>
-            {[set.dayLabel, set.timeLabel, set.leader].filter(Boolean).join(" · ") ||
-              "TBD"}
-            {` · ${set.songs.length} SONGS`}
-          </small>
-        </div>
-        {!demo && <DeleteSetButton setId={set.id} name={set.name} />}
-      </div>
+      <SetHead set={set} demo={demo} />
 
       <ol className="set-songs">
         {set.songs.length === 0 && <li className="empty">아직 등록된 곡이 없어요.</li>}

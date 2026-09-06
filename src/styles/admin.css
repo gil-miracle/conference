@@ -632,6 +632,11 @@
 /* ── 송리스트 관리 ── */
 .hint-text { font-size: 0.78rem; color: var(--ink-60); margin-bottom: 18px; word-break: keep-all; }
 
+/* 집회 머리 편집 — 이름은 한 줄을 다 쓰고 나머지 셋은 나눠 선다 */
+.set-head.editing { display: block; }
+.set-head .edit-grid input:first-child { flex-basis: 100%; }
+.set-head .acts { display: flex; align-items: center; gap: 6px; flex: none; }
+
 .song-set { border: 1px solid var(--ink); background: var(--paper); margin-bottom: 16px; }
 .song-set .set-head {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -671,13 +676,17 @@
 .icon-btn:disabled { opacity: 0.4; }
 
 .song-row.editing { flex-direction: column; align-items: stretch; gap: 8px; padding: 14px 17px; }
-.song-row .edit-grid { display: flex; gap: 8px; flex-wrap: wrap; }
-.song-row .edit-grid input {
+.song-row .edit-grid,
+.set-head .edit-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+.song-row .edit-grid input,
+.set-head .edit-grid input {
   flex: 1; min-width: 90px; padding: 9px 11px; border: 1px solid var(--ink);
   background: var(--cream); font-family: inherit; font-size: 0.84rem;
 }
-.song-row .edit-grid input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
-.song-row .edit-acts { display: flex; gap: 8px; }
+.song-row .edit-grid input:focus,
+.set-head .edit-grid input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+.song-row .edit-acts,
+.set-head .edit-acts { display: flex; gap: 8px; margin-top: 10px; }
 
 /* ── 가입 승인 ── */
 .join-req { border: 1px solid var(--ink); background: var(--paper); padding: 15px 17px; margin-bottom: 12px; }
