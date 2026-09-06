@@ -205,8 +205,11 @@ nav.site {
 .verse .ref {
   display: block;
   /* 출처는 오른쪽 끝에 — 본문이 왼쪽에서 시작하므로 같은 쪽에 붙으면 어디까지가
-     말씀이고 어디부터가 꼬리표인지 눈이 한 번 더 짚는다 */
+     말씀이고 어디부터가 꼬리표인지 눈이 한 번 더 짚는다.
+     자간(0.28em)은 마지막 글자 뒤에도 붙는다. 오른쪽에 맞추면 그 몫이 여백으로
+     남아 혼자 안 맞은 것처럼 보이므로 같은 값만큼 당긴다 */
   text-align: right;
+  margin-right: -0.28em;
   margin-top: 20px;
   font-family: var(--mono);
   font-size: 0.62rem;
