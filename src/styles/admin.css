@@ -165,9 +165,13 @@
 }
 .search input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
 .qr-strip { display: flex; gap: 8px; margin-bottom: 14px; }
-.plist { border: 1px solid var(--ink); background: var(--paper); }
+/* 묶음마다 제 상자를 갖는다. 상자 하나에 네 묶음을 넣으면 어디서 끊기는지
+   테두리가 말해 주지 못한다 — 머리글만 떠 있고 줄은 계속 이어진다 */
+.plist { background: none; }
+/* 불러오는 중·비었을 때는 묶음이 없다. 그때만 줄이 직접 상자가 된다 */
+.plist > .p-row { border: 1px solid var(--ink); background: var(--paper); }
 .p-row { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--hair); }
-.p-row:last-child { border: 0; }
+.pgroup .p-row:last-child { border-bottom: 0; }
 .p-row .info { flex: 1; min-width: 0; }
 /* 다락방·초청자 — 이름 옆 작은 표식. 조 편성할 때 눈으로 묶기 좋게 */
 .tagit {
@@ -977,13 +981,35 @@
 
    켜진 조건만 진하게 남긴다 — 다섯 개가 전부 같은 회색이면 무엇을 걸어
    두었는지 눈으로 셀 수 없다. 그래서 초기화도 켜졌을 때만 나온다. */
+/*
+ * 거르개는 격자로 세운다.
+ *
+ * 흘려 놓으면(flex-wrap) 글자 길이가 제각각이라 줄마다 칸 수와 끝나는 자리가
+ * 달라진다 — 「구분·도착·숙박·티셔츠」 다음 줄이 「교통편·가입」에서 끊기는
+ * 식이라, 몇 개인지 세어지지도 어디를 눌러야 하는지 짚어지지도 않는다.
+ * 폭에 따라 두 개 → 세 개 → 네 개로 나누되 칸 너비는 늘 같다.
+ */
 .filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 0 0 10px;
+}
+@media (min-width: 480px) {
+  .filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 640px) {
+  .filters { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+/* 거르개가 아닌 것들 — 줄을 나눠야 위 칸들이 나란히 선다 */
+.filters-foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   padding: 0 0 14px;
 }
+.filters-foot .fcount { margin-left: auto; }
 .filters select {
   appearance: none;
   -webkit-appearance: none;
@@ -1013,6 +1039,8 @@
    고른 개수만 말하고 목록은 눌러서 연다. 조각을 줄줄이 세워 봤더니 고른 것이
    늘수록 거르개 줄이 두세 줄로 밀려 다음 거르개를 찾기 어려웠다 */
 .filters .fpick {
+  width: 100%;
+  text-align: center;
   font: inherit;
   font-size: 0.78rem;
   padding: 8px 11px;
@@ -1024,6 +1052,8 @@
 }
 .filters .fpick:hover { border-color: var(--ink-40); color: var(--ink); }
 .filters .fpick.on { border-color: var(--ink); color: var(--ink); font-weight: 700; }
+/* 목록이 아니라 켜고 끄는 것 — 몇 개 골랐는지가 없으므로 켜진 것을 채워서 알린다 */
+.filters .fpick-toggle.on { background: var(--ink); color: var(--cream); }
 .pdetail header .btn-plain { font-size: 0.74rem; color: var(--ink-60); }
 .pdetail header .btn-plain:hover { color: var(--coral); }
 
@@ -1091,7 +1121,10 @@
    체크인 데스크는 다락방 단위로 몰려온다. 이름이 통짜로 늘어서 있으면
    매번 전체를 훑어야 했다. 나눠 두면 그 방만 보면 되고, 몇 명 중 몇 명이
    왔는지도 그 자리에서 보인다. */
-.pgroup + .pgroup { margin-top: 18px; }
+.pgroup { border: 1px solid var(--ink); background: var(--paper); }
+.pgroup + .pgroup { margin-top: 14px; }
+/* 머리글의 좌우 여백을 줄과 같게 — 2px이면 이름보다 14px 왼쪽에서 시작해
+   묶음 이름만 상자에 붙어 보인다 */
 .pgroup-head {
   position: sticky;
   top: 0;
@@ -1100,7 +1133,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  padding: 7px 2px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--ink);
   background: var(--cream);
 }

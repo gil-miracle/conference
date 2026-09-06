@@ -34,6 +34,10 @@ const SIZES = ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL"];
  */
 const shortLabel = (v: string) => v.split("(")[0].trim() || v;
 
+/* 고른 값이 곧 화면에 적히는 말이다 — 코드와 글이 갈라지지 않게 한 곳에 둔다 */
+const JOINED = "가입함";
+const CHECKED = "체크인함";
+
 /**
  * 여러 개를 고르는 거르개.
  *
@@ -145,10 +149,11 @@ export default function CheckinPanel({
   const [cell, setCell] = useState<string[]>([]);
   const [arrive, setArrive] = useState<string[]>([]);
   const [stay, setStay] = useState<string[]>([]);
-  /* 있음/없음 둘 다 필요해서 토글이 아니라 셋 중 하나로 둔다 — 데스크에서
-     실제로 뽑는 건 "아직 안 온 사람", "아직 연결 안 한 사람" 쪽이다 */
-  const [joined, setJoined] = useState("");
-  const [checked, setChecked] = useState("");
+  /* 있음/없음 둘 다 필요해서 토글로 두지 않는다. 다른 거르개와 같은 모양으로
+     맞추려고 여기도 여러 개 고르기다 — 둘 다 고르면 거른 것이 없는 셈이라
+     「전체」와 같아진다 */
+  const [joined, setJoined] = useState<string[]>([]);
+  const [checked, setChecked] = useState<string[]>([]);
   const [tshirt, setTshirt] = useState<string[]>([]);
   const [transport, setTransport] = useState<string[]>([]);
   const [onlyAdmin, setOnlyAdmin] = useState(false);
@@ -156,14 +161,20 @@ export default function CheckinPanel({
   /* 걸어 둔 것이 하나라도 있으면 초기화를 낸다 — 다섯 개를 하나씩
      되돌리다 보면 어느 것이 남았는지 모른다 */
   const picked =
-    cell.length + arrive.length + stay.length + tshirt.length + transport.length;
-  const filtered = Boolean(picked || joined || checked || onlyAdmin);
+    cell.length +
+    arrive.length +
+    stay.length +
+    tshirt.length +
+    transport.length +
+    joined.length +
+    checked.length;
+  const filtered = Boolean(picked || onlyAdmin);
   const clearFilters = () => {
     setCell([]);
     setArrive([]);
     setStay([]);
-    setJoined("");
-    setChecked("");
+    setJoined([]);
+    setChecked([]);
     setTshirt([]);
     setTransport([]);
     setOnlyAdmin(false);
@@ -278,8 +289,11 @@ export default function CheckinPanel({
     if (stay.length && !stay.some((d) => (p.stay ?? "").includes(d))) return false;
     if (tshirt.length && !tshirt.includes(p.tshirt ?? "")) return false;
     if (transport.length && !transport.includes(p.transport ?? "")) return false;
-    if (joined && (joined === "y") !== Boolean(p.auth_user_id)) return false;
-    if (checked && (checked === "y") !== Boolean(p.checked_in_at)) return false;
+    // 하나만 골랐을 때만 거른다. 둘 다면 전체와 같다
+    if (joined.length === 1 && (joined[0] === JOINED) !== Boolean(p.auth_user_id))
+      return false;
+    if (checked.length === 1 && (checked[0] === CHECKED) !== Boolean(p.checked_in_at))
+      return false;
     if (onlyAdmin && p.role !== "admin") return false;
     return true;
   });
@@ -338,28 +352,33 @@ export default function CheckinPanel({
           onChange={setTransport}
           format={shortLabel}
         />
-        <select
-          className={joined ? "on" : undefined}
+        <MultiFilter
+          label="가입"
+          options={[JOINED, "미가입"]}
           value={joined}
-          onChange={(e) => setJoined(e.target.value)}>
-          <option value="">가입 전체</option>
-          <option value="y">가입함</option>
-          <option value="n">미가입</option>
-        </select>
-        <select
-          className={checked ? "on" : undefined}
+          onChange={setJoined}
+        />
+        <MultiFilter
+          label="체크인"
+          options={[CHECKED, "미체크인"]}
           value={checked}
-          onChange={(e) => setChecked(e.target.value)}>
-          <option value="">체크인 전체</option>
-          <option value="y">체크인함</option>
-          <option value="n">미체크인</option>
-        </select>
+          onChange={setChecked}
+        />
+        {/* 켜고 끄는 것 하나뿐이라 목록을 열 것이 없다 — 모양만 나란히 맞춘다 */}
         <button
-          className={`chip-toggle${onlyAdmin ? " on" : ""}`}
+          type="button"
+          className={`fpick fpick-toggle${onlyAdmin ? " on" : ""}`}
+          aria-pressed={onlyAdmin}
           onClick={() => setOnlyAdmin(!onlyAdmin)}
         >
           관리자만
         </button>
+      </div>
+
+      {/* 거르개가 아닌 것들 — 줄을 나눠야 위 칸들이 나란히 선다 */}
+      <div className="filters-foot">
+        {/* 걸린 것이 없으면 아예 없다. 흐리게 두면 눌리지도 않는 것이 호버에
+            반응해 테두리만 생긴다 — 있는 것도 없는 것도 아닌 꼴이 된다 */}
         {filtered && (
           <button className="fclear" onClick={clearFilters}>
             초기화
