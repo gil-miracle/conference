@@ -5,6 +5,7 @@ import ToggleSettingCard from "./ToggleSettingCard";
 import SheetSync from "./SheetSync";
 import MenuVisibilityCard from "./MenuVisibilityCard";
 import PushCard from "./PushCard";
+import AuditCard, { type AuditRow } from "./AuditCard";
 import { isPushConfigured } from "@/lib/push";
 
 export const dynamic = "force-dynamic";
@@ -23,9 +24,18 @@ export default async function AdminSettingsPage() {
   const ctx = await requireAdmin();
 
   let settings = DEMO_SETTINGS;
+  let audit: AuditRow[] = [];
   if (!ctx.demo) {
-    const { data } = await ctx.supabase.from("site_settings").select("key,value");
-    settings = parseSiteSettings(data);
+    const [settingsRes, auditRes] = await Promise.all([
+      ctx.supabase.from("site_settings").select("key,value"),
+      ctx.supabase
+        .from("admin_audit")
+        .select("id,at,actor_name,action,target,detail")
+        .order("at", { ascending: false })
+        .limit(50),
+    ]);
+    settings = parseSiteSettings(settingsRes.data);
+    audit = (auditRes.data ?? []) as AuditRow[];
   }
 
   return (
@@ -66,6 +76,7 @@ export default async function AdminSettingsPage() {
       />
       <MenuVisibilityCard menus={settings.menus} />
       <SheetSync />
+      <AuditCard rows={audit} />
     </>
   );
 }

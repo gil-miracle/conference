@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
 import { extractYoutubeId } from "@/lib/youtube";
+import { logAdmin } from "@/lib/audit";
 
 function revalidateSongs() {
   revalidatePath("/admin/songs");
@@ -40,7 +41,14 @@ export async function createSongSet(formData: FormData) {
 export async function deleteSongSet(setId: string) {
   const ctx = await getAdminContext();
   if (!ctx) return;
+  /* 집회를 지우면 그 안의 곡도 함께 간다 — 무엇이 사라졌는지 남긴다 */
+  const { data: gone } = await ctx.supabase
+    .from("song_sets")
+    .select("name")
+    .eq("id", setId)
+    .maybeSingle();
   await ctx.supabase.from("song_sets").delete().eq("id", setId);
+  await logAdmin(ctx, "song_set_delete", gone?.name ?? null);
   revalidateSongs();
 }
 

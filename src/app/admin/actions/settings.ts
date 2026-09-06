@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
+import { logAdmin } from "@/lib/audit";
 
 /**
  * 쓸 수 있는 설정 키.
@@ -27,6 +28,7 @@ export async function saveSetting(key: string, value: unknown) {
   const { error } = await ctx.supabase
     .from("site_settings")
     .upsert({ key, value }, { onConflict: "key" });
+  if (!error) await logAdmin(ctx, "setting", key, { value });
   revalidatePath("/admin/settings");
   revalidatePath("/");
   return { ok: !error };

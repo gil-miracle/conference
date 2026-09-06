@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { logAdmin } from "@/lib/audit";
 
 type Result = { ok: false; message: string } | { ok: true; message: string };
 
@@ -105,6 +106,7 @@ export async function updateMentorSession(
     .eq("id", sessionId);
   if (error) return { ok: false, message: error.message };
 
+  await logAdmin(ctx, "mentor_session_edit", v.mentor_name ?? null);
   revalidatePath("/admin/mentoring");
   revalidatePath("/mentoring");
   return { ok: true, message: "저장했어요." };
@@ -114,11 +116,18 @@ export async function updateMentorSession(
 export async function deleteMentorSession(sessionId: string): Promise<Result> {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false, message: "권한이 없어요." };
+  /* 지우기 전에 무엇을 지우는지 읽어 둔다 — 신청까지 함께 사라진다 */
+  const { data: gone } = await ctx.supabase
+    .from("mentor_sessions")
+    .select("mentor_name")
+    .eq("id", sessionId)
+    .maybeSingle();
   const { error } = await ctx.supabase
     .from("mentor_sessions")
     .delete()
     .eq("id", sessionId);
   if (error) return { ok: false, message: error.message };
+  await logAdmin(ctx, "mentor_session_delete", gone?.mentor_name ?? null);
   revalidatePath("/admin/mentoring");
   revalidatePath("/mentoring");
   return { ok: true, message: "세션을 지웠어요." };
@@ -179,6 +188,11 @@ export async function setSessionMembers(
     if (error) return { ok: false, message: error.message };
   }
 
+  await logAdmin(ctx, "mentor_members", null, {
+    session: sessionId,
+    added: add.length,
+    removed: remove.length,
+  });
   revalidatePath("/admin/mentoring");
   revalidatePath("/mentoring");
   return { ok: true, message: "저장했어요." };

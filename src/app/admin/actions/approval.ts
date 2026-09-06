@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
 import type { JoinRequest, ParticipantStatus } from "@/lib/types";
+import { logAdmin } from "@/lib/audit";
 
 export async function getJoinRequests(
   status: ParticipantStatus = "pending"
@@ -31,6 +32,13 @@ export async function setParticipantStatus(
   if (error) return { ok: false as const, message: "처리에 실패했어요." };
 
   const result = data as { status?: string; name?: string };
+  if (result.status === "ok")
+    await logAdmin(
+      ctx,
+      status === "approved" ? "approve" : "reject",
+      result.name ?? null,
+      reason ? { reason } : undefined
+    );
   revalidatePath("/admin/approvals");
   revalidatePath("/admin");
   return result.status === "ok"

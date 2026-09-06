@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getAdminContext } from "@/lib/admin";
+import { logAdmin } from "@/lib/audit";
 
 export type CheckinResult = {
   status: "ok" | "already" | "not_found" | "forbidden" | "error";
@@ -27,10 +28,13 @@ export async function setCheckin(participantId: string, on: boolean) {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false };
 
-  const { error } = await ctx.supabase
+  const { data, error } = await ctx.supabase
     .from("participants")
     .update({ checked_in_at: on ? new Date().toISOString() : null })
-    .eq("id", participantId);
+    .eq("id", participantId)
+    .select("name")
+    .maybeSingle();
+  if (!error) await logAdmin(ctx, on ? "checkin" : "checkin_undo", data?.name ?? null);
   revalidatePath("/admin");
   return { ok: !error };
 }
@@ -56,7 +60,9 @@ export async function unbindParticipant(participantId: string) {
       approved_at: null,
     })
     .eq("id", participantId)
-    .select("id");
+    .select("id,name");
   // 정책에 막히면 오류가 아니라 0행이 온다 — 푼 척하지 않는다
-  return { ok: !error && Boolean(data?.length) };
+  const ok = !error && Boolean(data?.length);
+  if (ok) await logAdmin(ctx, "unbind", data?.[0]?.name ?? null);
+  return { ok };
 }
