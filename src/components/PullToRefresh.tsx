@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/scroll-aids.css";
+
 import { useEffect, useRef, useState } from "react";
 
 /** 이만큼 당기면 새로고침 */

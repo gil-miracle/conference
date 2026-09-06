@@ -1,5 +1,7 @@
 "use client";
 
+import "@/styles/scroll-aids.css";
+
 import { useEffect, useState } from "react";
 
 /**
@@ -15,9 +17,10 @@ import { useEffect, useState } from "react";
  * 반올림 때문에 깜빡이지 않을 만큼만 둔 여유다.
  *
  * 자리는 하단 탭바 위, 오른쪽 끝이다. 탭바와 겹치지 않게 탭바 높이(60px)와
- * 홈 인디케이터 영역만큼 띄운다.
+ * 홈 인디케이터 영역만큼 띄운다. 탭바가 없는 화면(관리자)은 bare로 바닥에
+ * 더 가깝게 붙인다.
  */
-export default function ScrollTop() {
+export default function ScrollTop({ bare = false }: { bare?: boolean }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -27,12 +30,14 @@ export default function ScrollTop() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (!show) return null;
-
+  /* 조건부로 지웠다 그렸다 하면 사라질 때는 그냥 없어진다 — 사라지는
+     동안에도 요소가 남아 있어야 흐려질 시간이 생긴다 */
   return (
     <button
       type="button"
-      className="to-top"
+      className={`to-top${bare ? " bare" : ""}${show ? " on" : ""}`}
+      aria-hidden={!show}
+      tabIndex={show ? 0 : -1}
       aria-label="맨 위로"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
     >

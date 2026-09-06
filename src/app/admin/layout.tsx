@@ -3,6 +3,7 @@ import "@/styles/admin.css";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/admin";
 import AdminTabs from "./AdminTabs";
+import ScrollTop from "@/components/nav/ScrollTop";
 import AdminModeProvider from "./AdminMode";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +44,8 @@ export default async function AdminLayout({
           </div>
         )}
         <div className="container">{children}</div>
+        {/* 명단이 길다 — 하단 탭바가 없으니 바닥에 더 가깝게 */}
+        <ScrollTop bare />
       </div>
     </AdminModeProvider>
   );

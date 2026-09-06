@@ -1,0 +1,76 @@
+/*
+ * 화면을 오르내리는 두 가지 — 「맨 위로」와 「당겨서 새로고침」.
+ *
+ * 참가자 화면(site.css)과 관리자 화면(admin.css)이 함께 쓴다. 어느 한쪽
+ * 파일에 넣어 두면 다른 쪽에서는 스타일 없이 뼈대만 떠서, 당겨도 아무것도
+ * 안 나타난다 — 실제로 관리자 화면에서 그렇게 안 보였다.
+ * 그래서 이 파일은 컴포넌트가 직접 불러온다.
+ */
+
+/* ── 맨 위로 ──
+   아이폰 상태바 톡 치기가 홈 화면 앱에서는 안 먹는다. 긴 화면에서 위로
+   돌아갈 길을 대신 둔다. 하단 탭바(60px) 위, 오른쪽 끝. */
+.to-top {
+  position: fixed;
+  right: 14px;
+  bottom: calc(60px + env(safe-area-inset-bottom, 0px) + 14px);
+  z-index: 70;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: rgba(250, 246, 238, 0.94);
+  backdrop-filter: blur(10px);
+  color: var(--ink);
+  box-shadow: 0 4px 16px rgba(33, 29, 25, 0.16);
+  /* 없는 동안에도 자리에 남아 있는다 — 그래야 사라질 때 흐려질 틈이 있다.
+     visibility는 다 흐려진 뒤에 꺼야 그 사이에 눌리지 않는다 */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.92);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s,
+    background 0.15s, border-color 0.15s, color 0.15s;
+}
+.to-top.on {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s,
+    background 0.15s, border-color 0.15s, color 0.15s;
+}
+.to-top svg { width: 19px; height: 19px; }
+.to-top:hover { background: var(--coral); border-color: var(--coral); color: var(--paper); }
+/* 하단 탭바가 없는 화면(관리자)에서는 바닥에 더 가깝게 */
+.to-top.bare { bottom: calc(22px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 768px) {
+  .to-top { bottom: 22px; right: 22px; }
+}
+
+/* ── 당겨서 새로고침 ──
+   홈 화면 앱에는 주소창이 없어 새로고칠 길이 없다. 브라우저로 열었을 때는
+   브라우저가 알아서 하므로 이 표시는 앱에서만 나온다. */
+.ptr {
+  position: fixed;
+  top: -44px;
+  left: 50%;
+  margin-left: -18px;
+  z-index: 90;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--hair);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--coral);
+  box-shadow: 0 4px 14px rgba(33, 29, 25, 0.18);
+  pointer-events: none;
+}
+.ptr svg { width: 18px; height: 18px; }
+.ptr.busy { transition: transform 0.18s ease; }
+.ptr.busy svg { animation: ptr-spin 0.8s linear infinite; }
+@keyframes ptr-spin { to { transform: rotate(360deg); } }
