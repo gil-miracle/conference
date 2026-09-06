@@ -993,7 +993,8 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
-  padding: 0 0 10px;
+  /* 아래 줄(초기화·인원)의 위아래 여백을 같게 — 10과 14로 어긋나 있었다 */
+  padding: 0 0 12px;
 }
 @media (min-width: 480px) {
   .filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1007,7 +1008,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  padding: 0 0 14px;
+  padding: 0 0 12px;
 }
 .filters-foot .fcount { margin-left: auto; }
 .filters select {
@@ -1070,19 +1071,29 @@
 .chip-toggle:hover { border-color: var(--ink-40); }
 .chip-toggle.on { background: var(--ink); border-color: var(--ink); color: var(--cream); }
 /* 걸어 둔 게 있을 때만 나온다 — 평소에 자리를 차지할 이유가 없다 */
+/*
+ * 초기화 — 옆의 「N명 중 N명」과 같은 크기의 글씨로 둔다.
+ *
+ * 테두리를 두른 단추였더니 걸린 것이 생길 때마다 줄이 11px 높아져 아래
+ * 명단이 통째로 밀렸다. 자리를 비워 두는 방법도 있지만, 애초에 옆 글씨와
+ * 같은 높이면 나타나든 사라지든 줄 높이가 변하지 않는다.
+ * 테두리가 없으니 호버에 선이 생길 일도 없다.
+ */
 .fclear {
   font-family: var(--mono);
   font-size: 0.68rem;
   letter-spacing: 0.06em;
-  padding: 8px 10px;
-  border: 1px dashed var(--ink-40);
-  background: transparent;
+  padding: 0;
+  border: 0;
+  background: none;
   color: var(--ink-60);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--ink-40);
   cursor: pointer;
-  transition: 0.15s;
+  transition: color 0.15s;
 }
-/* 점선을 실선으로 바꾸면 없던 선이 생긴 것처럼 보인다 — 색만 바꾼다 */
-.fclear:hover { border-color: var(--coral); color: var(--coral); }
+.fclear:hover { color: var(--coral); }
 .fcount {
   margin-left: auto;
   font-family: var(--mono);
