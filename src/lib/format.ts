@@ -73,6 +73,34 @@ export const INVITED = "초청자";
  * 목록과 필터가 같은 판단을 쓰도록 여기 한 곳에 둔다 — 갈라지면
  * 초청자로 걸렀는데 배지 없는 사람이 섞여 나오는 일이 생긴다.
  */
+/**
+ * 명단을 나누는 큰 구분 — 지체 · 초청자 · 교역자 · 멘토, 넷이다.
+ *
+ * 다락방 이름으로 나누면 방마다 한두 줄짜리 칸이 열몇 개 생겨 되레 훑기
+ * 어렵다. 데스크에서 보는 큰 갈래는 「우리 지체인가, 초청으로 오신 분인가,
+ * 섬기러 오신 분인가」이고, 다락방은 그 다음 이야기라 줄마다 붙는
+ * 배지(groupTag)에 남긴다.
+ *
+ * 지체는 다락방에 든 사람과 MC — 어느 쪽 표도 없는 사람은 지체로 본다.
+ * 넷으로 나누기로 한 이상 어디에도 안 드는 사람이 있으면 안 된다.
+ */
+export const MEMBER = "지체";
+
+export function groupKind(
+  p: Pick<AdminParticipant, "cell_group" | "inviter" | "applicant_type">
+): string {
+  if (isStaff(p.applicant_type)) return p.applicant_type as string;
+  if (p.cell_group) return MEMBER;
+  return p.inviter || p.applicant_type?.includes("초청") ? INVITED : MEMBER;
+}
+
+/** 지체 → 초청자 → 교역자 → 멘토. 섬기러 오신 분들은 뒤에 둔다 */
+export function byKind(a: string, b: string) {
+  const order = [MEMBER, INVITED, "교역자", "멘토"];
+  const rank = (x: string) => (order.indexOf(x) < 0 ? order.length : order.indexOf(x));
+  return rank(a) - rank(b) || a.localeCompare(b);
+}
+
 export function groupTag(
   p: Pick<AdminParticipant, "cell_group" | "inviter" | "applicant_type">
 ): string | null {

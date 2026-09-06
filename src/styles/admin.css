@@ -1009,23 +1009,23 @@
   color: var(--ink);
   font-weight: 700;
 }
-/* 여러 개 고르는 거르개 — 셀렉트와 고른 조각들이 필터 줄에 나란히 흘러간다 */
-.mfilter { display: contents; }
-.fchip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+/* 여러 개 고르는 거르개 — 셀렉트와 같은 생김새의 단추 하나.
+   고른 개수만 말하고 목록은 눌러서 연다. 조각을 줄줄이 세워 봤더니 고른 것이
+   늘수록 거르개 줄이 두세 줄로 밀려 다음 거르개를 찾기 어려웠다 */
+.filters .fpick {
   font: inherit;
-  font-size: 0.76rem;
-  font-weight: 700;
-  padding: 7px 9px 7px 11px;
-  border: 1px solid var(--ink);
-  background: var(--ink);
-  color: var(--cream);
+  font-size: 0.78rem;
+  padding: 8px 11px;
+  border: 1px solid var(--hair);
+  background: var(--paper);
+  color: var(--ink-60);
   white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
 }
-.fchip span { opacity: 0.7; font-weight: 400; }
-.fchip:hover { background: var(--coral); border-color: var(--coral); }
+.filters .fpick:hover { border-color: var(--ink-40); color: var(--ink); }
+.filters .fpick.on { border-color: var(--ink); color: var(--ink); font-weight: 700; }
+.pdetail header .btn-plain { font-size: 0.74rem; color: var(--ink-60); }
+.pdetail header .btn-plain:hover { color: var(--coral); }
 
 .chip-toggle {
   font: inherit;

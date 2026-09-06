@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import Toast from "@/components/Toast";
 import { useConfirm } from "@/components/Confirm";
 import { useToast } from "@/hooks/useToast";
 import { jsonFetcher } from "@/lib/fetcher";
-import { INVITED, groupTag } from "@/lib/format";
+import { byKind, groupKind } from "@/lib/format";
 import { SIGNUP_FIELDS } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
 import type { AdminParticipant, AdminRoom, AdminTeam } from "@/lib/types";
@@ -37,9 +37,12 @@ const shortLabel = (v: string) => v.split("(")[0].trim() || v;
 /**
  * 여러 개를 고르는 거르개.
  *
- * `<select multiple>`은 폰에서 쓸 것이 못 된다 — 목록이 통째로 펼쳐져 화면을
- * 먹고, 여러 개를 고르려면 길게 눌러야 한다. 고르는 일은 평범한 셀렉트에
- * 맡기고, 고른 것은 옆에 조각으로 세워 둔다. 조각을 누르면 빠진다.
+ * `<select multiple>`은 폰에서 쓸 것이 못 된다. 조각(chip)으로 세워 봤더니
+ * 이번에는 고른 것이 늘수록 거르개 줄이 두세 줄로 밀려, 정작 다음 거르개를
+ * 찾기 어려웠다.
+ *
+ * 숙소 배정과 같은 모양으로 바꾼다 — 단추 하나가 「몇 개 골랐는지」만 말하고,
+ * 누르면 체크 목록이 열린다. 줄 길이가 고른 개수와 상관없이 늘 같다.
  */
 function MultiFilter({
   label,
@@ -54,40 +57,75 @@ function MultiFilter({
   onChange: (next: string[]) => void;
   format?: (v: string) => string;
 }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const [open, setOpen] = useState(false);
   const show = (v: string) => (format ? format(v) : v);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (open && !el.open) el.showModal();
+    if (!open && el.open) el.close();
+  }, [open]);
+
+  const toggle = (v: string) =>
+    onChange(value.includes(v) ? value.filter((x) => x !== v) : [...value, v]);
+
   return (
-    // display:contents — 조각들이 부모 필터 줄에 그대로 흘러 들어간다
-    <div className="mfilter">
-      <select
-        className={value.length ? "on" : undefined}
-        value=""
-        onChange={(e) => {
-          if (e.target.value) onChange([...value, e.target.value]);
+    <>
+      <button
+        type="button"
+        className={`fpick${value.length ? " on" : ""}`}
+        onClick={() => setOpen(true)}
+      >
+        {label} {value.length ? `· ${value.length}개` : "전체"}
+      </button>
+
+      <dialog
+        ref={ref}
+        className="pdetail"
+        onCancel={(e) => {
+          e.preventDefault();
+          setOpen(false);
+        }}
+        onClick={(e) => {
+          if (e.target === ref.current) setOpen(false);
         }}
       >
-        <option value="">
-          {label} 전체{value.length ? ` · ${value.length}개` : ""}
-        </option>
-        {options
-          .filter((o) => !value.includes(o))
-          .map((o) => (
-            <option key={o} value={o}>
-              {show(o)}
-            </option>
-          ))}
-      </select>
-      {value.map((v) => (
-        <button
-          key={v}
-          type="button"
-          className="fchip"
-          aria-label={`${show(v)} 빼기`}
-          onClick={() => onChange(value.filter((x) => x !== v))}
-        >
-          {show(v)} <span aria-hidden="true">✕</span>
-        </button>
-      ))}
-    </div>
+        {open && (
+          <div className="pdetail-in">
+            <header>
+              <b>{label}</b>
+              {value.length > 0 && (
+                <button type="button" className="btn-plain" onClick={() => onChange([])}>
+                  전체 해제
+                </button>
+              )}
+            </header>
+            <div className="fill-list">
+              {options.length === 0 && <p className="hint-sm">고를 것이 없어요.</p>}
+              {options.map((o) => (
+                <div key={o} className={`fill-row${value.includes(o) ? " on" : ""}`}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={value.includes(o)}
+                      onChange={() => toggle(o)}
+                    />
+                    <span>{show(o)}</span>
+                  </label>
+                </div>
+              ))}
+            </div>
+            <div className="pform-actions">
+              <button type="button" className="btn accent" onClick={() => setOpen(false)}>
+                닫기
+              </button>
+            </div>
+          </div>
+        )}
+      </dialog>
+    </>
   );
 }
 
@@ -206,11 +244,7 @@ export default function CheckinPanel({
     [...new Set((data ?? []).map(get).filter(Boolean))].sort() as string[];
   /* 목록 배지와 같은 판단을 쓴다 — 다락방이 없으면 "초청자"로 묶인다.
      초청자는 다락방 이름들 뒤에 둔다 */
-  const byGroupName = (a: string, b: string) =>
-    a === INVITED ? 1 : b === INVITED ? -1 : a.localeCompare(b);
-  const cellOpts = [
-    ...new Set((data ?? []).map(groupTag).filter(Boolean) as string[]),
-  ].sort(byGroupName);
+  const cellOpts = [...new Set((data ?? []).map(groupKind))].sort(byKind);
   const arriveOpts = uniq((p) => p.arrive_day);
   /* 숙박일은 "9월 11일(금), 9월 12일(토)"처럼 여러 날이 한 칸에 들어온다.
      날짜 하나씩 고를 수 있어야 "금요일 자는 사람"을 뽑을 수 있다 */
@@ -237,7 +271,7 @@ export default function CheckinPanel({
   }, [data]);
 
   const shown = (data ?? []).filter((p) => {
-    if (cell.length && !cell.includes(groupTag(p) ?? "")) return false;
+    if (cell.length && !cell.includes(groupKind(p))) return false;
     if (arrive.length && !arrive.includes(p.arrive_day ?? "")) return false;
     // 숙박일은 "9월 11일(금), 9월 12일(토)"처럼 여러 날이 한 칸에 들어온다 —
     // 고른 날 중 하나라도 들어 있으면 잡는다
@@ -251,21 +285,21 @@ export default function CheckinPanel({
   });
 
   /*
-   * 다락방으로 나눠 놓는다.
+   * 지체 · 교역자 · 멘토 셋으로 나눈다.
    *
-   * 체크인 데스크는 다락방 단위로 몰려온다 — 한 방이 우르르 와서 이름을
-   * 대는데, 이름이 통짜로 늘어서 있으면 매번 전체를 훑어야 했다. 나눠 두면
-   * 그 방만 보면 되고, 몇 명 중 몇 명이 왔는지도 그 자리에서 보인다.
+   * 다락방 이름으로 나눴더니 한두 줄짜리 칸이 열몇 개 생겨 되레 훑기 어려웠다.
+   * 데스크에서 보는 큰 갈래는 「우리 지체인가, 섬기러 오신 분인가」다 —
+   * 다락방은 줄마다 붙는 배지에 남는다.
    */
   const sections = (() => {
     const by = new Map<string, AdminParticipant[]>();
     for (const p of shown) {
-      const key = groupTag(p) ?? INVITED;
+      const key = groupKind(p);
       const list = by.get(key);
       if (list) list.push(p);
       else by.set(key, [p]);
     }
-    return [...by.entries()].sort((a, b) => byGroupName(a[0], b[0]));
+    return [...by.entries()].sort((a, b) => byKind(a[0], b[0]));
   })();
 
   return (
@@ -293,7 +327,7 @@ export default function CheckinPanel({
       </div>
       {/* 걸어 둔 조건이 하나라도 있으면 초기화가 나온다 */}
       <div className="filters">
-        <MultiFilter label="다락방" options={cellOpts} value={cell} onChange={setCell} />
+        <MultiFilter label="구분" options={cellOpts} value={cell} onChange={setCell} />
         <MultiFilter label="도착" options={arriveOpts} value={arrive} onChange={setArrive} />
         <MultiFilter label="숙박" options={stayOpts} value={stay} onChange={setStay} />
         <MultiFilter label="티셔츠" options={tshirtOpts} value={tshirt} onChange={setTshirt} />
