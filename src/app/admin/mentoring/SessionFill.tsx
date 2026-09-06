@@ -92,24 +92,20 @@ export default function SessionFill({
   return (
     <>
       <div className="members">
-        {members.length === 0 ? (
-          <button type="button" className="mchip-empty" onClick={() => setOpen(true)}>
-            아직 신청자가 없어요 — 눌러서 넣기
+        {members.map((m) => (
+          <button
+            type="button"
+            className="mchip"
+            data-g={m.gender ?? ""}
+            key={m.id}
+            onClick={() => setOpen(true)}
+          >
+            {m.name}
           </button>
-        ) : (
-          members.map((m) => (
-            <button
-              type="button"
-              className="mchip"
-              data-g={m.gender ?? ""}
-              key={m.id}
-              onClick={() => setOpen(true)}
-            >
-              {m.name}
-            </button>
-          ))
-        )}
-        {members.length > 0 && members.length < capacity && (
+        ))}
+        {/* 비어 있어도 「없어요」라고 적지 않는다 — 이름표가 하나도 없는 것이
+            이미 그 말이고, 할 일은 넣는 것 하나뿐이다 */}
+        {members.length < capacity && (
           <button type="button" className="empty" onClick={() => setOpen(true)}>
             ＋ 넣기
           </button>

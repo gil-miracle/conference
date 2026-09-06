@@ -27,13 +27,7 @@ function forInput(iso: string | null | undefined) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-function SessionEditor({
-  session,
-  people,
-}: {
-  session?: AdminMentorSession;
-  people: Person[];
-}) {
+function SessionEditor({ session }: { session?: AdminMentorSession }) {
   const ref = useRef<HTMLDialogElement>(null);
   const router = useRouter();
   const confirm = useConfirm();
@@ -41,20 +35,13 @@ function SessionEditor({
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  /* 명단에서 고르면 이름이 따라 채워진다 — 같은 이름을 두 번 적게 하면
-     한쪽만 고쳤을 때 어긋난다 */
-  const [name, setName] = useState(session?.mentor_name ?? "");
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (open && !el.open) el.showModal();
     if (!open && el.open) el.close();
-    if (open) {
-      setMsg(null);
-      setName(session?.mentor_name ?? "");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (open) setMsg(null);
   }, [open]);
 
   const submit = async (formData: FormData) => {
@@ -124,31 +111,13 @@ function SessionEditor({
             <form className="pform" action={submit}>
               <p className="pform-sec">멘토</p>
               <label>
-                {/* 명단에서 고르면 아래 이름이 따라 채워진다.
-                    명단에 없는 분도 있어서 이름은 손으로 고칠 수 있게 둔다 */}
-                <span>명단</span>
-                <select
-                  name="mentor_id"
-                  defaultValue={session?.mentor_id ?? ""}
-                  onChange={(e) => {
-                    const picked = people.find((p) => p.id === e.target.value);
-                    if (picked) setName(picked.name);
-                  }}
-                >
-                  <option value="">연결 안 함</option>
-                  {people.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>표시 이름</span>
+                {/* 명단 연결 칸은 뺐다 — 저장만 되고 아무 데서도 읽지 않는
+                    값이었다. 멘토는 신청 대상이 아니라 명단과 이어 둘 일이
+                    없고, 화면에 나가는 것은 아래 이름이다 */}
+                <span>이름</span>
                 <input
                   name="mentor_name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  defaultValue={session?.mentor_name ?? ""}
                   placeholder="김멘토 목사"
                   maxLength={30}
                   required
@@ -324,7 +293,7 @@ export default function MentoringPanel({
         <b>멘토의 TMI</b>
       </div>
 
-      <SessionEditor people={people} />
+      <SessionEditor />
 
       {sessions.length === 0 ? (
         <p className="hint-sm">
@@ -335,7 +304,7 @@ export default function MentoringPanel({
           const members = membersOf(session.id);
           return (
             <div className="room" key={session.id}>
-              <SessionEditor session={session} people={people} />
+              <SessionEditor session={session} />
               <small className="room-note">
                 {session.title}
                 {session.place && ` · ${session.place}`} · {fmtDateTime(session.starts_at)}
