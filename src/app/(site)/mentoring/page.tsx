@@ -38,7 +38,9 @@ export default async function MentoringPage() {
           title="멘토의 TMI"
           lede={
             ctx.authed
-              ? "한 분을 골라 신청해주세요. 시간이 끝날 때까지는 바꿀 수 있어요."
+              ? "먼저 걸어가신 분들이 평소엔 잘 꺼내지 않던 이야기를 들려주실 거예요. " +
+                "여기서만 들을 수 있는 시간이니, 한 분을 골라 신청해주세요. " +
+                "시간이 끝날 때까지는 바꿀 수 있어요."
               : undefined
           }
         />

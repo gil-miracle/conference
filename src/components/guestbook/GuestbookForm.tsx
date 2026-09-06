@@ -11,8 +11,8 @@ const initialState: GuestbookState = { status: "idle" };
 
 export default function GuestbookForm() {
   const [openForm, setOpenForm] = useState(false);
-  /* 「남겼어요」는 확인용이라 할 일이 끝나면 물러나야 한다 — 그대로 두면
-     다음에 들어와도 남아 있어 방금 쓴 것처럼 보인다 */
+  /* 「남겼어요」는 확인용이다. 화면을 다시 열면 사라지고, 그 전에도 ✕로
+     닫을 수 있다 — 저 혼자 계속 붙어 있지는 않는다 */
   const [done, setDone] = useState(false);
   const [left, setLeft] = useState(GUESTBOOK_MAX);
   const [state, formAction, pending] = useActionState(
@@ -28,9 +28,8 @@ export default function GuestbookForm() {
     setLeft(GUESTBOOK_MAX);
     setOpenForm(false);
     setDone(true);
-    // 읽고 나면 사라진다. 그 전에 닫고 싶은 사람을 위해 단추도 둔다
-    const t = setTimeout(() => setDone(false), 4000);
-    return () => clearTimeout(t);
+    // 저절로 사라지지는 않는다 — 읽는 속도는 사람마다 다르고, 닫는 ✕가
+    // 있으니 언제 치울지는 보는 사람이 정하면 된다
   }, [state]);
 
   if (!openForm) {

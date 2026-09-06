@@ -1667,15 +1667,36 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  margin: -16px -18px 14px;
+  /* 카드 패딩(18/20)만큼 되물려 사진이 테두리에 닿게 한다 — 값이 어긋나면
+     사진 둘레에 종이색 띠가 2px 남는다 */
+  margin: -18px -20px 14px;
 }
 .ms.mine .ms-photo { margin: -17px -19px 14px; }
 .ms-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/*
+ * 사진이 아직 없는 분.
+ *
+ * 2:3 자리를 그대로 비워 두면 카드 절반이 빈 베이지 덩어리가 된다 — 안 온
+ * 그림을 기다리는 것처럼 보인다. 포스터의 찢어 붙인 능선에서 두 색을 가져와
+ * 채우고 성함을 얹는다. 없는 것이 아니라 정해 둔 자리로 읽힌다.
+ *
+ * 글자는 제목과 같은 명조로 — 사진 자리를 대신하는 것이라 이름표처럼
+ * 작게 두지 않는다.
+ */
 .ms-nophoto {
-  font-family: var(--mono);
-  font-size: 0.9rem;
-  letter-spacing: 0.14em;
-  color: var(--ink-60);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 0 10px;
+  background: linear-gradient(155deg, var(--peach) 0%, var(--pink) 48%, var(--lavender) 100%);
+  font-family: "Nanum Myeongjo", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(33, 29, 25, 0.62);
+  text-align: center;
+  word-break: keep-all;
 }
 .ms-name { display: block; font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
 
