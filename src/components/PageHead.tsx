@@ -16,7 +16,9 @@ export default function PageHead({
   return (
     <>
       <FlowHead title={title} action={action} />
-      {lede && <p className="lede reveal">{lede}</p>}
+      {/* keep-lines — 문장을 나눠 적은 설명은 적은 대로 접힌다.
+          개행이 없는 글에는 아무 일도 일어나지 않는다 */}
+      {lede && <p className="lede reveal keep-lines">{lede}</p>}
     </>
   );
 }

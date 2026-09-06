@@ -40,7 +40,7 @@ export default async function MentoringPage() {
           title="멘토의 TMI"
           lede={
             ctx.authed
-              ? "먼저 걸어가신 분들이 여기서만 꺼내는 이야기예요. 한 분을 골라 신청해주세요."
+              ? "먼저 걸어가신 분들이 여기서만 꺼내는 이야기예요.\n한 분을 골라 신청해주세요."
               : undefined
           }
         />

@@ -101,16 +101,19 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
               </div>
 
               {mine ? (
-                <div className="ms-actions">
-                  <span className="ms-mine">신청함</span>
-                  <button
-                    className="btn-plain"
-                    disabled={busy || after}
-                    onClick={cancel}
-                  >
-                    {after ? "마감됨" : "취소"}
-                  </button>
-                </div>
+                /* 신청한 뒤에도 같은 자리에 같은 모양으로 둔다 — 글자 줄로
+                   바뀌면 옆 카드와 아래가 어긋나고, 남은 자리도 안 보인다.
+                   테두리만 남긴 꼴이라 「이미 한 것」으로 읽힌다 */
+                <button
+                  className="btn full ms-pick ms-cancel"
+                  disabled={busy || after}
+                  onClick={cancel}
+                >
+                  <span>{after ? "마감됨" : "신청함 · 취소"}</span>
+                  <em>
+                    {s.taken} / {s.capacity}
+                  </em>
+                </button>
               ) : (
                 /* 인원을 버튼 안에 둔다 — 누르기 전에 자리가 있는지 같은 자리에서 본다 */
                 <button

@@ -1751,21 +1751,14 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   font-size: 0.82rem;
   opacity: 0.8;
 }
-.ms-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 14px;
-}
-.ms-mine {
-  font-family: var(--mono);
-  font-size: 0.64rem;
-  letter-spacing: 0.14em;
+/* 내가 신청한 칸 — 채우지 않고 테두리만. 「고르는 단추」와 「이미 한 것」이
+   같은 색으로 차 있으면 어느 쪽이 내 것인지 한눈에 안 보인다 */
+.ms-cancel {
+  background: transparent;
+  border: 1px solid var(--coral);
   color: var(--coral);
 }
-.ms-actions .btn-plain { font-size: 0.76rem; color: var(--ink-60); }
-.ms-actions .btn-plain:hover { color: var(--coral); }
+.ms-cancel:hover:not(:disabled) { background: var(--coral); color: #fff; }
 
 /* 아직 안 나온 값 — 배정된 이름과 같은 무게로 읽히면 안 된다 */
 .my-card h3.tbd { color: var(--ink-60); font-weight: 400; }
