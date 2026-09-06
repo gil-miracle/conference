@@ -11,7 +11,14 @@ import type { RoomMate } from "@/lib/types";
  * 올라가므로, 함수가 아직 옛 모양을 내려주는 동안에도 이름은 보여야 한다 —
  * 안 그러면 방 사람들이 통째로 빈칸이 된다.
  */
-export default function MateList({ people }: { people: (RoomMate | string)[] }) {
+export default function MateList({
+  people,
+  leaderLabel,
+}: {
+  people: (RoomMate | string)[];
+  /** 방이면 「방장」, 조면 「조장」 — 「장」 한 자로는 무슨 장인지 모른다 */
+  leaderLabel: string;
+}) {
   const rows = people.map((p) =>
     typeof p === "string" ? { name: p, gender: null, leader: false } : p
   );
@@ -21,6 +28,7 @@ export default function MateList({ people }: { people: (RoomMate | string)[] }) 
       {rows.map((p) => (
         <span key={p.name} data-g={p.gender ?? ""} className={p.leader ? "lead" : undefined}>
           {p.name}
+          {p.leader && <i>{leaderLabel}</i>}
         </span>
       ))}
     </div>

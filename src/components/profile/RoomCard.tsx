@@ -31,7 +31,7 @@ export default function RoomCard({
             {room.building} {room.room_no}호
           </h3>
           <small>{room.note ?? `${room.capacity}인실`}</small>
-          <MateList people={mates} />
+          <MateList people={mates} leaderLabel="방장" />
         </>
       ) : (
         <>

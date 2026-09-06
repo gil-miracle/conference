@@ -22,7 +22,7 @@ export default function TeamCard({
           <h3>{team.name}</h3>
           {/* 조장 이름은 아래 목록에 표가 붙으므로 여기서는 뺀다 */}
           <small>{team.note || "함께 뛰는 우리 조"}</small>
-          <MateList people={team.members ?? []} />
+          <MateList people={team.members ?? []} leaderLabel="조장" />
         </>
       ) : (
         <>
