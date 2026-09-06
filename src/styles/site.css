@@ -204,6 +204,9 @@ nav.site {
 }
 .verse .ref {
   display: block;
+  /* 출처는 오른쪽 끝에 — 본문이 왼쪽에서 시작하므로 같은 쪽에 붙으면 어디까지가
+     말씀이고 어디부터가 꼬리표인지 눈이 한 번 더 짚는다 */
+  text-align: right;
   margin-top: 20px;
   font-family: var(--mono);
   font-size: 0.62rem;
