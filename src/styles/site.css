@@ -23,12 +23,22 @@ section { padding: 100px 0; }
   color: var(--ink-60);
 }
 /* 리드 문단도 읽는 층 — 명조는 획이 얇아 크기를 살짝 올리고 색을 진하게 잡는다 */
+/*
+ * 제목 아래 설명.
+ *
+ * 44ch로 묶어 뒀더니 640px 칸 안에서 378px만 쓰고 접혔다 — 「…바꿀 / 수
+ * 있어요」처럼 두 낱말만 다음 줄로 넘어가는 개행이 생긴다. 칸 자체가 이미
+ * 640px로 좁아서 그 위에 또 묶을 이유가 없다.
+ *
+ * 아래 여백은 제목-설명 사이(40px)와 같게 둔다. 이웃의 위 여백과는 겹쳐서
+ * 큰 쪽이 이기므로 더해지지 않는다.
+ */
 .lede {
   font-family: "Nanum Myeongjo", Georgia, serif;
   font-size: 1rem;
   line-height: 1.9;
   color: rgba(33, 29, 25, 0.68);
-  max-width: 44ch;
+  margin-bottom: 40px;
   word-break: keep-all;
 }
 
@@ -1614,7 +1624,17 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 }
 .ms-name { display: block; font-size: 1.02rem; font-weight: 700; letter-spacing: -0.02em; }
 
-/* 강의 주제·소개 — 라벨 폭을 맞춰 두 줄의 값이 같은 x에서 시작하게 */
+/* 멘토 소개 — 이름 바로 아래. 라벨이 없으니 글자도 한 단계 낮춰 이름에
+   딸린 줄로 읽히게 한다 */
+.ms-intro {
+  margin: 6px 0 0;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: var(--ink-60);
+  word-break: keep-all;
+}
+
+/* 강의 주제 — 라벨 폭을 맞춰 값이 같은 x에서 시작하게 */
 .ms-detail { margin: 10px 0 0; }
 .ms-detail > div { display: flex; gap: 10px; margin-top: 6px; }
 .ms-detail dt {
@@ -1703,36 +1723,67 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 /* ── 성경 통독 ──
    열한 장을 탭으로 늘어놓으면 좁은 화면에서 숫자만 빼곡해진다.
    통독은 앞에서 뒤로 읽는 일이라 이전·지금·다음 셋이면 된다. */
+/*
+ * 장 이동.
+ *
+ * 꺾쇠는 양 끝에 크게, 제목은 가운데. 제목을 누르면 장을 고르는 목록이
+ * 열리므로 아래에 작은 아래꺾쇠를 붙여 「눌리는 것」임을 알린다.
+ * 손가락으로 눌러야 하니 높이는 48px을 넘긴다.
+ */
 .ch-nav {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: stretch;
   margin: 26px 0 18px;
   border: 1px solid var(--hair);
   background: var(--paper);
 }
 .ch-nav.bottom { margin: 18px 0 40px; }
-.ch-nav b {
+
+.ch-arrow {
+  flex: none;
+  width: 54px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  transition: background 0.15s, color 0.15s;
+}
+.ch-arrow svg { width: 19px; height: 19px; }
+.ch-arrow:hover { background: var(--coral); color: var(--cream); }
+/* 첫 장·끝 장에서도 자리는 남긴다 — 사라지면 제목이 좌우로 흔들린다 */
+.ch-arrow.off { opacity: 0.2; }
+.ch-arrow.off:hover { background: none; color: var(--ink); }
+
+.ch-pick {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 15px 8px;
+  border-left: 1px solid var(--hair);
+  border-right: 1px solid var(--hair);
+}
+.ch-pick b {
   font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: -0.01em;
+  white-space: nowrap;
 }
-.ch-nav button {
-  flex: none;
-  width: 52px;
-  padding: 13px 0;
-  border: none;
-  background: transparent;
-  color: var(--ink);
-  font-size: 1.3rem;
-  line-height: 1;
+.ch-pick > svg { width: 15px; height: 15px; color: var(--coral); }
+/* 보이는 것은 위 글자, 눌리는 것은 이 select — 네이티브 고르개를 그대로 쓴다 */
+.ch-pick select {
+  /* inset만으로 늘린다 — width/height 100%를 함께 주면 테두리 몫만큼 어긋난다 */
+  position: absolute;
+  inset: 0;
+  opacity: 0;
   cursor: pointer;
-  transition: 0.15s;
+  font: inherit;
 }
-.ch-nav button:hover:not(:disabled) { color: var(--coral); }
-/* 첫 장·끝 장에서도 자리는 남긴다 — 사라지면 제목이 좌우로 흔들린다 */
-.ch-nav button:disabled { opacity: 0.22; cursor: default; }
+.ch-pick:hover { background: rgba(220, 90, 81, 0.06); }
+.ch-pick:focus-within { outline: 2px solid var(--coral); outline-offset: -2px; }
+
 .ch-empty { text-align: center; padding: 40px 0; }
 
 /* 멘토 카드 — 두 개씩 나란히.
@@ -1752,6 +1803,7 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   .ms-grid .ms-photo { margin: -12px -13px 11px; }
   .ms-grid .ms.mine .ms-photo { margin: -11px -12px 11px; }
   .ms-grid .ms-name { font-size: 0.94rem; }
+  .ms-grid .ms-intro { font-size: 0.8rem; }
   /* 라벨을 값 위로 올린다 — 옆에 두면 값이 한 글자씩 쪼개진다 */
   .ms-grid .ms-detail > div { display: block; }
   .ms-grid .ms-detail dt { width: auto; padding-top: 0; }

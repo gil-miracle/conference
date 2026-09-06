@@ -84,18 +84,15 @@ export default function MentorPicker({ board }: { board: MentorBoard }) {
                   카드 바닥에 붙어, 나란히 놓았을 때 같은 높이에 선다 */}
               <div className="ms-body">
                 <b className="ms-name">{s.mentor_name}</b>
+                {/* 그분에 대한 소개다 — 강의에 붙은 설명이 아니라서 이름
+                    바로 아래에 라벨 없이 놓는다 */}
+                {s.intro && <p className="ms-intro">{s.intro}</p>}
 
                 <dl className="ms-detail">
                   <div>
                     <dt>강의 주제</dt>
                     <dd>{s.title}</dd>
                   </div>
-                  {s.intro && (
-                    <div>
-                      <dt>강의 소개</dt>
-                      <dd>{s.intro}</dd>
-                    </div>
-                  )}
                 </dl>
 
                 {/* 강의 시각은 적지 않는다 — 두 세션이 같은 시간에 열려 고르는 데

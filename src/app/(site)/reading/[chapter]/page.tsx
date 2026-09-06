@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
+import ChapterNav from "@/components/reading/ChapterNav";
 import PageHead from "@/components/PageHead";
 import {
   READING_BOOK,
@@ -30,40 +30,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * 만들어져 열자마자 글이 있다.
  *
  * 그래서 꺾쇠도 단추가 아니라 링크다. 눌러서 가는 곳이 있으면 링크여야
- * 새 탭으로 열든 뒤로 가든 브라우저가 아는 대로 동작한다.
+ * 새 탭으로 열든 뒤로 가든 브라우저가 아는 대로 동작한다. 가운데 제목만
+ * 고르개라 — 한 장씩 넘기는 것과 멀리 건너뛰는 것은 다른 일이다.
  */
 export default async function ReadingChapterPage({ params }: Props) {
   const { chapter } = await params;
   const n = Number(chapter);
   const found = getChapter(n);
   if (!found) notFound();
-
-  const i = READING_CHAPTERS.indexOf(n as (typeof READING_CHAPTERS)[number]);
-  const prev = i > 0 ? READING_CHAPTERS[i - 1] : null;
-  const next = i < READING_CHAPTERS.length - 1 ? READING_CHAPTERS[i + 1] : null;
-
-  /* 위아래 양쪽에 둔다 — 다 읽고 나면 위 꺾쇠는 화면 밖에 있다 */
-  const nav = (where: string) => (
-    <div className={`ch-nav ${where}`}>
-      {prev ? (
-        <Link href={`/reading/${prev}`} aria-label={`${prev}장`}>
-          ‹
-        </Link>
-      ) : (
-        <span aria-hidden>‹</span>
-      )}
-      <b>
-        {READING_BOOK} {n}장
-      </b>
-      {next ? (
-        <Link href={`/reading/${next}`} aria-label={`${next}장`}>
-          ›
-        </Link>
-      ) : (
-        <span aria-hidden>›</span>
-      )}
-    </div>
-  );
 
   return (
     <section id="reading">
@@ -75,7 +49,13 @@ export default async function ReadingChapterPage({ params }: Props) {
           lede={`${READING_BOOK} 1~11장을 함께 읽어요.`}
         />
 
-        {nav("top")}
+        {/* 위아래 양쪽에 둔다 — 다 읽고 나면 위 꺾쇠는 화면 밖에 있다 */}
+        <ChapterNav
+          book={READING_BOOK}
+          chapters={READING_CHAPTERS}
+          at={n}
+          place="top"
+        />
 
         {found.verses.length > 0 ? (
           <blockquote className="spk-verse reveal">
@@ -95,7 +75,12 @@ export default async function ReadingChapterPage({ params }: Props) {
           </p>
         )}
 
-        {nav("bottom")}
+        <ChapterNav
+          book={READING_BOOK}
+          chapters={READING_CHAPTERS}
+          at={n}
+          place="bottom"
+        />
       </div>
     </section>
   );
