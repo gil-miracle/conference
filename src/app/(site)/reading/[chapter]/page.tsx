@@ -46,7 +46,7 @@ export default async function ReadingChapterPage({ params }: Props) {
 
         <PageHead
           title={`${READING_BOOK} 통독`}
-          lede={`${READING_BOOK} 1~11장을 함께 읽어요.`}
+          lede={`${READING_BOOK} 1~10장을 함께 읽어요.`}
         />
 
         {/* 위아래 양쪽에 둔다 — 다 읽고 나면 위 꺾쇠는 화면 밖에 있다 */}

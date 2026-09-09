@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { getChapter, parseChapter, READING_CHAPTERS } from "./bible";
+import {
+  getChapter,
+  parseChapter,
+  readyChapterCount,
+  READING_CHAPTERS,
+} from "./bible";
 
 describe("통독 본문 나누기", () => {
   it("줄마다 절번호를 떼어 낸다", () => {
@@ -19,11 +24,11 @@ describe("통독 본문 나누기", () => {
   });
 
   it("본문 안의 숫자를 절번호로 오해하지 않는다", () => {
-    const v = parseChapter("6 거기 돌항아리 여섯이 있었는데 두세 통 드는 것이었습니다.");
+    const v = parseChapter("8 어떤 씨는 좋은 땅에 떨어져 30배, 60배, 100배의 열매를 맺었다.");
     expect(v).toHaveLength(1);
     expect(v[0]).toEqual({
-      n: 6,
-      text: "거기 돌항아리 여섯이 있었는데 두세 통 드는 것이었습니다.",
+      n: 8,
+      text: "어떤 씨는 좋은 땅에 떨어져 30배, 60배, 100배의 열매를 맺었다.",
     });
   });
 
@@ -39,11 +44,15 @@ describe("통독 본문 나누기", () => {
 });
 
 describe("통독 범위", () => {
-  it("요한복음 1~11장만 연다", () => {
-    expect(READING_CHAPTERS).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+  it("마가복음 1~10장만 연다", () => {
+    expect(READING_CHAPTERS).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(getChapter(1)).not.toBeNull();
-    expect(getChapter(11)).not.toBeNull();
-    expect(getChapter(12)).toBeNull();
+    expect(getChapter(10)).not.toBeNull();
+    expect(getChapter(11)).toBeNull();
     expect(getChapter(0)).toBeNull();
+  });
+
+  it("열 장이 다 들어와 있다", () => {
+    expect(readyChapterCount()).toBe(10);
   });
 });
