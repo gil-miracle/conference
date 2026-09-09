@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { TabIcon } from "./TabIcons";
 import { openLogin } from "@/lib/ui";
-import { useSession } from "@/components/SessionProvider";
+import { forgetSession, useSession } from "@/components/SessionProvider";
 
 /**
  * 오른쪽 계정 자리.
@@ -86,7 +86,9 @@ export default function NavAuth() {
               조 점수
             </Link>
           )}
-          <form action="/auth/signout" method="post">
+          {/* 적어 둔 세션도 함께 버린다 — 안 그러면 돌아온 화면에
+              잠깐 로그인한 채로 보인다 */}
+          <form action="/auth/signout" method="post" onSubmit={forgetSession}>
             <button type="submit" role="menuitem">
               로그아웃
             </button>

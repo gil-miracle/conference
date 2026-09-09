@@ -29,6 +29,23 @@ async function hasDemoCookie() {
 }
 
 /**
+ * 로그인 쿠키가 있는가.
+ *
+ * 내 정보 조회(get_my_summary)는 authenticated에게만 열려 있어서, 없는
+ * 사람이 부르면 권한 오류만 돌아온다. 쿠키를 먼저 보고 있을 때만 건다 —
+ * 그래야 세 물음을 한꺼번에 던져도 로그인 안 한 사람이 손해 보지 않는다.
+ *
+ * 이름은 `sb-<프로젝트>-auth-token`, 길면 `.0` `.1`로 쪼개진다.
+ * 로그인 중에만 잠깐 생기는 `-code-verifier`는 세션이 아니라 거른다.
+ */
+async function hasAuthCookie() {
+  const cookieStore = await cookies();
+  return cookieStore
+    .getAll()
+    .some((c) => /^sb-.+-auth-token(\.\d+)?$/.test(c.name));
+}
+
+/**
  * 세션·설정 조회. React cache로 감싸 한 요청 안에서는 한 번만 실행된다
  * (레이아웃과 페이지가 각각 호출해도 DB 왕복은 1회).
  */
@@ -56,10 +73,16 @@ const loadContext = cache(async (): Promise<SiteContext> => {
     return ctx;
   }
 
-  // 세션과 사이트 설정은 서로 독립 — 병렬로 받아 왕복을 줄인다
-  const [userRes, settingsRes] = await Promise.all([
+  /* 셋 다 서로 독립이라 한꺼번에 던진다.
+     내 정보를 세션 확인 뒤에 걸면 왕복이 둘로 늘고, 그 시간만큼 상단
+     메뉴와 로그인 단추가 늦게 뜬다 — 화면이 한 번 흔들린다 */
+  const loggedIn = await hasAuthCookie();
+  const [userRes, settingsRes, summaryRes] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("site_settings").select("key,value"),
+    loggedIn
+      ? supabase.rpc("get_my_summary")
+      : Promise.resolve({ data: null, error: null }),
   ]);
   const user = userRes.data.user;
   ctx.authed = Boolean(user);
@@ -72,8 +95,11 @@ const loadContext = cache(async (): Promise<SiteContext> => {
   ctx.menus = settings.menus;
 
   if (user) {
-    const { data: summary } = await supabase.rpc("get_my_summary");
-    ctx.summary = summary as MySummary | null;
+    /* 토큰이 방금 만료됐다면 위에서 함께 던진 물음은 옛 토큰으로 나가 튕긴다.
+       (getUser가 그 사이에 새 토큰을 받아 온다) 그때만 한 번 더 묻는다 —
+       내용이 없는 것과 못 물어본 것은 다르다 */
+    const res = summaryRes.error ? await supabase.rpc("get_my_summary") : summaryRes;
+    ctx.summary = res.data as MySummary | null;
   }
   return ctx;
 });
