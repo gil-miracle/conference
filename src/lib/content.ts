@@ -247,8 +247,7 @@ export const TIMETABLE: TimetableDay[] = [
         "말씀을 귀히 여기는 자에게 임하시는 하나님 능력의 손을 경험하게 하소서.",
     },
     items: [
-      { time: "07:00–08:30", title: "QT 및 아침식사", href: "/qt/2" },
-      { time: "08:30–09:00", title: "예배당 입장" },
+      { time: "07:00–09:00", title: "QT 및 아침식사", href: "/qt/2" },
       {
         time: "09:00–10:30",
         badge: "MIRACLE 2",
@@ -273,13 +272,13 @@ export const TIMETABLE: TimetableDay[] = [
       {
         time: "10:30–12:30",
         title: "멘토의 TMI",
-        sub: "Too Meaningful Information",
+        sub: "Too Meaningful Information!",
         href: "/mentoring",
       },
       { time: "12:30–14:00", title: "점심식사" },
-      { time: "14:00–16:00", title: "리그 오브 미라클" },
+      { time: "14:00–16:00", title: "리그 오브 미라클 (LOM)" },
       {
-        time: "16:00–18:00",
+        time: "16:00–17:30",
         badge: "MIRACLE 3",
         speakerId: "lee-giljae",
         role: "강사",
@@ -287,8 +286,7 @@ export const TIMETABLE: TimetableDay[] = [
         sermon: "교회",
         main: true,
       },
-      { time: "18:00–19:30", title: "저녁식사" },
-      { time: "19:30–20:00", title: "예배당 입장" },
+      { time: "17:30–20:00", title: "저녁식사" },
       {
         // 저녁 예배의 앞순서 — 아래 저녁 예배와 MIRACLE 4 배지를 함께 쓴다
         time: "20:00–20:30",
@@ -371,9 +369,8 @@ export const TIMETABLE: TimetableDay[] = [
     items: [
       { time: "07:00–08:30", title: "QT 및 아침식사", href: "/qt/3" },
       { time: "08:30–10:00", title: "혜화로 이동" },
-      { time: "10:00–12:00", title: "방구석 미라클 1열" },
-      { time: "12:00–13:30", title: "점심식사" },
-      { time: "13:30–14:00", title: "예배당 입장" },
+      { time: "10:00–12:30", title: "방구석 미라클 1열" },
+      { time: "12:30–14:00", title: "점심식사" },
       {
         time: "14:00–16:00",
         badge: "MIRACLE 5",

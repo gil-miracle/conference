@@ -40,7 +40,7 @@ export default async function MentoringPage() {
           title="멘토의 TMI"
           lede={
             ctx.authed
-              ? "길 공동체 유료 멤버십에게만 공개되는 특별한 시간, 멘토님들의 Too Meaningful Information\n한 분을 골라 신청해주세요."
+              ? "길 공동체 멤버십에게만 공개되는 특별한 시간, 멘토님들의 Too Meaningful Information!\n한 분을 골라 신청해주세요."
               : undefined
           }
         />
