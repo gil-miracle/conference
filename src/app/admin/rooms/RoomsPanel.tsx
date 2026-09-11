@@ -11,7 +11,7 @@ import {
   type PersonLite,
   type RoomHold,
 } from "@/lib/types";
-import { MultiFilter, useRosterFilter } from "../RosterFilter";
+import { MultiFilter } from "../RosterFilter";
 import RoomEditor from "./RoomEditor";
 import RoomFill from "./RoomFill";
 import RoomPicker from "./RoomPicker";
@@ -65,14 +65,7 @@ export default function RoomsPanel({
   const [space, setSpace] = useState<string[]>([]);
   const roomFiltered = genders.length > 0 || space.length > 0;
   const [pickFor, setPickFor] = useState<PersonLite | null>(null);
-  /* 명단과 같은 거르개 — 「금요일 자는 사람」만 남겨 놓고 방을 채운다.
-     방 목록은 그대로 두고 아래 미배정과 채우기 후보에만 건다 */
-  const { bar: filterBar, match, filtered, clear } = useRosterFilter(people);
-  const { membersOf, unassigned: allUnassigned } = groupByAssignment(
-    people,
-    "room_id",
-  );
-  const unassigned = allUnassigned.filter(match);
+  const { membersOf, unassigned } = groupByAssignment(people, "room_id");
   /* 자리 채움도 한 칸을 차지한다 — 정원 계산에는 사람과 같이 센다 */
   const holdsOf = (roomId: string) => holds.filter((h) => h.room_id === roomId);
   const usedOf = (roomId: string) =>
@@ -181,19 +174,10 @@ export default function RoomsPanel({
       <div className="unassigned">
         <div className="eyebrow">
           숙소 미배정 · {needRoom.length}명
-          {(genders.length > 0 || filtered) &&
-            allUnassigned.length !== left.length &&
-            ` (전체 ${allUnassigned.length}명)`}
+          {genders.length > 0 &&
+            unassigned.length !== left.length &&
+            ` (전체 ${unassigned.length}명)`}
         </div>
-        {/* 미배정을 거르는 줄 — 방 거르개(성별·자리)와는 다른 것이라 따로 둔다 */}
-        {filterBar}
-        {filtered && (
-          <div className="filters-foot">
-            <button className="fclear" onClick={clear}>
-              초기화
-            </button>
-          </div>
-        )}
         {needRoom.length === 0 ? (
           <p className="hint-sm">
             {unassigned.every((p) => p.no_stay)

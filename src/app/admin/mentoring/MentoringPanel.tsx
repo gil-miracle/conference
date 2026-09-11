@@ -9,14 +9,38 @@ import {
   deleteMentorSession,
   updateMentorSession,
 } from "../actions/mentoring";
-import { fmtDateTime } from "@/lib/format";
+import { INVITED, fmtDateTime, groupTag } from "@/lib/format";
 import { isStaff } from "@/lib/participant-fields";
 import type { AdminParticipant } from "@/lib/types";
 import type { AdminMentorSession } from "@/lib/mentoring";
 import SessionFill from "./SessionFill";
 import type { SignupRow } from "./page";
 
-type Person = Pick<AdminParticipant, "id" | "name" | "applicant_type" | "gender">;
+type Person = Pick<
+  AdminParticipant,
+  "id" | "name" | "applicant_type" | "gender" | "cell_group" | "inviter"
+>;
+
+/**
+ * 멘토 강의를 신청하지 않는 다락방 — 코너스톤은 따로 모이므로 「아직 안 고른
+ * 사람」에 세지 않는다 (2026-09-11 결정). 교역자·멘토와 같은 이유로 뺀다.
+ */
+const SKIP_GROUPS = new Set(["CORNERSTONE", "코너스톤"]);
+const skipsMentoring = (p: Person) =>
+  isStaff(p.applicant_type) || SKIP_GROUPS.has((p.cell_group ?? "").trim().toUpperCase());
+
+/** 숙소 화면과 같은 차례 — 지체 다락방 → 현장접수 → 초청자 → 기타 */
+const RANK = (key: string) => (key === INVITED ? 1 : key === "기타" ? 2 : 0);
+function byGroup(people: Person[]) {
+  const map = new Map<string, Person[]>();
+  for (const person of people) {
+    const key = groupTag(person) ?? "기타";
+    map.set(key, [...(map.get(key) ?? []), person]);
+  }
+  return [...map.entries()].sort(
+    ([a], [b]) => RANK(a) - RANK(b) || a.localeCompare(b),
+  );
+}
 
 /** ISO 문자열을 datetime-local 입력이 읽는 지역 시각으로 */
 function forInput(iso: string | null | undefined) {
@@ -281,11 +305,9 @@ export default function MentoringPanel({
       }));
 
   const chosen = new Set(signups.map((s) => s.participant_id));
-  /* 교역자·멘토는 신청 대상이 아니다 — 여기 남아 있으면 "아직 안 고른 사람"이
-     영영 0이 되지 않아 무엇이 남았는지 알 수 없다 */
-  const notYet = people.filter(
-    (p) => !chosen.has(p.id) && !isStaff(p.applicant_type)
-  );
+  /* 교역자·멘토·코너스톤은 신청 대상이 아니다 — 여기 남아 있으면 "아직 안 고른
+     사람"이 영영 0이 되지 않아 무엇이 남았는지 알 수 없다 */
+  const notYet = people.filter((p) => !chosen.has(p.id) && !skipsMentoring(p));
 
   return (
     <>
@@ -329,20 +351,23 @@ export default function MentoringPanel({
           {notYet.length === 0 ? (
             <p className="hint-sm">전원 신청 완료.</p>
           ) : (
-            /* 숙소·팀 화면과 같은 틀이다 — 칩 생김새가 .un-group 안에서만
-               살아나고, 같은 일을 하는 목록은 같은 모양이어야 한다 */
-            <div className="un-group">
-              <small>교역자·멘토는 제외</small>
-              <div className="members">
-                {notYet.map((p) => (
-                  /* 성별로 색을 나눈다 — 숙소·팀 화면과 같은 규칙이라
-                     화면을 옮겨도 같은 색이 같은 뜻이다 */
-                  <span className="mchip" data-g={p.gender ?? ""} key={p.id}>
-                    {p.name}
-                  </span>
-                ))}
+            /* 숙소 화면과 같은 틀 — 다락방으로 묶고, 성별로 색을 나눈다.
+               같은 일을 하는 목록은 같은 모양이어야 화면을 옮겨도 읽힌다.
+               교역자·멘토·코너스톤은 애초에 빠져 있다 */
+            byGroup(notYet).map(([group, list]) => (
+              <div className="un-group" key={group}>
+                <small>
+                  {group} · {list.length}명
+                </small>
+                <div className="members">
+                  {list.map((p) => (
+                    <span className="mchip" data-g={p.gender ?? ""} key={p.id}>
+                      {p.name}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            ))
           )}
         </div>
       )}
