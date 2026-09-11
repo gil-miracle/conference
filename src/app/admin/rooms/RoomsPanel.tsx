@@ -11,9 +11,14 @@ import {
   type PersonLite,
   type RoomHold,
 } from "@/lib/types";
+import { MultiFilter, useRosterFilter } from "../RosterFilter";
 import RoomEditor from "./RoomEditor";
 import RoomFill from "./RoomFill";
 import RoomPicker from "./RoomPicker";
+
+/** 자리 거르개의 두 값 — 하나만 고르면 그쪽만, 둘 다면 전체 */
+const OPEN = "빈자리 있음";
+const FULL = "다 참";
 
 /** 다락방이 먼저, 그다음 초청자, 교역자·멘토, 나머지 */
 const RANK = (key: string) =>
@@ -26,7 +31,7 @@ function byGroup(people: PersonLite[]) {
     map.set(key, [...(map.get(key) ?? []), person]);
   }
   return [...map.entries()].sort(
-    ([a], [b]) => RANK(a) - RANK(b) || a.localeCompare(b)
+    ([a], [b]) => RANK(a) - RANK(b) || a.localeCompare(b),
   );
 }
 
@@ -55,13 +60,23 @@ export default function RoomsPanel({
   people: PersonLite[];
   holds: RoomHold[];
 }) {
-  const [gender, setGender] = useState("");
-  const [space, setSpace] = useState("");
+  /* 방 거르개도 명단과 같은 단추 모양 — 여러 개 고르기. 둘 다 고르면 전체 */
+  const [genders, setGenders] = useState<string[]>([]);
+  const [space, setSpace] = useState<string[]>([]);
+  const roomFiltered = genders.length > 0 || space.length > 0;
   const [pickFor, setPickFor] = useState<PersonLite | null>(null);
-  const { membersOf, unassigned } = groupByAssignment(people, "room_id");
+  /* 명단과 같은 거르개 — 「금요일 자는 사람」만 남겨 놓고 방을 채운다.
+     방 목록은 그대로 두고 아래 미배정과 채우기 후보에만 건다 */
+  const { bar: filterBar, match, filtered, clear } = useRosterFilter(people);
+  const { membersOf, unassigned: allUnassigned } = groupByAssignment(
+    people,
+    "room_id",
+  );
+  const unassigned = allUnassigned.filter(match);
   /* 자리 채움도 한 칸을 차지한다 — 정원 계산에는 사람과 같이 센다 */
   const holdsOf = (roomId: string) => holds.filter((h) => h.room_id === roomId);
-  const usedOf = (roomId: string) => membersOf(roomId).length + holdsOf(roomId).length;
+  const usedOf = (roomId: string) =>
+    membersOf(roomId).length + holdsOf(roomId).length;
 
   /* 본관 → 별관 → 그 밖. 호수는 숫자로 견준다 — 문자열로 보면 1102가 203보다
      앞에 온다 */
@@ -74,20 +89,24 @@ export default function RoomsPanel({
       order(a.building) - order(b.building) ||
       a.building.localeCompare(b.building) ||
       (Number(a.room_no) || 0) - (Number(b.room_no) || 0) ||
-      a.room_no.localeCompare(b.room_no)
+      a.room_no.localeCompare(b.room_no),
   );
 
   const shown = sorted.filter((room) => {
-    if (gender && room.gender !== gender) return false;
-    if (!space) return true;
+    if (genders.length && !genders.includes(room.gender)) return false;
+    // 하나만 골랐을 때만 거른다. 둘 다면 전체와 같다
+    if (space.length !== 1) return true;
     const left = room.capacity - usedOf(room.id);
-    return space === "open" ? left > 0 : left <= 0;
+    return space[0] === OPEN ? left > 0 : left <= 0;
   });
 
   /* 성별 조건은 미배정 목록에도 건다 — "여자 방 채우는 중"이면 아래도 여자만
-     보여야 한다. 기타 방은 남녀를 다 받으므로 아래도 가리지 않는다 */
+     보여야 한다. 기타 방은 남녀를 다 받으므로 그걸 골랐으면 아래도 가리지 않는다 */
   const left = unassigned.filter(
-    (p) => !gender || gender === "기타" || p.gender === gender
+    (p) =>
+      !genders.length ||
+      genders.includes("기타") ||
+      genders.includes(p.gender ?? ""),
   );
   /* 숙박 안 하는 사람은 방이 없는 게 정상이다. 같이 세면 미배정 숫자가
      끝까지 안 줄어 무엇이 남았는지를 알 수 없다 — 빼서 아래 따로 둔다 */
@@ -96,28 +115,39 @@ export default function RoomsPanel({
 
   return (
     <>
-      {/* 추가 단추는 제목 오른쪽 — 명단·조와 같은 자리 */}
       <div className="sec-title">
         <b>숙소 배정</b>
         <RoomEditor />
       </div>
 
       <div className="filters">
-        <select value={gender} onChange={(e) => setGender(e.target.value)}>
-          <option value="">성별 전체</option>
-          {ROOM_GENDERS.map((g) => (
-            <option key={g} value={g}>
-              {g}
-            </option>
-          ))}
-        </select>
-        <select value={space} onChange={(e) => setSpace(e.target.value)}>
-          <option value="">자리 전체</option>
-          <option value="open">빈자리 있음</option>
-          <option value="full">다 참</option>
-        </select>
+        <MultiFilter
+          label="성별"
+          options={[...ROOM_GENDERS]}
+          value={genders}
+          onChange={setGenders}
+        />
+        <MultiFilter
+          label="자리"
+          options={[OPEN, FULL]}
+          value={space}
+          onChange={setSpace}
+        />
+      </div>
+      <div className="filters-foot">
+        {roomFiltered && (
+          <button
+            className="fclear"
+            onClick={() => {
+              setGenders([]);
+              setSpace([]);
+            }}
+          >
+            초기화
+          </button>
+        )}
         <span className="fcount">
-          {rooms.length}개 중 {shown.length}개
+          {rooms.length}개 중 <b>{shown.length}</b>개
         </span>
       </div>
 
@@ -151,10 +181,19 @@ export default function RoomsPanel({
       <div className="unassigned">
         <div className="eyebrow">
           숙소 미배정 · {needRoom.length}명
-          {gender &&
-            unassigned.length !== left.length &&
-            ` (전체 ${unassigned.length}명)`}
+          {(genders.length > 0 || filtered) &&
+            allUnassigned.length !== left.length &&
+            ` (전체 ${allUnassigned.length}명)`}
         </div>
+        {/* 미배정을 거르는 줄 — 방 거르개(성별·자리)와는 다른 것이라 따로 둔다 */}
+        {filterBar}
+        {filtered && (
+          <div className="filters-foot">
+            <button className="fclear" onClick={clear}>
+              초기화
+            </button>
+          </div>
+        )}
         {needRoom.length === 0 ? (
           <p className="hint-sm">
             {unassigned.every((p) => p.no_stay)

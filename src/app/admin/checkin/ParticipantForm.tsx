@@ -3,10 +3,11 @@
 import { useState } from "react";
 import {
   MANUAL_TYPES,
-  ARRIVE_DAYS,
   SIGNUP_FIELDS,
   STAFF_HIDDEN,
   STAFF_TYPES,
+  TSHIRT_SIZES,
+  ARRIVE_DAYS,
   WALKIN,
   isStaff,
 } from "@/lib/participant-fields";
@@ -65,7 +66,7 @@ function ChoiceField({
       <span>{label}</span>
       <div className="pf-choice">
         <select
-          value={typing ? CUSTOM : value ?? ""}
+          value={typing ? CUSTOM : (value ?? "")}
           onChange={(e) => {
             const next = e.target.value;
             setTyping(next === CUSTOM);
@@ -123,8 +124,10 @@ export default function ParticipantForm({
 
   const staff = isStaff(v.applicant_type);
   /*
-   * 추가 화면은 쓸 게 몇 칸 안 된다 — 유형·이름·전화번호, 현장접수면 생년월일.
-   * 오는 방법·도착 시간·티셔츠는 신청서 문항이라 여기서는 묻지 않는다.
+   * 추가 화면은 쓸 게 몇 칸 안 된다 — 유형·이름·전화번호, 현장접수면 생년월일과
+   * 티셔츠. 오는 방법·도착 시간은 신청서 문항이라 여기서는 묻지 않는다.
+   * 티셔츠는 데스크에서 바로 건네는 것이라 현장접수도 고른다 — 안 적어 두면
+   * 체크인 피드에 「티셔츠 없음」으로 남는다.
    * 생년월일은 지체가 로그인할 때 맞춰 보는 열쇠라 현장접수에게는 받고,
    * 교역자·멘토는 이름과 전화번호로 충분하다.
    */
@@ -134,11 +137,12 @@ export default function ParticipantForm({
   const fields = staffOnly
     ? staff
       ? []
-      : // 현장접수는 도착 요일을 고른다 — 비우면 금·토 어느 칸에도 안 센다
-        SIGNUP_FIELDS.filter((f) => f.key === "arrive_day")
+      : // 현장접수는 도착 요일도 고른다 — 비우면 금·토 어느 칸에도 안 센다
+        SIGNUP_FIELDS.filter((f) => f.key === "arrive_day" || f.key === "tshirt")
     : SIGNUP_FIELDS.filter((f) => !(staff && STAFF_HIDDEN.includes(f.key)));
 
-  /** 유형·도착 요일은 코드가 아는 값이 있다 — 현장접수·교역자·멘토는 시트에서 오지 않는다 */
+  /** 유형·티셔츠는 코드가 아는 값이 있다 — 현장접수·교역자·멘토는 시트에서 오지
+      않고, 사이즈는 명단에 아직 없는 것도 고를 수 있어야 한다 */
   const choicesFor = (key: keyof SignupInfo) => {
     if (key === "applicant_type")
       return staffOnly
@@ -148,6 +152,14 @@ export default function ParticipantForm({
       return staffOnly
         ? ARRIVE_DAYS
         : [...new Set([...ARRIVE_DAYS, ...(options[key] ?? [])])];
+    if (key === "tshirt") {
+      // 아는 차례대로 먼저, 명단에만 있는 값은 뒤에
+      const known = new Set(TSHIRT_SIZES);
+      const extra = (options[key] ?? []).filter(
+        (s) => !known.has(s.toUpperCase()),
+      );
+      return [...TSHIRT_SIZES, ...extra];
+    }
     return options[key] ?? [];
   };
 
@@ -219,7 +231,12 @@ export default function ParticipantForm({
         />
       ))}
       <div className="pform-actions">
-        <button type="button" className="btn ghost" disabled={busy} onClick={onCancel}>
+        <button
+          type="button"
+          className="btn ghost"
+          disabled={busy}
+          onClick={onCancel}
+        >
           취소
         </button>
         <button type="submit" className="btn accent" disabled={busy}>

@@ -20,7 +20,7 @@ function byGroup(people: PersonLite[]) {
     map.set(key, [...(map.get(key) ?? []), person]);
   }
   return [...map.entries()].sort(
-    ([a], [b]) => RANK(a) - RANK(b) || a.localeCompare(b)
+    ([a], [b]) => RANK(a) - RANK(b) || a.localeCompare(b),
   );
 }
 
@@ -40,11 +40,10 @@ export default function TeamsPanel({
   const [pickFor, setPickFor] = useState<PersonLite | null>(null);
   const { membersOf, unassigned } = groupByAssignment(people, "team_id");
   const nameOf = (id: string | null) =>
-    id ? people.find((p) => p.id === id)?.name ?? null : null;
+    id ? (people.find((p) => p.id === id)?.name ?? null) : null;
 
   return (
     <>
-      {/* 추가 단추는 제목 오른쪽 — 명단의 참가자 추가, 숙소의 방 추가와 같은 자리 */}
       <div className="sec-title">
         <b>게임 조 배정</b>
         <TeamEditor />

@@ -22,7 +22,10 @@ export default async function AdminRoomsPage() {
         .order("room_no"),
       ctx.supabase
         .from("participants")
-        .select("id,name,room_id,team_id,no_stay,cell_group,inviter,applicant_type,gender")
+        // 거르개(RosterFilter)가 보는 칸까지 — 명단과 같은 조건으로 거른다
+        .select(
+          "id,name,room_id,team_id,no_stay,cell_group,inviter,applicant_type,gender,arrive_day,stay,tshirt,transport,auth_user_id,checked_in_at,role",
+        )
         .order("name"),
       ctx.supabase
         .from("room_holds")

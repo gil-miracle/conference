@@ -44,6 +44,19 @@ export const WALKIN = "현장접수";
  */
 export const ARRIVE_DAYS = ["9월 11일(금)", "9월 12일(토)"];
 
+/** 티셔츠 사이즈 차례 — 글자순이 아니다(4XL 이 L 앞에 선다). 여기 없는 값은 뒤로 */
+export const TSHIRT_SIZES = [
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+  "XXXL",
+  "4XL",
+  "5XL",
+];
+
 /** 추가 화면의 유형 — 신청서를 안 쓴 사람은 이 셋뿐이다 */
 export const MANUAL_TYPES = [WALKIN, ...STAFF_TYPES];
 

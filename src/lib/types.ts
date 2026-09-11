@@ -249,7 +249,12 @@ export type PersonLite = {
   room_id: string | null;
   team_id: string | null;
   no_stay?: boolean;
-} & Pick<SignupInfo, "cell_group" | "inviter" | "applicant_type" | "gender">;
+  /* 아래는 거르개(RosterFilter)용 — 숙소 화면은 싣고, 조 화면·데모는 비워 둔다 */
+  auth_user_id?: string | null;
+  checked_in_at?: string | null;
+  role?: string;
+} & Pick<SignupInfo, "cell_group" | "inviter" | "applicant_type" | "gender"> &
+  Partial<Pick<SignupInfo, "arrive_day" | "stay" | "tshirt" | "transport">>;
 
 /** 관리자 승인 대기 목록 한 건 (사칭 판별용 소셜 프로필 포함) */
 export type JoinRequest = {
