@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { drawMyWordcard } from "@/app/actions/wordcard";
+import Toast from "@/components/Toast";
+import { useToast } from "@/hooks/useToast";
 
 /**
  * 같은 말씀을 세 모양으로 — SNS에 올릴 정사각, 인화할 5x7, 잠금화면에 걸
@@ -46,13 +48,8 @@ export default function WordcardDraw({
   const [drawing, setDrawing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
-  /** 저장 뒤 잠깐 보이는 확인 문구 — 어디로 갔는지까지 적는다 */
-  const [done, setDone] = useState<string | null>(null);
-  useEffect(() => {
-    if (!done) return;
-    const t = setTimeout(() => setDone(null), 5000);
-    return () => clearTimeout(t);
-  }, [done]);
+  /** 저장 뒤 1초 남짓 보이는 토스트 — 받았는지 표가 없으면 다시 누르게 된다 */
+  const { toast, showToast } = useToast(1200);
   /* 세 모양의 그림 파일을 처음에 다 받아 둔다. iOS는 공유 시트를 「누른 그
      순간」에만 열어 줘서 누른 뒤에 받아 오면 늦고, 탭을 오갈 때마다 받으면
      그 사이 단추가 꺼졌다 켜지며 깜빡인다 */
@@ -87,7 +84,6 @@ export default function WordcardDraw({
     if (!slug || !blob) return;
     setSaving(true);
     setFailed(false);
-    setDone(null);
     const name = `MIRACLE2026-말씀카드-${kind.file}.jpg`;
     try {
       /*
@@ -105,7 +101,7 @@ export default function WordcardDraw({
       ) {
         await navigator.share({ files: [file] });
         // 시트에서 무엇을 골랐는지는 알 수 없다 — 닫지 않고 마쳤으면 저장으로 본다
-        setDone(`${kind.label} 카드를 저장했어요. 사진 앱에서 확인해 주세요.`);
+        showToast("저장되었습니다");
         return;
       }
       const url = URL.createObjectURL(blob);
@@ -114,7 +110,7 @@ export default function WordcardDraw({
       a.download = name;
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
-      setDone(`${kind.label} 카드를 저장했어요. 갤러리나 다운로드 폴더에서 확인해 주세요.`);
+      showToast("저장되었습니다");
     } catch (e) {
       // 시트를 그냥 닫은 것은 실패가 아니다
       if (!(e instanceof DOMException && e.name === "AbortError")) setFailed(true);
@@ -169,11 +165,7 @@ export default function WordcardDraw({
       <button className="btn wc-save" disabled={saving || !blob} onClick={save}>
         {saving ? "저장하는 중…" : `${kind.label} 카드 저장하기`}
       </button>
-      {done && (
-        <p className="msg ok" role="status">
-          {done}
-        </p>
-      )}
+      <Toast toast={toast} />
       {failed && (
         <p className="msg err">저장이 안 되면 그림을 길게 눌러 「사진에 저장」을 골라 주세요.</p>
       )}
