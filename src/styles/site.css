@@ -632,6 +632,8 @@ nav.site {
   padding: 3px 10px;
   margin-top: 12px;
 }
+/* 완료 시각 · 티셔츠처럼 둘이 나란히 설 때 */
+.chip-in + .chip-in { margin-left: 6px; }
 
 /* ── 갤러리 ── */
 .gal-grid {
@@ -1036,44 +1038,9 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   opacity: 0.75;
 }
 
-/* ── 모바일: 포스터처럼 블록을 화면 끝까지 (하단 탭바 구간) ──
-   강사 그리드는 여기서 뺐다 — 사진 격자가 본문보다 좌우로 튀어나와
-   혼자 어긋나 보인다. 타임테이블(.tt-list)·방명록(.gb)처럼 본문 폭에 맞춘다. */
-@media (max-width: 767px) {
-  .info-grid,
-  .day-tabs,
-  .pl-stage,
-  .pl-now,
-  .gal-grid,
-  .my-card,
-  .wc-stage,
-  .wcard-back,
-  .locked,
-  .video-ph,
-  .video-embed,
-  .map-ph {
-    margin-left: calc(var(--gutter) * -1);
-    margin-right: calc(var(--gutter) * -1);
-  }
-  /* 좌우 테두리는 화면 밖으로 나가므로 지워 이중선처럼 보이지 않게.
-     말씀카드는 무대(.wc-stage)가 화면 끝까지 나가고 정사각만 그 폭을 다 쓴다 —
-     5x7·폰배경은 무대 폭을 높이로 삼아 가운데 서므로 셋의 높이가 같다 */
-  .info-grid, .day-tabs, .my-card, .wcard[data-kind="square"], .wcard-back, .locked {
-    border-left: none;
-    border-right: none;
-  }
-  /* 저장 단추도 카드와 같은 폭으로 — 카드만 화면 끝까지 나가고 단추는 안쪽에
-     서 있으면 폭이 안 맞아 보인다 */
-  .wc-save {
-    display: block;
-    /* button은 block이어도 제 폭으로 오그라든다 — 폭을 직접 준다 */
-    width: calc(100% + var(--gutter) * 2);
-    margin-left: calc(var(--gutter) * -1);
-    margin-right: calc(var(--gutter) * -1);
-  }
-  .pl-stage { border-left: none; border-right: none; }
-  .pl-now { border-left: none; border-right: none; }
-}
+/* 폰에서도 블록을 화면 끝까지 밀지 않는다 — 전에는 일정표 탭·갤러리·내 정보
+   카드·영상·지도를 좌우 여백 밖으로 내보냈는데, 타임테이블·방명록처럼 본문
+   폭에 맞춘 것과 섞여 어긋나 보였다. 모두 본문 폭에 둔다 (2026-09-11 결정). */
 
 /* 세션 로드 전 인증 버튼 자리 예약 — 상태가 채워질 때 메뉴가 밀리지 않게 */
 .auth-slot { display: inline-flex; align-items: center; min-width: 34px; justify-content: flex-end; }
