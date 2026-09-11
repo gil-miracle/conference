@@ -19,8 +19,8 @@ export type DrawnCard = {
  * 다시 눌러도 같은 장이 나온다 — 마음에 드는 구절이 나올 때까지 다시
  * 뽑을 수 있으면 「내게 주신 말씀」이 아니라 고른 말씀이 된다.
  *
- * 누가 어느 장을 받는지는 DB가 정한다(0043). 아직 아무도 안 뽑은 장을
- * 먼저 주므로 100명까지는 겹치지 않는다.
+ * 누가 어느 장을 받는지는 DB가 정한다(0043·0050). 아직 아무도 안 뽑은 장을
+ * 먼저 주므로 40명까지는 겹치지 않고, 그 뒤로는 가장 적게 나간 장부터 돈다.
  */
 export async function drawMyWordcard(): Promise<DrawnCard | null> {
   const supabase = await getSupabaseServer();
