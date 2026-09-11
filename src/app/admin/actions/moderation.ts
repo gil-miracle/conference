@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getAdminContext } from "@/lib/admin";
+import { getAdminContext, getPhotographerContext } from "@/lib/admin";
 import { logAdmin } from "@/lib/audit";
 
 export async function setGuestbookHidden(id: string, hidden: boolean) {
@@ -37,7 +37,7 @@ export async function deleteGuestbookAdmin(id: string) {
 
 /** 사진을 다른 날로 옮긴다 — 금요일 사진을 토요일에 올렸을 때 (0049) */
 export async function setPhotoDay(id: string, day: number) {
-  const ctx = await getAdminContext();
+  const ctx = await getPhotographerContext();
   if (!ctx || !(day >= 1 && day <= 3)) return;
   await ctx.supabase.from("photos").update({ day }).eq("id", id);
   await logAdmin(ctx, "photo_day", null, { id, day });
@@ -46,7 +46,7 @@ export async function setPhotoDay(id: string, day: number) {
 }
 
 export async function setPhotoHidden(id: string, hidden: boolean) {
-  const ctx = await getAdminContext();
+  const ctx = await getPhotographerContext();
   if (!ctx) return;
   await ctx.supabase.from("photos").update({ hidden }).eq("id", id);
   await logAdmin(ctx, "photo_hide", null, { id, hidden });
@@ -61,9 +61,10 @@ export async function setPhotoHidden(id: string, hidden: boolean) {
  * 되돌릴 방법도 없어서, 내리는 일은 이 화면 한 곳으로 모았다.
  * 웬만하면 숨김으로 충분하다. 이건 되돌릴 수 없다.
  */
+/* 사진 액션 넷은 사진 담당도 부른다(0052) — 관리자와 같은 게시판 화면을 쓴다 */
 /** 끌어서 바꾼 차례를 저장한다 — 목록을 통째로 넘겨 한 번에 매긴다 (0039) */
 export async function reorderPhotos(ids: string[]) {
-  const ctx = await getAdminContext();
+  const ctx = await getPhotographerContext();
   if (!ctx) return;
   await ctx.supabase.rpc("admin_reorder_photos", { p_ids: ids });
   revalidatePath("/admin/board");
@@ -71,7 +72,7 @@ export async function reorderPhotos(ids: string[]) {
 }
 
 export async function deletePhotoAdmin(id: string) {
-  const ctx = await getAdminContext();
+  const ctx = await getPhotographerContext();
   if (!ctx) return;
   const { data: gone } = await ctx.supabase
     .from("photos")

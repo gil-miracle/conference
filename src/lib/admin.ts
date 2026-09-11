@@ -41,6 +41,22 @@ export async function requireAdmin(): Promise<AdminCtx> {
     return { demo: true, me: { name: "김예찬" } };
 
   const ctx = await getAdminContext();
+  if (ctx) return { demo: false, ...ctx };
+  // 사진 담당은 관리자 화면 가운데 게시판(갤러리)만 — 다른 관리 화면을
+  // 주소로 열면 거기로 보낸다. 밖으로 내보내면 어디로 가야 하는지 모른다
+  if (await getPhotographerContext()) redirect("/admin/board");
+  redirect("/");
+}
+
+/**
+ * 게시판(갤러리) 페이지용 가드 — 관리자와 사진 담당(0051·0052).
+ * 레이아웃도 이걸 쓴다. 사진 담당에게는 탭이 게시판 하나만 보인다.
+ */
+export async function requireGalleryStaff(): Promise<AdminCtx> {
+  if (isAdminPreview() || !isSupabaseConfigured())
+    return { demo: true, me: { name: "김예찬" } };
+
+  const ctx = await getPhotographerContext();
   if (!ctx) redirect("/");
   return { demo: false, ...ctx };
 }
@@ -70,6 +86,20 @@ export const getAdminContext = cache(async () => {
  * 관리자를 따로 확인하지 않는다. is_host가 이미 관리자를 통과시키고, 두 곳에서
  * 각각 판단하면 언젠가 갈라진다.
  */
+/**
+ * 사진 담당 가드 — 사진 담당으로 지정된 사람과 관리자 (0051).
+ * 진행자 가드와 같은 이유로 관리자를 따로 보지 않는다.
+ */
+export const getPhotographerContext = cache(async () => {
+  const supabase = await getSupabaseServer();
+  if (!supabase) return null;
+
+  const { data } = await supabase.rpc("admin_me");
+  const me = data as AdminMe | null;
+  if (!me || (me.role !== "admin" && !me.is_photographer)) return null;
+  return { supabase, me };
+});
+
 export const getHostContext = cache(async () => {
   const supabase = await getSupabaseServer();
   if (!supabase) return null;

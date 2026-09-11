@@ -6,7 +6,6 @@ import GalleryDemoGrid from "@/components/gallery/GalleryDemoGrid";
 import GalleryGrid from "@/components/gallery/GalleryGrid";
 import { getPhotos, getSiteContext } from "@/lib/data/site";
 import { getBoundParticipant } from "@/lib/participant";
-import { getCloudName } from "@/lib/cloudinary";
 import { NEED_BIND, NEED_LOGIN } from "@/lib/messages";
 
 export const metadata: Metadata = { title: "갤러리 — MIRACLE 2026" };
@@ -22,8 +21,8 @@ export default async function GalleryPage({
   const bound = Boolean(ctx.summary);
   const open = ctx.galleryOpen && bound && !ctx.demoMode;
   const photos = open ? await getPhotos(200) : [];
-  /* 올리는 단추는 운영진과 사진 담당에게만. 정책이 어차피 막지만, 못 올리는
-     사람에게 단추를 보였다가 거절하는 것보다 처음부터 안 보이는 게 낫다 */
+  /* 관리 화면 길은 운영진과 사진 담당에게만. 정책이 어차피 막지만, 못 올리는
+     사람에게 보였다가 거절하는 것보다 처음부터 안 보이는 게 낫다 */
   const me = open ? await getBoundParticipant() : null;
   const canUpload = Boolean(
     me && (me.me.role === "admin" || me.me.is_photographer),
@@ -56,11 +55,7 @@ export default async function GalleryPage({
         ) : ctx.demoMode ? (
           <GalleryDemoGrid />
         ) : (
-          <GalleryGrid
-            initialPhotos={photos}
-            canUpload={canUpload}
-            cloudName={getCloudName()}
-          />
+          <GalleryGrid initialPhotos={photos} canUpload={canUpload} />
         )}
       </div>
     </section>

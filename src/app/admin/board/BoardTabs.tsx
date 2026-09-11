@@ -23,26 +23,31 @@ export default function BoardTabs({
   photos,
   cloudName,
   demo,
+  galleryOnly = false,
 }: {
   entries: ModEntry[];
   photos: Photo[];
   cloudName: string | null;
   demo: boolean;
+  /** 사진 담당 — 노트 갈래 없이 갤러리로 바로 연다 */
+  galleryOnly?: boolean;
 }) {
-  const [tab, setTab] = useState<"notes" | "photos">("notes");
+  const [tab, setTab] = useState<"notes" | "photos">(galleryOnly ? "photos" : "notes");
   const [shown, setShown] = useState(PAGE);
 
   return (
     <>
       <nav className="subtabs">
         <div className="subtabs-in">
-          <button
-            type="button"
-            className={tab === "notes" ? "on" : ""}
-            onClick={() => setTab("notes")}
-          >
-            한 줄 노트 {entries.length > 0 && <em>{entries.length}</em>}
-          </button>
+          {!galleryOnly && (
+            <button
+              type="button"
+              className={tab === "notes" ? "on" : ""}
+              onClick={() => setTab("notes")}
+            >
+              한 줄 노트 {entries.length > 0 && <em>{entries.length}</em>}
+            </button>
+          )}
           <button
             type="button"
             className={tab === "photos" ? "on" : ""}

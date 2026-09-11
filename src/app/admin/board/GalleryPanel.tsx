@@ -104,7 +104,7 @@ export default function GalleryPanel({
         showToast(result.message, true);
         break;
       }
-      // 새로 올린 것은 맨 뒤에 선다 (0039 트리거)
+      // 새로 올린 것은 차례상 맨 뒤 = 화면에서는 맨 앞 (0039 트리거)
       setRows((prev) => [...prev, result.photo]);
     }
     setUploading(null);
@@ -214,7 +214,10 @@ export default function GalleryPanel({
     );
   };
 
-  const shown = rows.filter((p) => photoDay(p) === day);
+  /* rows 는 차례 오름차순(먼저 올린 것이 앞)이고, 화면은 그 반대로 편다 —
+     방금 올린 것이 왼쪽 위에 선다. 저장할 때는 rows 차례 그대로 보내므로
+     끌어서 바꾼 자리도 같은 뜻으로 남는다 */
+  const shown = rows.filter((p) => photoDay(p) === day).reverse();
   /* 보기는 열어 둔 날 안에서만 넘긴다 */
   const viewingIn = viewing === null ? null : shown.findIndex((p) => p.id === rows[viewing]?.id);
 

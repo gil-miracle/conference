@@ -1,7 +1,7 @@
 import "@/styles/admin.css";
 
 import Link from "next/link";
-import { requireAdmin } from "@/lib/admin";
+import { requireGalleryStaff } from "@/lib/admin";
 import AdminTabs from "./AdminTabs";
 import ScrollTop from "@/components/nav/ScrollTop";
 import AdminModeProvider from "./AdminMode";
@@ -13,7 +13,9 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const ctx = await requireAdmin();
+  // 문은 넓게(사진 담당까지) 열고, 어느 방에 들어갈 수 있는지는 페이지가 정한다
+  const ctx = await requireGalleryStaff();
+  const galleryOnly = !ctx.demo && ctx.me.role !== "admin";
 
   return (
     <AdminModeProvider demo={ctx.demo}>
@@ -30,11 +32,13 @@ export default async function AdminLayout({
               {/* 나가는 길은 탭이 아니라 여기 — 탭은 관리 화면끼리의 갈래다.
                   진행자 화면(/host)은 이번에 안 쓴다. 주소로는 그대로 들어간다 */}
               <Link href="/">사이트 보기</Link>
-              <span>운영자 · {ctx.me.name}</span>
+              <span>
+                {galleryOnly ? "사진 담당" : "운영자"} · {ctx.me.name}
+              </span>
             </div>
           </div>
           </header>
-          <AdminTabs />
+          <AdminTabs galleryOnly={galleryOnly} />
         </div>
         {ctx.demo && (
           <div className="banner demo-banner">

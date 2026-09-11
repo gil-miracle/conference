@@ -1925,6 +1925,9 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 
 /* 갤러리 날짜 탭 — 일정표와 같은 모양. 위쪽 여백만 줄인다 */
 .gal-tabs { margin: 0 0 18px; }
+/* 탭 아래 관리 링크 — 오른쪽에 작게. 제목 줄에 두면 선과 겹쳐 어수선하다 */
+.gal-tools { display: flex; justify-content: flex-end; margin: -6px 0 14px; }
+.gal-tools .btn { text-decoration: none; }
 /* 그 날만 비었을 때 — 격자 안에서 한 줄을 통째로 쓴다 */
 
 /* 적어 둔 줄바꿈을 그대로 살린다 — 문장마다 줄을 나누는 문구에만 붙인다 */

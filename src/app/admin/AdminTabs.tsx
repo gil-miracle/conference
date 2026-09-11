@@ -20,11 +20,17 @@ const TABS: { href: string; label: string; also?: string[] }[] = [
   { href: "/admin/settings", label: "설정" },
 ];
 
-export default function AdminTabs() {
+export default function AdminTabs({
+  galleryOnly = false,
+}: {
+  /** 사진 담당 — 게시판 하나만 보인다. 다른 탭은 들어가도 게시판으로 돌아온다 */
+  galleryOnly?: boolean;
+}) {
   const pathname = usePathname();
+  const tabs = galleryOnly ? TABS.filter((t) => t.href === "/admin/board") : TABS;
   return (
     <nav className="tabs">
-      {TABS.map((t) => (
+      {tabs.map((t) => (
         <Link
           key={t.href}
           href={t.href}
