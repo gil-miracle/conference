@@ -1853,12 +1853,16 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 .ms-title { margin: 8px 0 0; font-size: 0.92rem; word-break: keep-all; }
 .ms-meta { margin: 4px 0 0; font-size: 0.78rem; color: var(--ink-60); }
 /* 누르기 전에 자리가 있는지 같은 자리에서 보이게 — 인원을 버튼 안에 둔다 */
+/* 늘 두 줄 — 「신청하기」 위, 「n / m」 아래. 한 줄에 나란히 두면 폭이 좁은
+   칸에서 글자가 접혀 단추마다 높이가 달라진다 */
 .ms-pick {
   margin-top: 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 3px;
+  line-height: 1.3;
 }
 .ms-pick em {
   font-family: var(--mono);
@@ -2014,8 +2018,6 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   .ms-grid .ms-pick span,
   .ms-grid .ms-pick em { white-space: nowrap; }
   .ms-grid .ms-pick {
-    flex-wrap: wrap;
-    gap: 2px 8px;
     font-size: 0.82rem;
     padding-left: 10px;
     padding-right: 10px;
