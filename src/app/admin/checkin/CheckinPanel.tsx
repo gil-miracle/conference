@@ -226,10 +226,7 @@ export default function CheckinPanel({
   // 스캐너 effect 의존성으로 들어가므로 안정된 identity 유지
   const onScanResult = useCallback(
     (result: CheckinResult) => {
-      if (result.status === "ok")
-        showToast(
-          `✓ ${result.name} 체크인${result.room ? ` — ${result.room}` : ""}`
-        );
+      if (result.status === "ok") showToast(`✓ ${result.name} 체크인 완료`);
       else if (result.status === "already")
         showToast(`${result.name}님은 이미 체크인했어요.`, true);
       else if (result.status === "not_found")

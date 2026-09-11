@@ -6,6 +6,8 @@ import { checkinByToken, type CheckinResult } from "../actions/checkin";
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+const READY = "참가자 QR을 비춰주세요";
+
 /** 카메라 QR 스캐너 (html5-qrcode) — 연속 스캔, 3초 중복 방지 */
 export default function QrScanner({
   onResult,
@@ -15,6 +17,14 @@ export default function QrScanner({
   onClose: () => void;
 }) {
   const [status, setStatus] = useState<React.ReactNode>("카메라 여는 중…");
+  /* 결과는 잠깐만 보이고 다시 「비춰주세요」로 돌아간다. 줄 서서 연달아 찍는
+     자리라, 앞사람 이름이 남아 있으면 지금 찍힌 건지 아까 것인지 헷갈린다 */
+  const flashRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flash = (node: React.ReactNode, ms: number) => {
+    if (flashRef.current) clearTimeout(flashRef.current);
+    setStatus(node);
+    flashRef.current = setTimeout(() => setStatus(READY), ms);
+  };
   const lastRef = useRef<{ token: string; at: number }>({ token: "", at: 0 });
   const busyRef = useRef(false);
   // 콜백은 ref로 최신을 유지 — 부모 재렌더가 카메라를 재시작시키지 않게
@@ -68,20 +78,22 @@ export default function QrScanner({
             try {
               const res = await checkinByToken(token);
               onResultRef.current(res);
-              setStatus(
-                res.status === "ok" ? (
+              // 이름과 됐다는 말만 — 숙소는 데스크에서 따로 안내할 일이 없다
+              if (res.status === "ok")
+                flash(
                   <span>
                     ✓ <b>{res.name}</b> 체크인 완료
-                    {res.room ? ` — ${res.room}` : ""}
-                  </span>
-                ) : res.status === "already" ? (
+                  </span>,
+                  1000
+                );
+              else if (res.status === "already")
+                flash(
                   <span>
                     <b>{res.name}</b> 이미 체크인됨
-                  </span>
-                ) : (
-                  "등록되지 않은 QR"
-                )
-              );
+                  </span>,
+                  2000
+                );
+              else flash("등록되지 않은 QR", 2000);
             } finally {
               busyRef.current = false;
             }
@@ -95,7 +107,7 @@ export default function QrScanner({
           teardown();
           return;
         }
-        setStatus("참가자 QR을 비춰주세요");
+        setStatus(READY);
       } catch {
         if (!cancelled)
           setStatus(
@@ -106,6 +118,7 @@ export default function QrScanner({
 
     return () => {
       cancelled = true;
+      if (flashRef.current) clearTimeout(flashRef.current);
       teardown();
     };
   }, []);
