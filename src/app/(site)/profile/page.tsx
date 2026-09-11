@@ -53,8 +53,9 @@ export default async function ProfilePage({
           <PendingCard summary={summary} />
         ) : (
           <div className="reveal">
-            {/* 체크인 데스크에서 제일 먼저 여는 화면이다 — QR이 맨 위 */}
-            {summary.checkin_token && (
+            {/* 체크인 데스크에서 제일 먼저 여는 화면이다 — QR이 맨 위.
+                체크인되면 QR 카드는 내려가고 아래 카드들이 그 자리를 잇는다 */}
+            {summary.checkin_token && !summary.checked_in_at && (
               <QrCard
                 token={summary.checkin_token}
                 checkedInAt={summary.checked_in_at}

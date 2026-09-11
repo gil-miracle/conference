@@ -13,10 +13,7 @@ export default function TeamCard({
     <div className="my-card">
       <div className="eyebrow">조</div>
       {!open ? (
-        <>
-          <h3 className="tbd">아직 공개 전이에요</h3>
-          <small>배정이 끝나면 여기에 열려요.</small>
-        </>
+        <h3 className="tbd">아직 공개 전이에요</h3>
       ) : team ? (
         <>
           <h3>{team.name}</h3>

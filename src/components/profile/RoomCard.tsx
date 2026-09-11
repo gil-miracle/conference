@@ -21,10 +21,7 @@ export default function RoomCard({
     <div className="my-card room-card">
       <div className="eyebrow">숙소</div>
       {!open ? (
-        <>
-          <h3 className="tbd">아직 공개 전이에요</h3>
-          <small>배정이 끝나면 여기에 열려요.</small>
-        </>
+        <h3 className="tbd">아직 공개 전이에요</h3>
       ) : room ? (
         <>
           <h3>
