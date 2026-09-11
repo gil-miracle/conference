@@ -98,6 +98,18 @@ export default function RootLayout({
         <Script id="install-prompt" strategy="beforeInteractive">
           {`window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__installPrompt=e;window.dispatchEvent(new Event('installpromptready'))});`}
         </Script>
+        {/*
+          세션 물음을 HTML이 오자마자 던진다.
+
+          SessionProvider가 SWR로 /api/session을 부르는데, 그건 스크립트가 다
+          실려 하이드레이션이 끝난 뒤의 일이다. 그 사이(폰에서 1초 남짓) 상단
+          메뉴와 로그인 단추가 비어 있다. 여기서 먼저 던져 두면 답이 먼저 와
+          있어, 하이드레이션이 끝나는 순간 단추가 선다. SessionProvider가 이
+          약속을 한 번 받아 쓰고 지운다. 운영진 화면은 이 세션을 안 쓴다.
+        */}
+        <Script id="session-early" strategy="beforeInteractive">
+          {`if(!location.pathname.startsWith('/admin')){window.__session=fetch('/api/session')}`}
+        </Script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link

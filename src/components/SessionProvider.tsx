@@ -34,6 +34,25 @@ const SessionContext = createContext<{ session: SessionInfo; loaded: boolean }>(
 
 export const useSession = () => useContext(SessionContext);
 
+/**
+ * 머리(app/layout.tsx)에서 먼저 던져 둔 세션 물음이 있으면 그것을 받아 쓴다.
+ * 한 번 쓰고 지운다 — 다음 재검증부터는 보통대로 새로 묻는다.
+ */
+async function sessionFetcher(url: string): Promise<SessionInfo> {
+  const w = window as Window & { __session?: Promise<Response> };
+  const early = w.__session;
+  if (early) {
+    delete w.__session;
+    try {
+      const res = await early;
+      if (res.ok) return (await res.json()) as SessionInfo;
+    } catch {
+      // 먼저 던진 것이 실패했으면 보통대로 다시 묻는다
+    }
+  }
+  return jsonFetcher<SessionInfo>(url);
+}
+
 /** 지난번 세션을 적어 두는 자리 — 다음에 열 때 메뉴가 바로 서게 */
 export const SESSION_CACHE_KEY = "miracle.session";
 
@@ -56,7 +75,7 @@ export default function SessionProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { data } = useSWR<SessionInfo>("/api/session", jsonFetcher<SessionInfo>, {
+  const { data } = useSWR<SessionInfo>("/api/session", sessionFetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 30_000,
   });
@@ -65,7 +84,8 @@ export default function SessionProvider({
    * 지난번에 받은 세션을 먼저 깐다.
    *
    * /api/session은 Supabase에 한 번 다녀오느라 200ms 남짓 걸리고, 그 사이
-   * 상단 메뉴와 로그인 단추가 비어 있다가 뒤늦게 뜬다. 서버 화면과 같은
+   * 상단 메뉴와 로그인 단추가 비어 있다가 뒤늦게 뜬다. (물음 자체는 머리에서
+   * 먼저 던지지만, 처음 오는 사람에게는 이것도 없다.) 서버 화면과 같은
    * 값으로 하이드레이션한 뒤 곧바로 지난 값으로 채우면, 두 번째 방문부터는
    * 기다림이 눈에 띄지 않는다. 진짜 답이 오면 그것으로 덮는다.
    *
