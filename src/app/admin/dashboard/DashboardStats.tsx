@@ -68,7 +68,8 @@ export default function DashboardStats({ stats }: { stats: AdminStats }) {
         {pct}% ARRIVED · 갱신 {updated}
         {stats.pending > 0 && ` · 가입 승인 대기 ${stats.pending}`}
         {/* 취소는 위 어느 칸에도 안 든다 — 「명단은 89인데 왜 86이지」에 답하는 줄 */}
-        {stats.cancelled.all > 0 && ` · 참가 취소 ${stats.cancelled.all}`}
+        {/* 0053을 아직 안 돌린 DB는 이 칸이 없다 — 그것 때문에 대시보드가 죽으면 안 된다 */}
+        {(stats.cancelled?.all ?? 0) > 0 && ` · 참가 취소 ${stats.cancelled.all}`}
       </p>
     </>
   );
