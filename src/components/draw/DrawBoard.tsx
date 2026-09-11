@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useConfirm } from "@/components/Confirm";
 import { useNames, shortName } from "@/hooks/useNames";
+import { useSession } from "@/components/SessionProvider";
 import Shuffle from "./games/Shuffle";
 import Ladder from "./games/Ladder";
 import Roulette from "./games/Roulette";
@@ -29,9 +30,48 @@ type GameKey = (typeof GAMES)[number]["key"];
  */
 export default function DrawBoard() {
   const { names, loaded, add, remove, clear } = useNames();
+  const { session } = useSession();
   const confirm = useConfirm();
   const [input, setInput] = useState("");
   const [game, setGame] = useState<GameKey | null>(null);
+  const [teamBusy, setTeamBusy] = useState(false);
+  const [teamMsg, setTeamMsg] = useState<string | null>(null);
+
+  /*
+   * 우리 조 불러오기 — 조원 이름을 한 번에 넣는다. 조가 8명이면 손으로 치는
+   * 것 자체가 멈칫하는 시간이다. 이미 있는 이름은 건너뛴다(add가 그렇게 한다).
+   * 이름은 그 뒤로도 기기에만 남는다.
+   */
+  const loadTeam = async () => {
+    setTeamBusy(true);
+    setTeamMsg(null);
+    try {
+      const res = await fetch("/api/me/team", { cache: "no-store" });
+      const body = (await res.json()) as { names: string[] | null; team?: string; reason?: string };
+      if (!body.names) {
+        setTeamMsg(
+          body.reason === "not_open"
+            ? "조가 아직 공개 전이에요."
+            : body.reason === "no_team"
+              ? "아직 조가 없어요."
+              : "조원 명단을 불러오지 못했어요."
+        );
+        return;
+      }
+      const before = names.length;
+      add(body.names.join(","));
+      const fresh = body.names.filter((n) => !names.includes(n)).length;
+      setTeamMsg(
+        fresh === 0 && before > 0
+          ? `${body.team ?? "우리 조"} 조원은 이미 다 들어 있어요.`
+          : `${body.team ?? "우리 조"} 조원 ${fresh}명을 넣었어요.`
+      );
+    } catch {
+      setTeamMsg("조원 명단을 불러오지 못했어요.");
+    } finally {
+      setTeamBusy(false);
+    }
+  };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +94,20 @@ export default function DrawBoard() {
           추가
         </button>
       </form>
+      {/* 명단에 연결된 사람에게만 — 남에게는 불러올 조가 없다 */}
+      {session.bound && (
+        <div className="draw-team">
+          <button
+            type="button"
+            className="btn sm ghost"
+            disabled={teamBusy}
+            onClick={loadTeam}
+          >
+            {teamBusy ? "불러오는 중…" : "우리 조 불러오기"}
+          </button>
+          {teamMsg && <small>{teamMsg}</small>}
+        </div>
+      )}
 
       {loaded && names.length > 0 && (
         <>

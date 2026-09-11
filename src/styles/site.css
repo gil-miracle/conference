@@ -1507,6 +1507,9 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   font-size: 0.88rem;
 }
 .draw-add input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+/* 우리 조 불러오기 — 입력칸 아래 한 줄, 결과 문구는 단추 옆에 */
+.draw-team { display: flex; align-items: center; gap: 12px; margin: -6px 0 16px; }
+.draw-team small { font-size: 0.8rem; color: var(--ink-60); word-break: keep-all; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 7px; }
 .chip-x {
