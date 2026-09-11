@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     .select(
       "id,name,birth_date,phone,role,is_host,is_photographer,source,checked_in_at,auth_user_id,bound_at,bound_provider,room_id,team_id,no_stay," +
         "applicant_type,gender,cell_group,inviter,transport,arrive_day,arrive_time,stay,tshirt," +
-        "wordcard,wordcard_drawn_at," +
+        "wordcard,wordcard_drawn_at,cancelled_at," +
         "rooms!participants_room_id_fkey(building,room_no,leader_id),teams!participants_team_id_fkey(name)," +
         "wordcards!participants_wordcard_fkey(ref_en,slug)"
     )

@@ -52,6 +52,33 @@ function clean(input: ParticipantInput): {
 }
 
 /**
+ * 참가 취소 / 되돌리기.
+ *
+ * 못 오게 된 사람을 지우면 「원래 몇 명이었나」가 사라진다. 명단에는 남기고
+ * 집계에서만 뺀다 — 대시보드가 취소 수를 따로 보여 전체와 맞춰 볼 수 있다.
+ */
+export async function setCancelled(participantId: string, on: boolean): Promise<Result> {
+  const ctx = await getAdminContext();
+  if (!ctx) return { ok: false, message: "권한이 없어요." };
+
+  const { data, error } = await ctx.supabase
+    .from("participants")
+    .update({ cancelled_at: on ? new Date().toISOString() : null })
+    .eq("id", participantId)
+    .select("name")
+    .maybeSingle();
+  if (error || !data) return { ok: false, message: error?.message ?? "저장하지 못했어요." };
+  await logAdmin(ctx, on ? "cancel" : "cancel_undo", data.name);
+  revalidatePath("/admin");
+  return {
+    ok: true,
+    message: on
+      ? `${data.name} 님을 참가 취소로 표시했어요.`
+      : `${data.name} 님의 취소를 되돌렸어요.`,
+  };
+}
+
+/**
  * 사람 하나 추가.
  *
  * 교역자·멘토는 신청서를 쓰지 않으므로 시트에 없다. 화면에서 넣고

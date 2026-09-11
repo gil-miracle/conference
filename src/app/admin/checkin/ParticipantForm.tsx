@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   MANUAL_TYPES,
+  ARRIVE_DAYS,
   SIGNUP_FIELDS,
   STAFF_HIDDEN,
   STAFF_TYPES,
@@ -131,16 +132,24 @@ export default function ParticipantForm({
     ? SIGNUP_FIELDS.find((f) => f.key === "applicant_type")
     : null;
   const fields = staffOnly
-    ? []
+    ? staff
+      ? []
+      : // 현장접수는 도착 요일을 고른다 — 비우면 금·토 어느 칸에도 안 센다
+        SIGNUP_FIELDS.filter((f) => f.key === "arrive_day")
     : SIGNUP_FIELDS.filter((f) => !(staff && STAFF_HIDDEN.includes(f.key)));
 
-  /** 유형만은 코드가 아는 값이 있다 — 현장접수·교역자·멘토는 시트에서 오지 않는다 */
-  const choicesFor = (key: keyof SignupInfo) =>
-    key !== "applicant_type"
-      ? options[key] ?? []
-      : staffOnly
+  /** 유형·도착 요일은 코드가 아는 값이 있다 — 현장접수·교역자·멘토는 시트에서 오지 않는다 */
+  const choicesFor = (key: keyof SignupInfo) => {
+    if (key === "applicant_type")
+      return staffOnly
         ? MANUAL_TYPES
         : [...new Set([...(options[key] ?? []), ...STAFF_TYPES, WALKIN])];
+    if (key === "arrive_day")
+      return staffOnly
+        ? ARRIVE_DAYS
+        : [...new Set([...ARRIVE_DAYS, ...(options[key] ?? [])])];
+    return options[key] ?? [];
+  };
 
   const submit = () => {
     const value = { ...v };

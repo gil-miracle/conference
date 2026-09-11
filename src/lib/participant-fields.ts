@@ -37,6 +37,13 @@ export const STAFF_TYPES = ["교역자", "멘토"];
  */
 export const WALKIN = "현장접수";
 
+/**
+ * 도착 요일은 둘뿐이다. 현장접수는 신청서가 없어 비어 있는데, 비워 두면
+ * 대시보드의 금·토 도착 어느 칸에도 안 든다 — 추가할 때 고르게 한다.
+ * 값은 시트와 같은 꼴이어야 한다 (집계가 `(금)`·`(토)`를 본다).
+ */
+export const ARRIVE_DAYS = ["9월 11일(금)", "9월 12일(토)"];
+
 /** 추가 화면의 유형 — 신청서를 안 쓴 사람은 이 셋뿐이다 */
 export const MANUAL_TYPES = [WALKIN, ...STAFF_TYPES];
 

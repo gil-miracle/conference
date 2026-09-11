@@ -12,6 +12,7 @@ import { setHost, setPhotographer, setRole } from "../actions/role";
 import {
   removeParticipant,
   resetWordcard,
+  setCancelled,
   updateParticipant,
   type ParticipantInput,
 } from "../actions/participant";
@@ -133,6 +134,25 @@ export default function ParticipantDetail({
     if (demo) return setMsg("미리보기 모드 — 저장되지 않아요.");
     setBusy(true);
     const res = await resetWordcard(p.id);
+    setBusy(false);
+    setMsg(res.message);
+    if (res.ok) onChanged();
+  };
+
+  const toggleCancel = async () => {
+    if (!p) return;
+    const on = !p.cancelled_at;
+    if (on) {
+      const ok = await confirm({
+        message: `${p.name} 님을 참가 취소로 표시할까요? 명단에는 남고 대시보드 집계에서만 빠져요.`,
+        confirmLabel: "참가 취소",
+        danger: true,
+      });
+      if (!ok) return;
+    }
+    if (demo) return setMsg("미리보기 모드 — 저장되지 않아요.");
+    setBusy(true);
+    const res = await setCancelled(p.id, on);
     setBusy(false);
     setMsg(res.message);
     if (res.ok) onChanged();
@@ -380,6 +400,14 @@ export default function ParticipantDetail({
                   {p.is_photographer
                     ? "사진 담당에서 내리기"
                     : "사진 담당으로 지정"}
+                </button>
+                {/* 못 오게 된 사람 — 지우지 않고 표시만. 삭제는 「원래 몇 명이었나」를 지운다 */}
+                <button
+                  className="btn sm ghost full"
+                  disabled={busy}
+                  onClick={toggleCancel}
+                >
+                  {p.cancelled_at ? "참가 취소 되돌리기" : "참가 취소로 표시"}
                 </button>
                 <div className="pdetail-row2">
                   <button

@@ -774,6 +774,9 @@
 /* ── 방·조 삭제 (인원 0일 때만 노출되는 ✕) ─────────────────────── */
 .del-x { color: var(--coral); margin-left: 8px; }
 
+/* 참가 취소한 사람 — 명단에 남되 흐리게. 데스크에서 헷갈리지 않게 표도 붙는다 */
+.p-row.cancelled .info { opacity: 0.45; }
+.tagit[data-g="취소"] { color: var(--coral); border-color: var(--coral); }
 /* 체크인 완료 표시는 누르면 취소되는 버튼이다 */
 .p-row button.done { background: none; border: none; padding: 0; cursor: pointer; }
 .panel-hint { font-size: 0.76rem; color: var(--ink-60); margin-top: 12px; word-break: keep-all; }

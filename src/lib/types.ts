@@ -196,6 +196,8 @@ export type AdminParticipant = SignupInfo & {
   team_id: string | null;
   /** 숙박하지 않음 — 방을 안 주는 게 정상이라 미배정과 구분한다 */
   no_stay: boolean;
+  /** 참가 취소 시각 — 명단에는 남고 집계에서 빠진다 */
+  cancelled_at: string | null;
   /** 뽑은 말씀카드 — wordcards.id. 아직 안 뽑았으면 null */
   wordcard: string | null;
   wordcard_drawn_at: string | null;
@@ -288,6 +290,8 @@ export type AdminStats = {
   fri_in: StatTrio;
   sat_total: StatTrio;
   sat_in: StatTrio;
+  /** 참가 취소 — 위의 어느 수에도 안 든다. 전체와 맞춰 보라고 따로 준다 */
+  cancelled: StatTrio;
   /** 승인 대기 건수 */
   pending: number;
   rooms_total: number;

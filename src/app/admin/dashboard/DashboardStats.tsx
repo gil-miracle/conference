@@ -67,6 +67,8 @@ export default function DashboardStats({ stats }: { stats: AdminStats }) {
       <p className="upd">
         {pct}% ARRIVED · 갱신 {updated}
         {stats.pending > 0 && ` · 가입 승인 대기 ${stats.pending}`}
+        {/* 취소는 위 어느 칸에도 안 든다 — 「명단은 89인데 왜 86이지」에 답하는 줄 */}
+        {stats.cancelled.all > 0 && ` · 참가 취소 ${stats.cancelled.all}`}
       </p>
     </>
   );

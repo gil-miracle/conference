@@ -17,6 +17,8 @@ const WHAT: Record<string, string> = {
   unbind: "연결 해제",
   checkin: "체크인",
   checkin_undo: "체크인 취소",
+  cancel: "참가 취소",
+  cancel_undo: "참가 취소 되돌림",
   participant_delete: "참가자 삭제",
   photo_hide: "사진 숨김",
   photo_delete: "사진 삭제",
@@ -41,6 +43,7 @@ const WHAT: Record<string, string> = {
 /** 되돌릴 수 없는 일은 눈에 먼저 들어와야 한다 */
 const HEAVY = new Set([
   "reject",
+  "cancel",
   "room_delete",
   "team_delete",
   "role",

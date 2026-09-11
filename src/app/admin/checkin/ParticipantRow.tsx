@@ -25,7 +25,7 @@ export default function ParticipantRow({
     .join(" ");
 
   return (
-    <div className="p-row">
+    <div className={`p-row${p.cancelled_at ? " cancelled" : ""}`}>
       <div className="info">
         {/* 이름을 누르면 상세 — 목록에 다 못 싣는 신청 정보를 여기서 본다 */}
         <button className="pname" onClick={onOpen}>
@@ -35,6 +35,11 @@ export default function ParticipantRow({
           {tag && (
             <span className="tagit" data-g={tag}>
               {tag}
+            </span>
+          )}
+          {p.cancelled_at && (
+            <span className="tagit" data-g="취소">
+              취소
             </span>
           )}
           {p.role === "admin" && (
