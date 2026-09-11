@@ -36,10 +36,12 @@ export default function PhotoViewer({
   admin?: {
     onHide: (p: Photo) => void;
     onDelete: (p: Photo) => void;
-    /** 다음 날로 옮긴다 (1→2→3→1). 없으면 단추도 없다 */
-    onNextDay?: (p: Photo) => void;
-    /** 지금 며칠째 칸에 있는가 (1~3) — 단추에 적는다 */
+    /** 그날로 옮긴다 (1~3). 없으면 단추도 없다 */
+    onMoveDay?: (p: Photo, day: number) => void;
+    /** 지금 며칠째 칸에 있는가 (1~3) — 그날은 단추에서 뺀다 */
     dayOf?: (p: Photo) => number;
+    /** 날 수 — 단추를 이만큼 그린다 */
+    days?: number;
   };
 }) {
   const strip = useRef<HTMLDivElement | null>(null);
@@ -108,15 +110,23 @@ export default function PhotoViewer({
         <span className="pv-acts">
           {admin && (
             <>
-              {admin.onNextDay && admin.dayOf && (
-                <button
-                  type="button"
-                  title="다음 날로 옮기기"
-                  onClick={() => admin.onNextDay?.(photo)}
-                >
-                  DAY {admin.dayOf(photo)} ▸
-                </button>
-              )}
+              {/* 지금 날을 뺀 나머지 날들 — 한 번 눌러 바로 옮긴다. 「다음 날」로
+                  돌리면 1에서 3으로 가려고 두 번 눌러야 하고, 누를 때마다 보기가
+                  닫힌다 */}
+              {admin.onMoveDay &&
+                admin.dayOf &&
+                Array.from({ length: admin.days ?? 3 }, (_, i) => i + 1)
+                  .filter((d) => d !== admin.dayOf?.(photo))
+                  .map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      title={`DAY ${d}로 옮기기`}
+                      onClick={() => admin.onMoveDay?.(photo, d)}
+                    >
+                      DAY {d}로
+                    </button>
+                  ))}
               <button type="button" onClick={() => admin.onHide(photo)}>
                 {photo.hidden ? "다시 보이기" : "숨기기"}
               </button>

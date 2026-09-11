@@ -65,7 +65,12 @@ export default function GalleryPanel({
   const fileRef = useRef<HTMLInputElement>(null);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const down = useRef<{ x: number; y: number; id: string; touch: boolean } | null>(null);
+  const down = useRef<{
+    x: number;
+    y: number;
+    id: string;
+    touch: boolean;
+  } | null>(null);
   const moved = useRef(false);
   /* 끌고 놓은 손짓 뒤에는 브라우저가 클릭을 한 번 더 준다. 그대로 두면
      사진을 옮겨 놓자마자 그 사진이 크게 열린다 */
@@ -111,27 +116,31 @@ export default function GalleryPanel({
     if (fileRef.current) fileRef.current.value = "";
   }
 
-  /* 다음 날로 (1→2→3→1). 옮기면 지금 칸에서 사라지므로 보기도 닫는다 */
-  async function onNextDay(photo: Photo) {
+  /* 고른 날로. 옮기면 지금 칸에서 사라지므로 보기도 닫는다 */
+  async function onMoveDay(photo: Photo, target: number) {
     if (guard()) return;
-    const next = (photoDay(photo) + 1) % DAYS.length;
     setViewing(null);
-    setRows((prev) => prev.map((p) => (p.id === photo.id ? { ...p, day: next + 1 } : p)));
-    await setPhotoDay(photo.id, next + 1);
-    showToast(`DAY ${next + 1}로 옮겼어요.`);
+    setRows((prev) =>
+      prev.map((p) => (p.id === photo.id ? { ...p, day: target } : p)),
+    );
+    await setPhotoDay(photo.id, target);
+    showToast(`DAY ${target}로 옮겼어요.`);
   }
 
   async function onHide(photo: Photo) {
     if (guard()) return;
     const next = !photo.hidden;
-    setRows((prev) => prev.map((p) => (p.id === photo.id ? { ...p, hidden: next } : p)));
+    setRows((prev) =>
+      prev.map((p) => (p.id === photo.id ? { ...p, hidden: next } : p)),
+    );
     await setPhotoHidden(photo.id, next);
   }
 
   async function onDelete(photo: Photo) {
     if (guard()) return;
     const ok = await confirm({
-      message: "이 사진을 아주 지울까요? 되돌릴 수 없어요. 잠깐 내려 두려면 숨기기를 쓰세요.",
+      message:
+        "이 사진을 아주 지울까요? 되돌릴 수 없어요. 잠깐 내려 두려면 숨기기를 쓰세요.",
       confirmLabel: "삭제",
       danger: true,
     });
@@ -210,7 +219,9 @@ export default function GalleryPanel({
     // 화면은 이미 바뀐 차례를 보여주고 있다 — 저장은 뒤따라간다.
     // 열어 둔 날의 사진만 넘긴다 — 날마다 따로 세는 차례라 다른 날은 그대로
     reorderPhotos(
-      rowsRef.current.filter((p) => photoDay(p) === dayRef.current).map((p) => p.id)
+      rowsRef.current
+        .filter((p) => photoDay(p) === dayRef.current)
+        .map((p) => p.id),
     );
   };
 
@@ -219,7 +230,10 @@ export default function GalleryPanel({
      끌어서 바꾼 자리도 같은 뜻으로 남는다 */
   const shown = rows.filter((p) => photoDay(p) === day).reverse();
   /* 보기는 열어 둔 날 안에서만 넘긴다 */
-  const viewingIn = viewing === null ? null : shown.findIndex((p) => p.id === rows[viewing]?.id);
+  const viewingIn =
+    viewing === null
+      ? null
+      : shown.findIndex((p) => p.id === rows[viewing]?.id);
 
   return (
     <>
@@ -246,7 +260,9 @@ export default function GalleryPanel({
         </div>
       </nav>
       <div className="gal-mod-head">
-        <b>DAY {day + 1} · 사진 {shown.length}장</b>
+        <b>
+          DAY {day + 1} · 사진 {shown.length}장
+        </b>
         <span>
           <input
             ref={fileRef}
@@ -271,7 +287,9 @@ export default function GalleryPanel({
       )}
 
       {shown.length === 0 ? (
-        <p className="msg">이 날 올라온 사진이 아직 없어요. 올리면 DAY {day + 1}에 들어가요.</p>
+        <p className="msg">
+          이 날 올라온 사진이 아직 없어요. 올리면 DAY {day + 1}에 들어가요.
+        </p>
       ) : (
         <>
           <p className="msg">
@@ -326,7 +344,13 @@ export default function GalleryPanel({
             setViewing(rows.findIndex((p) => p.id === shown[n].id));
           }}
           onClose={() => setViewing(null)}
-          admin={{ onHide, onDelete, onNextDay, dayOf: (p) => photoDay(p) + 1 }}
+          admin={{
+            onHide,
+            onDelete,
+            onMoveDay,
+            dayOf: (p) => photoDay(p) + 1,
+            days: DAYS.length,
+          }}
         />
       )}
       <Toast toast={toast} />
