@@ -31,12 +31,6 @@ function resolveSiteUrl(): URL {
   return new URL("http://localhost:3000");
 }
 
-/** 아이폰 세로 화면 — 폭·높이(pt)·배율. 그림 파일은 이 곱(px)으로 이름 짓는다 */
-const SPLASH: [number, number, number][] = [
-  [375, 667, 2], [414, 736, 3], [375, 812, 3], [414, 896, 2], [414, 896, 3],
-  [390, 844, 3], [428, 926, 3], [393, 852, 3], [430, 932, 3], [402, 874, 3], [440, 956, 3],
-];
-
 export const metadata: Metadata = {
   metadataBase: resolveSiteUrl(),
   title: "MIRACLE — 2026 GIL Community Conference",
@@ -52,16 +46,6 @@ export const metadata: Metadata = {
     capable: true,
     title: "MIRACLE",
     statusBarStyle: "default",
-    /*
-     * 홈 화면에서 열 때 첫 화면. 아이폰은 매니페스트의 배경색을 안 보고 이
-     * 그림이 없으면 흰 화면을 띄운다 — 기기 크기마다 한 장씩 골라 준다
-     * (public/splash/, 말씀카드 배경을 크림 바탕 가운데에). 안드로이드는
-     * 매니페스트 배경색+아이콘으로 제 스플래시를 그리므로 여기 해당이 없다.
-     */
-    startupImage: SPLASH.map(([w, h, r]) => ({
-      url: `/splash/${w * r}x${h * r}.jpg`,
-      media: `(device-width: ${w}px) and (device-height: ${h}px) and (-webkit-device-pixel-ratio: ${r}) and (orientation: portrait)`,
-    })),
   },
   /*
    * 탭 아이콘도 앱 로고로. 16~32px까지 줄어드는 자리라 작은 판을 따로 굽는다 —
