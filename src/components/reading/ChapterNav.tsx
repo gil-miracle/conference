@@ -19,30 +19,46 @@ export default function ChapterNav({
   chapters,
   at,
   place,
+  base = "/reading",
+  onPick,
 }: {
   book: string;
   chapters: readonly number[];
   at: number;
   place: "top" | "bottom";
+  /** 장 주소 앞머리 — 통독은 /reading, 셋째 날 QT는 /qt/3 */
+  base?: string;
+  /**
+   * 있으면 화면을 옮기지 않고 이것을 부른다 — 장을 다 그려 둔 화면(ChapterReader)
+   * 에서 본문만 바꿀 때. 없으면 꺾쇠가 링크라 그 장 주소로 간다
+   */
+  onPick?: (n: number) => void;
 }) {
   const router = useRouter();
   const i = chapters.indexOf(at);
   const prev = chapters[i - 1];
   const next = chapters[i + 1];
+  const pick = (n: number) => (onPick ? onPick(n) : router.push(`${base}/${n}`));
+
+  const arrow = (n: number | undefined, dir: "left" | "right") =>
+    !n ? (
+      <span className="ch-arrow off" aria-hidden="true">
+        <Chevron dir={dir} />
+      </span>
+    ) : onPick ? (
+      <button type="button" className="ch-arrow" aria-label={`${n}장`} onClick={() => onPick(n)}>
+        <Chevron dir={dir} />
+      </button>
+    ) : (
+      <Link className="ch-arrow" href={`${base}/${n}`} aria-label={`${n}장`}>
+        <Chevron dir={dir} />
+      </Link>
+    );
 
   return (
     <nav className={`ch-nav ${place}`} aria-label="장 이동">
       {/* 첫 장·끝 장에서도 자리는 남긴다 — 사라지면 제목이 좌우로 흔들린다 */}
-      {prev ? (
-        <Link className="ch-arrow" href={`/reading/${prev}`} aria-label={`${prev}장`}>
-          <Chevron dir="left" />
-        </Link>
-      ) : (
-        <span className="ch-arrow off" aria-hidden="true">
-          <Chevron dir="left" />
-        </span>
-      )}
-
+      {arrow(prev, "left")}
       <div className="ch-pick">
         <b>
           {book} {at}장
@@ -51,7 +67,7 @@ export default function ChapterNav({
         <select
           aria-label="장 고르기"
           value={at}
-          onChange={(e) => router.push(`/reading/${e.target.value}`)}
+          onChange={(e) => pick(Number(e.target.value))}
         >
           {chapters.map((c) => (
             <option key={c} value={c}>
@@ -61,15 +77,7 @@ export default function ChapterNav({
         </select>
       </div>
 
-      {next ? (
-        <Link className="ch-arrow" href={`/reading/${next}`} aria-label={`${next}장`}>
-          <Chevron dir="right" />
-        </Link>
-      ) : (
-        <span className="ch-arrow off" aria-hidden="true">
-          <Chevron dir="right" />
-        </span>
-      )}
+      {arrow(next, "right")}
     </nav>
   );
 }

@@ -64,12 +64,12 @@ export function getChapter(n: number): BibleChapter | null {
 }
 
 /**
- * 아침 QT에 딸린 통독 — 그날 QT 화면 아래에 장별로 싣는다.
+ * 여러 장짜리 아침 QT 본문 — 마가복음 통독처럼 한 장씩 좌우로 넘긴다.
  *
- * 둘째 날은 시편 QT 뒤에 역대상 1~3장을 함께 읽는다. 마가복음 통독과 같은
- * 「절번호 본문」 원문을 같은 파서로 나눈다. QT 본문(content.ts)에 넣지
- * 않는 것은 133절이 참가자 화면 번들에 실려 나가지 않게 하려는 것이다 —
- * 이 표는 QT 페이지(서버)만 읽는다.
+ * 셋째 날 QT는 역대상 1~3장이다. 마가복음 통독과 같은 「절번호 본문」 원문을
+ * 같은 파서로 나눈다. QT 본문(content.ts)에 넣지 않는 것은 133절이 참가자
+ * 화면 번들에 실려 나가지 않게 하려는 것이다 — 이 표는 QT 페이지(서버)만
+ * 읽는다. 묵상·기도는 content.ts의 그날 qt에 그대로 있다.
  */
 export type QtReading = {
   book: string;
@@ -77,10 +77,10 @@ export type QtReading = {
 };
 
 const QT_READINGS: Record<string, { book: string; raw: Record<number, string> }> = {
-  "2": { book: "역대상", raw: CHRONICLES_1_3 },
+  "3": { book: "역대상", raw: CHRONICLES_1_3 },
 };
 
-/** 그날 QT의 통독 — 없는 날은 null */
+/** 그날 QT의 여러 장 본문 — 없는 날은 null */
 export function getQtReading(day: string): QtReading | null {
   const found = QT_READINGS[day];
   if (!found) return null;

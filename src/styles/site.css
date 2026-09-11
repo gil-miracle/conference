@@ -1442,15 +1442,6 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 }
 
 /* ── 아침 QT ────────────────────────────────────────────────── */
-/* QT 아래 통독 — 장마다 작은 제목을 세워 어디까지 읽었는지 보이게 */
-.qt-reading { margin-top: 28px; }
-.qt-reading .qt-ch {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.22em;
-  color: var(--coral);
-  margin: 0 0 10px;
-}
 .qt-head { margin-bottom: 24px; }
 .qt-head h3 {
   font-family: "Nanum Myeongjo", Georgia, serif;
@@ -1946,13 +1937,20 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
   display: grid;
   place-items: center;
   color: var(--ink);
-  transition: background 0.15s, color 0.15s;
+  /* 링크였다가 단추가 됐다 — 브라우저가 주는 회색 바탕·테두리를 지운다 */
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  transition: color 0.15s;
 }
 .ch-arrow svg { width: 19px; height: 19px; }
-.ch-arrow:hover { background: var(--coral); color: var(--cream); }
+/* 채우지 않는다 — 꺾쇠 하나에 코럴 덩어리가 앉으면 제목보다 눈에 먼저 온다 */
+.ch-arrow:hover { color: var(--coral); }
 /* 첫 장·끝 장에서도 자리는 남긴다 — 사라지면 제목이 좌우로 흔들린다 */
-.ch-arrow.off { opacity: 0.2; }
-.ch-arrow.off:hover { background: none; color: var(--ink); }
+.ch-arrow.off { opacity: 0.2; cursor: default; }
+.ch-arrow.off:hover { color: var(--ink); }
 
 .ch-pick {
   position: relative;

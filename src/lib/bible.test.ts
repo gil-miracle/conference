@@ -58,9 +58,9 @@ describe("통독 범위", () => {
   });
 });
 
-describe("QT 통독", () => {
-  it("둘째 날은 역대상 1~3장 — 절 수가 원문(54·55·24)과 같다", () => {
-    const r = getQtReading("2");
+describe("QT 여러 장 본문", () => {
+  it("셋째 날은 역대상 1~3장 — 절 수가 원문(54·55·24)과 같다", () => {
+    const r = getQtReading("3");
     expect(r?.book).toBe("역대상");
     expect(r?.chapters.map((c) => c.n)).toEqual([1, 2, 3]);
     expect(r?.chapters.map((c) => c.verses.length)).toEqual([54, 55, 24]);
@@ -69,7 +69,7 @@ describe("QT 통독", () => {
       expect(c.verses.map((v) => v.n)).toEqual(c.verses.map((_, i) => i + 1));
   });
 
-  it("통독이 없는 날은 null", () => {
-    expect(getQtReading("3")).toBeNull();
+  it("한 단락짜리 날은 null", () => {
+    expect(getQtReading("2")).toBeNull();
   });
 });

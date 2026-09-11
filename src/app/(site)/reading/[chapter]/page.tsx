@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
-import ChapterNav from "@/components/reading/ChapterNav";
+import ChapterReader from "@/components/reading/ChapterReader";
 import SpeakerHead from "@/components/SpeakerHead";
 import {
   READING_BOOK,
@@ -42,8 +42,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ReadingChapterPage({ params }: Props) {
   const { chapter } = await params;
   const n = Number(chapter);
-  const found = getChapter(n);
-  if (!found) notFound();
+  if (!getChapter(n)) notFound();
+  // 열 장을 다 실어 둔다 — 장을 넘길 때 본문만 바뀌고 머리는 그대로다
+  const chapters = READING_CHAPTERS.map((c) => getChapter(c)).filter(
+    (c): c is NonNullable<typeof c> => c !== null,
+  );
 
   const speaker = getSpeaker(READING_SPEAKER_ID);
   const placed = getSpeakerSession(READING_SPEAKER_ID);
@@ -59,37 +62,12 @@ export default async function ReadingChapterPage({ params }: Props) {
           <h3>{placed?.item.sermonTitle ?? `${READING_BOOK} 통독`}</h3>
         </div>
 
-        {/* 위아래 양쪽에 둔다 — 다 읽고 나면 위 꺾쇠는 화면 밖에 있다 */}
-        <ChapterNav
+        <ChapterReader
           book={READING_BOOK}
-          chapters={READING_CHAPTERS}
-          at={n}
-          place="top"
-        />
-
-        {found.verses.length > 0 ? (
-          <blockquote className="spk-verse reveal">
-            {found.verses.map((v) => (
-              <p className="v" key={v.n}>
-                <b className="vn">{v.n}</b>
-                {v.text}
-              </p>
-            ))}
-            <cite>
-              {READING_BOOK} {n}장 · {READING_TRANSLATION}
-            </cite>
-          </blockquote>
-        ) : (
-          <p className="msg ch-empty">
-            {n}장 본문은 준비 중이에요. 성경을 펴서 함께 읽어요.
-          </p>
-        )}
-
-        <ChapterNav
-          book={READING_BOOK}
-          chapters={READING_CHAPTERS}
-          at={n}
-          place="bottom"
+          translation={READING_TRANSLATION}
+          chapters={chapters}
+          initial={n}
+          base="/reading"
         />
       </div>
     </section>
