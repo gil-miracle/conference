@@ -529,6 +529,13 @@ nav.site {
   margin: 0 auto;
 }
 .wc-kinds { margin-bottom: -1px; }
+/* 말씀카드 탭은 검게 채우지 않는다 — 카드 위에 검은 덩어리가 얹히면 카드보다
+   먼저 보인다. 고른 탭은 종이색에 글자만 진하게, 아래 코럴 줄로 표를 낸다 */
+.wc-kinds button.on {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: inset 0 -3px 0 var(--coral);
+}
 /* 뽑기 전 — 카드 자리를 미리 잡아 둔다. 뽑고 나서 아래가 밀리면 안 된다 */
 .wcard-back {
   aspect-ratio: 1/1;
