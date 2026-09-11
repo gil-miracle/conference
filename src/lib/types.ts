@@ -156,6 +156,8 @@ export type Photo = {
   hidden?: boolean;
   /** 보여 줄 차례 — 운영진이 손으로 정한다 (0039) */
   sort_order?: number | null;
+  /** 행사 며칠째 사진인가 1~3 — 올린 사람이 고른다 (0049). 없으면 올린 시각으로 */
+  day?: number | null;
   created_at: string;
 };
 

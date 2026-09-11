@@ -80,6 +80,8 @@ export async function savePhoto(input: {
   public_id: string;
   width: number | null;
   height: number | null;
+  /** 행사 며칠째 사진인가 1~3 — 올리는 화면에서 고른 날 */
+  day?: number;
 }) {
   const ctx = await getBoundParticipant();
   if (!ctx || ctx.me.role !== "admin") return { ok: false as const };
@@ -101,6 +103,8 @@ export async function savePhoto(input: {
       cloudinary_public_id: input.public_id,
       width: clamp(input.width),
       height: clamp(input.height),
+      // 1~3 밖이면 비워 보낸다 — DB가 올린 날로 채운다 (0049)
+      day: input.day && input.day >= 1 && input.day <= 3 ? Math.floor(input.day) : null,
     })
     .select()
     .single();

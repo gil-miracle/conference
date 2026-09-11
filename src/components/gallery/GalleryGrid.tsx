@@ -5,6 +5,7 @@ import PageHead from "@/components/PageHead";
 import PhotoViewer from "@/components/gallery/PhotoViewer";
 import { CameraIcon } from "@/components/icons";
 import { thumbUrl } from "@/lib/cloudinary";
+import { DAYS, photoDay, todayDay } from "@/lib/gallery-days";
 import type { Photo } from "@/lib/types";
 
 /**
@@ -17,26 +18,6 @@ import type { Photo } from "@/lib/types";
  */
 const PAGE = 200;
 
-/** 행사 사흘. 사진이 어느 날 것인지는 찍힌 시각으로 가른다 */
-const DAYS = ["2026-09-11", "2026-09-12", "2026-09-13"] as const;
-
-/**
- * 사진 한 장이 속한 날.
- *
- * 행사 전에 올라온 시험 사진이나 새벽 2시에 찍혀 날짜가 넘어간 사진이
- * 어느 탭에도 없으면 올린 사람은 사라졌다고 여긴다. 범위 밖은 가까운
- * 쪽 끝날로 붙여 어디서든 보이게 한다.
- */
-function dayOf(createdAt: string): number {
-  // 한국 시간 기준으로 날짜만 뽑는다 — 서버·브라우저 시간대가 달라도 같게 나온다
-  const date = new Date(createdAt).toLocaleDateString("sv-SE", {
-    timeZone: "Asia/Seoul",
-  });
-  const i = DAYS.indexOf(date as (typeof DAYS)[number]);
-  if (i >= 0) return i;
-  return date < DAYS[0] ? 0 : DAYS.length - 1;
-}
-
 /**
  * 우리의 순간들 — 보는 자리다.
  *
@@ -47,7 +28,7 @@ function dayOf(createdAt: string): number {
 export default function GalleryGrid({ initialPhotos }: { initialPhotos: Photo[] }) {
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
   /* 오늘이 행사 중이면 오늘 탭으로 연다 — 현장에서 열면 방금 찍은 것이 보여야 한다 */
-  const [day, setDay] = useState(() => dayOf(new Date().toISOString()));
+  const [day, setDay] = useState(todayDay);
   const [hasMore, setHasMore] = useState(initialPhotos.length === PAGE);
   const [viewing, setViewing] = useState<number | null>(null);
 
@@ -66,7 +47,7 @@ export default function GalleryGrid({ initialPhotos }: { initialPhotos: Photo[] 
   /* 운영진이 정한 차례대로. 사진은 여러 사람 폰에서 모여 와서 올린 시각이
      찍은 시각과 다르다 — 저녁 사진이 아침 사진 앞에 서는 일이 생긴다 */
   const shown = photos
-    .filter((p) => dayOf(p.created_at) === day)
+    .filter((p) => photoDay(p) === day)
     .sort(
       (a, b) =>
         (a.sort_order ?? 0) - (b.sort_order ?? 0) ||

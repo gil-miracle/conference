@@ -6,9 +6,15 @@ import PhotoViewer from "@/components/gallery/PhotoViewer";
 import { useConfirm } from "@/components/Confirm";
 import { useToast } from "@/hooks/useToast";
 import { thumbUrl } from "@/lib/cloudinary";
+import { DAYS, photoDay, todayDay } from "@/lib/gallery-days";
 import { uploadOnePhoto } from "@/lib/gallery-upload";
 import type { Photo } from "@/lib/types";
-import { deletePhotoAdmin, reorderPhotos, setPhotoHidden } from "../actions/moderation";
+import {
+  deletePhotoAdmin,
+  reorderPhotos,
+  setPhotoDay,
+  setPhotoHidden,
+} from "../actions/moderation";
 
 /** 손가락으로 잡을 때 이만큼 누르고 있어야 집힌다 — 그 전엔 스크롤이다 */
 const HOLD_MS = 220;
@@ -25,6 +31,10 @@ const SLOP = 8;
  * 차례는 끌어서 바꾼다. 사진은 여러 사람 폰에서 모여 와 올린 시각이 찍은
  * 시각과 다르다 — 저녁 사진이 아침 사진 앞에 서는 일이 생긴다.
  *
+ * 날은 참가자 화면과 같이 DAY 1·2·3으로 가른다. 올리는 사진은 지금 열어 둔
+ * 날에 들어가고, 잘못 들어간 것은 크게 보기에서 다음 날로 옮긴다 — 금요일
+ * 사진을 토요일에 몰아 올리는 일이 흔해서 올린 시각으로는 못 가른다.
+ *
  * 마우스는 누르는 즉시 집힌다. 손가락은 잠깐 누르고 있어야 집힌다 — 안
  * 그러면 화면을 넘기려 할 때마다 사진이 딸려 온다.
  */
@@ -40,6 +50,10 @@ export default function GalleryPanel({
   const [rows, setRows] = useState<Photo[]>(initial);
   const rowsRef = useRef(rows);
   rowsRef.current = rows;
+  /* 오늘이 행사 중이면 오늘 칸으로 연다 — 현장에서 열면 방금 찍은 것을 올리는 자리다 */
+  const [day, setDay] = useState(todayDay);
+  const dayRef = useRef(day);
+  dayRef.current = day;
   const [uploading, setUploading] = useState<string | null>(null);
   const [viewing, setViewing] = useState<number | null>(null);
   const [held, setHeld] = useState<string | null>(null);
@@ -85,7 +99,7 @@ export default function GalleryPanel({
     const list = Array.from(files).slice(0, 20);
     for (let i = 0; i < list.length; i++) {
       setUploading(`${i + 1}/${list.length}`);
-      const result = await uploadOnePhoto(list[i]);
+      const result = await uploadOnePhoto(list[i], day + 1);
       if (!result.ok) {
         showToast(result.message, true);
         break;
@@ -95,6 +109,16 @@ export default function GalleryPanel({
     }
     setUploading(null);
     if (fileRef.current) fileRef.current.value = "";
+  }
+
+  /* 다음 날로 (1→2→3→1). 옮기면 지금 칸에서 사라지므로 보기도 닫는다 */
+  async function onNextDay(photo: Photo) {
+    if (guard()) return;
+    const next = (photoDay(photo) + 1) % DAYS.length;
+    setViewing(null);
+    setRows((prev) => prev.map((p) => (p.id === photo.id ? { ...p, day: next + 1 } : p)));
+    await setPhotoDay(photo.id, next + 1);
+    showToast(`DAY ${next + 1}로 옮겼어요.`);
   }
 
   async function onHide(photo: Photo) {
@@ -183,14 +207,43 @@ export default function GalleryPanel({
     dragged.current = true;
     if (!moved.current) return;
     moved.current = false;
-    // 화면은 이미 바뀐 차례를 보여주고 있다 — 저장은 뒤따라간다
-    reorderPhotos(rowsRef.current.map((p) => p.id));
+    // 화면은 이미 바뀐 차례를 보여주고 있다 — 저장은 뒤따라간다.
+    // 열어 둔 날의 사진만 넘긴다 — 날마다 따로 세는 차례라 다른 날은 그대로
+    reorderPhotos(
+      rowsRef.current.filter((p) => photoDay(p) === dayRef.current).map((p) => p.id)
+    );
   };
+
+  const shown = rows.filter((p) => photoDay(p) === day);
+  /* 보기는 열어 둔 날 안에서만 넘긴다 */
+  const viewingIn = viewing === null ? null : shown.findIndex((p) => p.id === rows[viewing]?.id);
 
   return (
     <>
+      {/* 게시판 갈래(BoardTabs)와 같은 모양 — 그 아래 한 단 더 갈라지는 것이라
+          같은 옷을 입힌다. 날마다 몇 장인지 옆에 적는다 */}
+      <nav className="subtabs">
+        <div className="subtabs-in">
+          {DAYS.map((_, i) => {
+            const n = rows.filter((p) => photoDay(p) === i).length;
+            return (
+              <button
+                key={i}
+                type="button"
+                className={day === i ? "on" : ""}
+                onClick={() => {
+                  setDay(i);
+                  setViewing(null);
+                }}
+              >
+                DAY {i + 1} {n > 0 && <em>{n}</em>}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
       <div className="gal-mod-head">
-        <b>사진 {rows.length}장</b>
+        <b>DAY {day + 1} · 사진 {shown.length}장</b>
         <span>
           <input
             ref={fileRef}
@@ -214,8 +267,8 @@ export default function GalleryPanel({
         <p className="msg err">Cloudinary 설정 전이라 업로드가 꺼져 있어요.</p>
       )}
 
-      {rows.length === 0 ? (
-        <p className="msg">아직 올라온 사진이 없어요.</p>
+      {shown.length === 0 ? (
+        <p className="msg">이 날 올라온 사진이 아직 없어요. 올리면 DAY {day + 1}에 들어가요.</p>
       ) : (
         <>
           <p className="msg">
@@ -228,7 +281,7 @@ export default function GalleryPanel({
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
           >
-            {rows.map((photo, i) => (
+            {shown.map((photo) => (
               <div
                 key={photo.id}
                 data-photo={photo.id}
@@ -242,7 +295,7 @@ export default function GalleryPanel({
                   className="cell-open"
                   onClick={() => {
                     if (dragged.current) return void (dragged.current = false);
-                    setViewing(i);
+                    setViewing(rows.findIndex((p) => p.id === photo.id));
                   }}
                 >
                   {cloudName && (
@@ -261,13 +314,16 @@ export default function GalleryPanel({
         </>
       )}
 
-      {viewing !== null && rows[viewing] && (
+      {viewingIn !== null && viewingIn >= 0 && (
         <PhotoViewer
-          photos={rows}
-          at={viewing}
-          onMove={(n) => n >= 0 && n < rows.length && setViewing(n)}
+          photos={shown}
+          at={viewingIn}
+          onMove={(n) => {
+            if (n < 0 || n >= shown.length) return;
+            setViewing(rows.findIndex((p) => p.id === shown[n].id));
+          }}
           onClose={() => setViewing(null)}
-          admin={{ onHide, onDelete }}
+          admin={{ onHide, onDelete, onNextDay, dayOf: (p) => photoDay(p) + 1 }}
         />
       )}
       <Toast toast={toast} />

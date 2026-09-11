@@ -26,7 +26,7 @@ export default async function AdminBoardPage() {
       ctx.supabase
         .from("photos")
         .select(
-          "id,participant_id,cloudinary_public_id,width,height,hidden,sort_order,created_at"
+          "id,participant_id,cloudinary_public_id,width,height,hidden,sort_order,day,created_at"
         )
         // 참가자가 보는 것과 같은 차례로 늘어놓는다 — 끌어서 고치는 자리라
         // 여기서 보이는 순서가 곧 저기서 보이는 순서여야 한다

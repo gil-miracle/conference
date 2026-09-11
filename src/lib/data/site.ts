@@ -160,7 +160,7 @@ export async function getPhotos(limit = 24): Promise<Photo[]> {
 
   const { data } = await supabase
     .from("photos")
-    .select("id,participant_id,cloudinary_public_id,width,height,hidden,sort_order,created_at")
+    .select("id,participant_id,cloudinary_public_id,width,height,hidden,sort_order,day,created_at")
     .eq("hidden", false)
     .order("created_at", { ascending: false })
     .limit(limit);

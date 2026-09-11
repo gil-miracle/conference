@@ -10,7 +10,8 @@ export type UploadOutcome =
  * 사진 1장 업로드 파이프라인 (설계서 6장):
  * 클라이언트 압축 → 서버 액션 서명 → Cloudinary 직접 업로드 → 메타데이터 저장
  */
-export async function uploadOnePhoto(file: File): Promise<UploadOutcome> {
+/** @param day 행사 며칠째 사진인가 1~3 — 올리는 화면에서 고른 날 */
+export async function uploadOnePhoto(file: File, day?: number): Promise<UploadOutcome> {
   try {
     const compressed = await imageCompression(file, {
       maxWidthOrHeight: 2000,
@@ -65,6 +66,7 @@ export async function uploadOnePhoto(file: File): Promise<UploadOutcome> {
       public_id: json.public_id,
       width: json.width,
       height: json.height,
+      day,
     });
     if (!saved.ok || !saved.photo)
       return { ok: false, message: "저장에 실패했어요." };

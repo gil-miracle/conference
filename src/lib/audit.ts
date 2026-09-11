@@ -11,6 +11,7 @@ export type AuditAction =
   | "checkin_undo"
   | "participant_delete"
   | "photo_hide"
+  | "photo_day"
   | "photo_delete"
   | "note_hide"
   | "note_delete"

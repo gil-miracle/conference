@@ -33,7 +33,14 @@ export default function PhotoViewer({
   onClose: () => void;
   /* 운영진 화면에서만 — 크게 본 자리에서 바로 내리거나 지운다.
      손톱만 한 칸에서는 무슨 사진인지 보고 판단할 수가 없다 */
-  admin?: { onHide: (p: Photo) => void; onDelete: (p: Photo) => void };
+  admin?: {
+    onHide: (p: Photo) => void;
+    onDelete: (p: Photo) => void;
+    /** 다음 날로 옮긴다 (1→2→3→1). 없으면 단추도 없다 */
+    onNextDay?: (p: Photo) => void;
+    /** 지금 며칠째 칸에 있는가 (1~3) — 단추에 적는다 */
+    dayOf?: (p: Photo) => number;
+  };
 }) {
   const strip = useRef<HTMLDivElement | null>(null);
   const photo = photos[at];
@@ -92,6 +99,15 @@ export default function PhotoViewer({
         <span className="pv-acts">
           {admin && (
             <>
+              {admin.onNextDay && admin.dayOf && (
+                <button
+                  type="button"
+                  title="다음 날로 옮기기"
+                  onClick={() => admin.onNextDay?.(photo)}
+                >
+                  DAY {admin.dayOf(photo)} ▸
+                </button>
+              )}
               <button type="button" onClick={() => admin.onHide(photo)}>
                 {photo.hidden ? "다시 보이기" : "숨기기"}
               </button>

@@ -35,6 +35,16 @@ export async function deleteGuestbookAdmin(id: string) {
   revalidatePath("/");
 }
 
+/** 사진을 다른 날로 옮긴다 — 금요일 사진을 토요일에 올렸을 때 (0049) */
+export async function setPhotoDay(id: string, day: number) {
+  const ctx = await getAdminContext();
+  if (!ctx || !(day >= 1 && day <= 3)) return;
+  await ctx.supabase.from("photos").update({ day }).eq("id", id);
+  await logAdmin(ctx, "photo_day", null, { id, day });
+  revalidatePath("/admin/board");
+  revalidatePath("/");
+}
+
 export async function setPhotoHidden(id: string, hidden: boolean) {
   const ctx = await getAdminContext();
   if (!ctx) return;
