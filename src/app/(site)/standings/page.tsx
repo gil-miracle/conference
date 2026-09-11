@@ -3,13 +3,21 @@ import PageHead from "@/components/PageHead";
 import Locked from "@/components/Locked";
 import { TabIcon } from "@/components/nav/TabIcons";
 import { NEED_LOGIN } from "@/lib/messages";
-import { getSiteContext } from "@/lib/data/site";
+import { getSiteContext, hasAuthCookie } from "@/lib/data/site";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getHostContext } from "@/lib/admin";
 import type { Standing } from "@/lib/game-types";
 
 export const metadata: Metadata = { title: "조 점수 — MIRACLE 2026" };
 export const dynamic = "force-dynamic";
+
+/** 로그인 쿠키가 있을 때만 묻는다 — 보여 줄지는 아래서 따로 정한다 */
+async function loadStandings(): Promise<Standing[]> {
+  if (!(await hasAuthCookie())) return [];
+  const supabase = await getSupabaseServer();
+  const { data } = (await supabase?.rpc("team_standings")) ?? { data: null };
+  return (data ?? []) as Standing[];
+}
 
 /**
  * 조 점수 — 참가자가 보는 순위.
@@ -18,16 +26,15 @@ export const dynamic = "force-dynamic";
  * 참가자에게 보이고, 진행자와 관리자는 늘 본다.
  */
 export default async function StandingsPage() {
-  const ctx = await getSiteContext();
-  const host = await getHostContext();
+  /* 셋은 서로 독립이라 한꺼번에 던진다. 줄줄이 기다리면 왕복이 셋으로 늘어
+     로그인한 사람이 화면을 그만큼 늦게 본다 */
+  const [ctx, host, loaded] = await Promise.all([
+    getSiteContext(),
+    getHostContext(),
+    loadStandings(),
+  ]);
   const canSee = ctx.scoresOpen || Boolean(host);
-
-  let standings: Standing[] = [];
-  if (ctx.authed && canSee) {
-    const supabase = await getSupabaseServer();
-    const { data } = (await supabase?.rpc("team_standings")) ?? { data: null };
-    standings = (data ?? []) as Standing[];
-  }
+  const standings = ctx.authed && canSee ? loaded : [];
 
   return (
     <section id="standings">

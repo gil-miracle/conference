@@ -38,7 +38,7 @@ async function hasDemoCookie() {
  * 이름은 `sb-<프로젝트>-auth-token`, 길면 `.0` `.1`로 쪼개진다.
  * 로그인 중에만 잠깐 생기는 `-code-verifier`는 세션이 아니라 거른다.
  */
-async function hasAuthCookie() {
+export async function hasAuthCookie() {
   const cookieStore = await cookies();
   return cookieStore
     .getAll()

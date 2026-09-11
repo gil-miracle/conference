@@ -3,13 +3,27 @@ import PageHead from "@/components/PageHead";
 import Locked from "@/components/Locked";
 import { TabIcon } from "@/components/nav/TabIcons";
 import { NEED_BIND, NEED_LOGIN } from "@/lib/messages";
-import { getSiteContext } from "@/lib/data/site";
+import { getSiteContext, hasAuthCookie } from "@/lib/data/site";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import type { MentorBoard } from "@/lib/mentoring";
 import MentorPicker from "@/components/mentoring/MentorPicker";
 
 export const metadata: Metadata = { title: "멘토의 TMI — MIRACLE 2026" };
 export const dynamic = "force-dynamic";
+
+const EMPTY_BOARD: MentorBoard = { mine: null, sessions: [] };
+
+/**
+ * 보드는 세션 확인과 **같이** 던진다. 세션 답을 기다렸다 던지면 Supabase
+ * 왕복이 둘로 늘고, 로그인한 사람은 그만큼 화면을 더 기다린다. 로그인
+ * 쿠키가 없으면 묻지 않는다 — RPC가 어차피 빈 것을 주지만 왕복은 왕복이다.
+ */
+async function loadBoard(): Promise<MentorBoard> {
+  if (!(await hasAuthCookie())) return EMPTY_BOARD;
+  const supabase = await getSupabaseServer();
+  const { data } = (await supabase?.rpc("mentor_board")) ?? { data: null };
+  return (data as MentorBoard | null) ?? EMPTY_BOARD;
+}
 
 /**
  * 멘토의 TMI — 신청.
@@ -18,14 +32,8 @@ export const dynamic = "force-dynamic";
  * 옮겨간다 — 취소하고 다시 신청하는 게 아니라 한 번에 옮긴다.
  */
 export default async function MentoringPage() {
-  const ctx = await getSiteContext();
-
-  let board: MentorBoard = { mine: null, sessions: [] };
-  if (ctx.authed) {
-    const supabase = await getSupabaseServer();
-    const { data } = (await supabase?.rpc("mentor_board")) ?? { data: null };
-    if (data) board = data as MentorBoard;
-  }
+  const [ctx, loaded] = await Promise.all([getSiteContext(), loadBoard()]);
+  const board = ctx.authed ? loaded : EMPTY_BOARD;
 
   const bound = Boolean(ctx.summary);
 

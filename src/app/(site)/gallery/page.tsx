@@ -4,8 +4,8 @@ import Locked from "@/components/Locked";
 import { CameraIcon } from "@/components/icons";
 import GalleryDemoGrid from "@/components/gallery/GalleryDemoGrid";
 import GalleryGrid from "@/components/gallery/GalleryGrid";
-import { getPhotos, getSiteContext } from "@/lib/data/site";
-import { getBoundParticipant } from "@/lib/participant";
+import { getPhotos, getSiteContext, hasAuthCookie } from "@/lib/data/site";
+import { getPhotographerContext } from "@/lib/admin";
 import { NEED_BIND, NEED_LOGIN } from "@/lib/messages";
 
 export const metadata: Metadata = { title: "갤러리 — MIRACLE 2026" };
@@ -17,16 +17,21 @@ export default async function GalleryPage({
   searchParams: Promise<{ demo?: string }>;
 }) {
   const { demo } = await searchParams;
-  const ctx = await getSiteContext(demo === "1");
+  /* 세션·사진·권한은 서로 독립이라 한꺼번에 던진다. 줄줄이 기다리면
+     로그인한 사람은 왕복 넷을 차례로 기다렸다 — 사진 200장보다 그게 느렸다.
+     권한은 세션을 다시 묻는 대신 admin_me 하나로 본다 (진행자 화면과 같은 길) */
+  const loggedIn = await hasAuthCookie();
+  const [ctx, loadedPhotos, staff] = await Promise.all([
+    getSiteContext(demo === "1"),
+    loggedIn ? getPhotos(200) : Promise.resolve([]),
+    loggedIn ? getPhotographerContext() : Promise.resolve(null),
+  ]);
   const bound = Boolean(ctx.summary);
   const open = ctx.galleryOpen && bound && !ctx.demoMode;
-  const photos = open ? await getPhotos(200) : [];
+  const photos = open ? loadedPhotos : [];
   /* 관리 화면 길은 운영진과 사진 담당에게만. 정책이 어차피 막지만, 못 올리는
      사람에게 보였다가 거절하는 것보다 처음부터 안 보이는 게 낫다 */
-  const me = open ? await getBoundParticipant() : null;
-  const canUpload = Boolean(
-    me && (me.me.role === "admin" || me.me.is_photographer),
-  );
+  const canUpload = open && Boolean(staff);
 
   return (
     <section id="gallery">

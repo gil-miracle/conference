@@ -1042,6 +1042,15 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
    카드·영상·지도를 좌우 여백 밖으로 내보냈는데, 타임테이블·방명록처럼 본문
    폭에 맞춘 것과 섞여 어긋나 보였다. 모두 본문 폭에 둔다 (2026-09-11 결정). */
 
+/* 화면을 옮기는 동안 — 상단 제목 자리에 조용히 */
+.page-loading {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-40);
+  padding: 48px 0;
+}
+
 /* 세션 로드 전 인증 버튼 자리 예약 — 상태가 채워질 때 메뉴가 밀리지 않게 */
 .auth-slot { display: inline-flex; align-items: center; min-width: 34px; justify-content: flex-end; }
 /* 프로필은 좌우 여백을 스스로 만든다 — 로고 쪽과 무게를 맞춘다 */

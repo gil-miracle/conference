@@ -5,7 +5,7 @@ import GuestbookWriteCta from "@/components/guestbook/GuestbookWriteCta";
 import { fmtDateTime } from "@/lib/format";
 import Locked from "@/components/Locked";
 import { TabIcon } from "@/components/nav/TabIcons";
-import { getGuestbook, getSiteContext } from "@/lib/data/site";
+import { getGuestbook, getSiteContext, hasAuthCookie } from "@/lib/data/site";
 import { NEED_LOGIN } from "@/lib/messages";
 
 export const metadata: Metadata = { title: "한 줄 노트 — MIRACLE 2026" };
@@ -13,8 +13,13 @@ export const metadata: Metadata = { title: "한 줄 노트 — MIRACLE 2026" };
 export const dynamic = "force-dynamic";
 
 export default async function GuestbookPage() {
-  const ctx = await getSiteContext();
-  const entries = ctx.authed ? await getGuestbook(30) : [];
+  /* 목록은 세션 확인과 같이 던진다 — 읽기 정책이 로그인한 사람에게만 열려
+     있어 쿠키가 없으면 묻지 않는다 */
+  const [ctx, loaded] = await Promise.all([
+    getSiteContext(),
+    hasAuthCookie().then((on) => (on ? getGuestbook(30) : [])),
+  ]);
+  const entries = ctx.authed ? loaded : [];
 
   return (
     <section id="guestbook">
