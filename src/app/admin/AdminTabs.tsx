@@ -17,7 +17,8 @@ const TABS: { href: string; label: string; also?: string[] }[] = [
   { href: "/admin/mentoring", label: "멘토" },
   /* 게임은 이번에 안 쓴다 — 탭에서 뺀다. 주소로는 그대로 들어간다 */
   { href: "/admin/board", label: "게시판" },
-  { href: "/admin/settings", label: "설정" },
+  // 말씀카드 배부 현황은 설정에서 들어가는 하위 화면이다
+  { href: "/admin/settings", label: "설정", also: ["/admin/wordcards"] },
 ];
 
 export default function AdminTabs({

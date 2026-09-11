@@ -6,6 +6,7 @@ import SheetSync from "./SheetSync";
 import MenuVisibilityCard from "./MenuVisibilityCard";
 import PushCard from "./PushCard";
 import AuditCard, { type AuditRow } from "./AuditCard";
+import WordcardsLinkCard from "./WordcardsLinkCard";
 import { isPushConfigured } from "@/lib/push";
 
 export const dynamic = "force-dynamic";
@@ -25,17 +26,24 @@ export default async function AdminSettingsPage() {
 
   let settings = DEMO_SETTINGS;
   let audit: AuditRow[] = [];
+  let cardsTotal = 0;
+  let cardsDrawn = 0;
   if (!ctx.demo) {
-    const [settingsRes, auditRes] = await Promise.all([
+    const [settingsRes, auditRes, cardsRes, drawnRes] = await Promise.all([
       ctx.supabase.from("site_settings").select("key,value"),
       ctx.supabase
         .from("admin_audit")
         .select("id,at,actor_name,action,target,detail")
         .order("at", { ascending: false })
         .limit(50),
+      ctx.supabase.from("wordcards").select("id", { count: "exact", head: true }),
+      // 몇 「장」이 나갔는지 — 사람 수가 아니라 서로 다른 카드 수
+      ctx.supabase.from("participants").select("wordcard").not("wordcard", "is", null),
     ]);
     settings = parseSiteSettings(settingsRes.data);
     audit = (auditRes.data ?? []) as AuditRow[];
+    cardsTotal = cardsRes.count ?? 0;
+    cardsDrawn = new Set((drawnRes.data ?? []).map((r) => r.wordcard as string)).size;
   }
 
   return (
@@ -75,6 +83,7 @@ export default async function AdminSettingsPage() {
         initialOn={settings.guestbookOpen}
       />
       <MenuVisibilityCard menus={settings.menus} />
+      <WordcardsLinkCard drawn={cardsDrawn} total={cardsTotal} />
       <SheetSync />
       <AuditCard rows={audit} />
     </>
