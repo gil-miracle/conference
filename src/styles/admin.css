@@ -192,6 +192,8 @@
   min-width: 0;
 }
 .search input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--ink); }
+.qr-strip { display: flex; gap: 8px; margin-bottom: 14px; }
+.qr-strip .qr-main { flex: 1; }
 /* 제목 오른쪽 추가 단추 — 참가자·방·조가 같은 자리 */
 .admin .sec-title .sec-add,
 .admin .sec-title .room-add { margin: 0 0 0 auto; }
