@@ -21,7 +21,7 @@ export default function BottomTabs() {
         return (
           <Link
             key={m.href}
-            href={m.href}
+            href={m.to ?? m.href}
             className={`tab${on ? " on" : ""}`}
             aria-current={on ? "page" : undefined}
           >

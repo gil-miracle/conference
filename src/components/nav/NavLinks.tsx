@@ -20,7 +20,7 @@ export default function NavLinks() {
           <Link
             key={m.href}
             className={`lnk${locked ? " lock" : ""}${isOn(m.href) ? " on" : ""}`}
-            href={m.href}
+            href={m.to ?? m.href}
           >
             {locked && <LockIcon />}
             {m.label}

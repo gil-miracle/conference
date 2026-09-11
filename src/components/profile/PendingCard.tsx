@@ -41,7 +41,7 @@ export default function PendingCard({ summary }: { summary: MySummary }) {
       <small className="pending-note">
         승인은 보통 하루 안에 처리돼요. 급하시면 운영진에 문의해주세요.
       </small>
-      <Link className="btn" href="/timetable">
+      <Link className="btn" href="/timetable/1">
         그동안 일정 보기
       </Link>
     </div>

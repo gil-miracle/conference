@@ -17,6 +17,6 @@ export default function DrawBack() {
   return day ? (
     <BackLink href={`/qt/${day.day}`}>{day.date} QT</BackLink>
   ) : (
-    <BackLink href="/timetable">일정표</BackLink>
+    <BackLink href="/timetable/1">일정표</BackLink>
   );
 }

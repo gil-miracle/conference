@@ -1,7 +1,14 @@
 import type { MenuKey } from "@/lib/types";
 
 export type MenuItem = {
+  /** 이 메뉴가 「켜진」 것으로 볼 주소 앞머리 — /timetable 아래는 다 일정표다 */
   href: string;
+  /**
+   * 실제로 갈 주소 — href와 다를 때만. /timetable은 첫 날로 넘기는 껍데기라
+   * 거기로 가면 서버가 한 번 돌고 다시 첫 날을 받는다. 처음 누르면 그동안
+   * 아무것도 안 뜬다. 첫 날 주소로 바로 가면 미리 받아 둔 정적 화면이라 즉시다
+   */
+  to?: string;
   /** 상단 메뉴에 쓰는 이름 */
   label: string;
   /** 하단 탭바에 쓰는 짧은 이름 (좁아서 긴 이름이 안 들어간다) */
@@ -23,7 +30,7 @@ export type TabIcon = "home" | "clock" | "user" | "music" | "pen" | "camera" | "
  * 내 정보는 오른쪽 프로필 안에 있다 — 메뉴가 아니라 계정 쪽 일이다.
  */
 export const MENU: readonly MenuItem[] = [
-  { href: "/timetable", label: "일정표", short: "일정", icon: "clock", key: "timetable" },
+  { href: "/timetable", to: "/timetable/1", label: "일정표", short: "일정", icon: "clock", key: "timetable" },
   { href: "/songs", label: "찬양", short: "찬양", icon: "music", key: "songs" },
   { href: "/guestbook", /* 메뉴에서는 익숙한 이름으로 부른다 — 처음 보는 사람이 무엇인지 알아야
      들어온다. 안에 들어가면 제목이 「한 줄 노트」로 무엇을 남기는 자리인지
