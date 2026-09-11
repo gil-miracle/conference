@@ -103,6 +103,8 @@ export type MySummary = {
   /** 숙소·조 배정이 공개된 상태인지 */
   rooms_open?: boolean;
   teams_open?: boolean;
+  /** 뽑은 말씀카드의 그림 이름 — 아직 안 뽑았으면 null */
+  wordcard?: string | null;
   reject_reason: string | null;
   checked_in_at: string | null;
   checkin_token: string | null;

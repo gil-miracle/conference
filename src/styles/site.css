@@ -508,42 +508,47 @@ nav.site {
    rem 하한을 둔 건 좁은 화면에서까지 비례로 줄면 못 읽기 때문이다. */
 .wcard {
   position: relative;
-  container-type: inline-size;
   aspect-ratio: 1/1;
   border: 1px solid var(--ink);
   background: var(--paper);
-  padding: 6.5%;
-  display: flex;
-  gap: 7%;
   overflow: hidden;
 }
-.wcard .img-col { width: 34%; flex-shrink: 0; overflow: hidden; }
-.wcard .img-col img { width: 100%; height: 100%; object-fit: cover; object-position: 38% center; display: block; }
-.wcard .txt-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-.wcard .wc-ref {
+.wcard img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* 세로로 긴 모양은 화면 높이에 맞춰 줄이고 가운데 세운다 — 폰 배경을 가로
+   꽉 차게 두면 화면 두 개 반 높이가 된다 */
+.wcard[data-kind="phone"] {
+  aspect-ratio: 1080/2340;
+  width: min(100%, calc(72vh * 1080 / 2340));
+  margin: 0 auto;
+}
+.wcard[data-kind="print"] {
+  aspect-ratio: 5/7;
+  width: min(100%, calc(72vh * 5 / 7));
+  margin: 0 auto;
+}
+.wc-kinds { margin-bottom: -1px; }
+/* 뽑기 전 — 카드 자리를 미리 잡아 둔다. 뽑고 나서 아래가 밀리면 안 된다 */
+.wcard-back {
+  aspect-ratio: 1/1;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  padding: 26px;
+}
+.wcard-back .wc-eyebrow {
   font-family: var(--mono);
-  font-size: max(0.58rem, 1.81cqw);
+  font-size: 0.58rem;
   letter-spacing: 0.26em;
   color: var(--coral);
 }
-.wcard .wc-verse {
-  font-family: "Nanum Myeongjo", serif;
-  font-weight: 400;
-  font-size: max(0.86rem, 5.5cqw);
-  line-height: 2.1;
-  /* 위아래 남는 자리를 반씩 나눠 갖는다 — 구절을 라벨 밑에 붙여두면 줄 수가
-     적을 때 아래로 커다란 구멍이 남는다 */
-  margin: auto 0;
-  word-break: keep-all;
-}
-.wcard .wc-verse b { font-weight: 700; }
-.wcard .wc-foot {
-  font-family: var(--mono);
-  font-size: max(0.56rem, 1.7cqw);
-  letter-spacing: 0.2em;
-  color: var(--ink-60);
-  line-height: 2;
-}
+.wcard-back p { font-family: "Nanum Myeongjo", serif; font-size: 1.05rem; line-height: 2; }
+.wcard-back .btn { min-width: 190px; }
+.wcard-back .msg.err { margin: 0; }
 .wc-save { width: 100%; margin-top: 14px; }
 .my-card { border: 1px solid var(--ink); background: var(--paper); padding: 26px; margin-top: -1px; }
 .my-card .eyebrow { color: var(--coral); }
@@ -988,6 +993,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   .gal-grid,
   .my-card,
   .wcard,
+  .wcard-back,
   .locked,
   .video-ph,
   .video-embed,
@@ -996,7 +1002,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
     margin-right: calc(var(--gutter) * -1);
   }
   /* 좌우 테두리는 화면 밖으로 나가므로 지워 이중선처럼 보이지 않게 */
-  .info-grid, .day-tabs, .my-card, .wcard, .locked {
+  .info-grid, .day-tabs, .my-card, .wcard, .wcard-back, .locked {
     border-left: none;
     border-right: none;
   }

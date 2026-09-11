@@ -13,3 +13,6 @@ supabase/.temp/
 
 .vercel
 .env*
+
+# 말씀카드 렌더 결과 — render.py로 다시 뽑을 수 있고, 남길 사본은 public/wordcards/에 있다
+design/wordcards/rendered/

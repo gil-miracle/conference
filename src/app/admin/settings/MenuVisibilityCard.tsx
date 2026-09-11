@@ -15,7 +15,7 @@ const LABELS: { key: MenuKey; label: string; hint: string }[] = [
   { key: "standings", label: "레크리에이션 점수", hint: "프로필 메뉴에 순위 링크" },
   { key: "room", label: "숙소 (MY ROOM)", hint: "내 정보의 숙소 카드" },
   { key: "team", label: "조 (MY TEAM)", hint: "내 정보의 조 카드" },
-  { key: "wordcard", label: "말씀카드", hint: "내 정보 맨 아래 카드와 저장" },
+  { key: "wordcard", label: "말씀카드", hint: "내 정보에서 한 장씩 뽑기" },
 ];
 
 /**

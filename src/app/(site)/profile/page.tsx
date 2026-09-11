@@ -3,8 +3,7 @@ import PageHead from "@/components/PageHead";
 import ConnectPrompt from "@/components/profile/ConnectPrompt";
 import PendingCard from "@/components/profile/PendingCard";
 import PreviewNotice from "@/components/profile/PreviewNotice";
-import WordCard from "@/components/profile/WordCard";
-import WordcardSave from "@/components/profile/WordcardSave";
+import WordcardDraw from "@/components/profile/WordcardDraw";
 import RoomCard from "@/components/profile/RoomCard";
 import TeamCard from "@/components/profile/TeamCard";
 import QrCard from "@/components/profile/QrCard";
@@ -37,7 +36,7 @@ export default async function ProfilePage({
             {/* 안 쓸 카드는 예시에서도 뺀다 — 로그인하면 나올 것처럼 보이면 안 된다 */}
             {menus.room && <RoomCard room={MY_PREVIEW.room} mates={MY_PREVIEW.mates} open />}
             {menus.team && <TeamCard team={MY_PREVIEW.team} open />}
-            {menus.wordcard && <WordCard name={MY_PREVIEW.name} />}
+            {menus.wordcard && <WordcardDraw initialSlug={null} preview />}
           </div>
         </div>
       </section>
@@ -72,13 +71,8 @@ export default async function ProfilePage({
               />
             )}
             {menus.team && <TeamCard team={summary.team} open={summary.teams_open === true} />}
-            {/* 배경 그림이 준비되기 전에는 꺼 둔다 */}
-            {menus.wordcard && (
-              <>
-                <WordCard name={summary.name} />
-                <WordcardSave name={summary.name} />
-              </>
-            )}
+            {/* 한 사람에게 한 장 — 뽑기 전에는 뒷면만 보인다 */}
+            {menus.wordcard && <WordcardDraw initialSlug={summary.wordcard ?? null} />}
           </div>
         )}
       </div>
