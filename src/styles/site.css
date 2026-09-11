@@ -509,7 +509,7 @@ nav.site {
 .wcard {
   position: relative;
   aspect-ratio: 1/1;
-  border: 1px solid var(--ink);
+  /* 그림 둘레에 선을 두르지 않는다 — 카드 그림 자체가 종이라 선이 겹쳐 보인다 */
   background: var(--paper);
   overflow: hidden;
 }
