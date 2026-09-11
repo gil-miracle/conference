@@ -335,8 +335,9 @@ export const TIMETABLE: TimetableDay[] = [
         time: "09:00–10:30",
         badge: "MIRACLE 2",
         speakerId: "cho-youngchan",
-        // 이 시간은 성경 통독이다 — 눌러 본문을 볼 수 있게 한다
-        href: "/reading",
+        // 이 시간은 성경 통독이다 — 눌러 본문을 볼 수 있게 한다.
+        // 첫 장 주소로 바로 간다 — /reading은 넘겨 주는 껍데기라 한 번 더 돈다
+        href: "/reading/1",
         title: "오전 예배",
         sermon: "말씀",
         emoji: "📖",
