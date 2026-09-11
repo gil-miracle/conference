@@ -68,8 +68,9 @@ export async function uploadOnePhoto(file: File, day?: number): Promise<UploadOu
       height: json.height,
       day,
     });
-    if (!saved.ok || !saved.photo)
-      return { ok: false, message: "저장에 실패했어요." };
+    if (!saved.ok)
+      return { ok: false, message: `저장에 실패했어요 — ${saved.message}` };
+    if (!saved.photo) return { ok: false, message: "저장에 실패했어요." };
     return { ok: true, photo: saved.photo as Photo };
   } catch {
     return { ok: false, message: "업로드에 실패했어요. 다시 시도해주세요." };

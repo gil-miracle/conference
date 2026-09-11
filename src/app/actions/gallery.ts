@@ -84,14 +84,15 @@ export async function savePhoto(input: {
   day?: number;
 }) {
   const ctx = await getBoundParticipant();
-  if (!ctx || ctx.me.role !== "admin") return { ok: false as const };
+  if (!ctx || ctx.me.role !== "admin")
+    return { ok: false as const, message: "사진은 운영진만 올릴 수 있어요." };
 
   const expectedPrefix = `${FOLDER}/${ctx.me.id}-`;
   if (
     !input.public_id.startsWith(expectedPrefix) ||
     !/^[\w/-]+$/.test(input.public_id)
   )
-    return { ok: false as const };
+    return { ok: false as const, message: "발급된 서명과 다른 파일이에요." };
 
   const clamp = (n: number | null) =>
     typeof n === "number" && n > 0 && n <= 20000 ? Math.floor(n) : null;
@@ -109,7 +110,10 @@ export async function savePhoto(input: {
     .select()
     .single();
 
-  if (error) return { ok: false as const };
+  /* 왜 안 됐는지를 그대로 올린다 — Cloudinary 쪽과 같은 이유다. 「저장에
+     실패했어요」만 뜨면 정책에 막힌 건지 열이 없는 건지 알 길이 없다.
+     운영진만 보는 문구라 DB 메시지를 그대로 실어도 된다 */
+  if (error) return { ok: false as const, message: error.message };
   revalidatePath("/");
   return { ok: true as const, photo: data };
 }
