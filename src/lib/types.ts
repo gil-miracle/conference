@@ -31,8 +31,14 @@ export type TimetableItem = {
   speakerId?: string;
   /** 이름 앞에 붙는 라벨. 기본은 "설교"이고, 특강은 "강사", 특순은 "찬양" */
   role?: string;
-  /** 설교 제목 — 예배 순서에만 붙는다 */
+  /** 설교 주제어 — 예배 순서에만 붙는다. 예: "생명" */
   sermon?: string;
+  /** 주제어 옆에 붙는 상징 — 불·빛·바람·소리를 이모티콘 하나로 */
+  emoji?: string;
+  /** 설교 제목 — 상세 화면에서 본문 말씀 위에 선다 */
+  sermonTitle?: string;
+  /** 제목이 한문일 때의 독음 — 제목 아래 작게 붙는다 */
+  sermonTitleReading?: string;
   /** 본문 말씀 출처. 설교자마다 다를 수 있어 순서별로 적는다 */
   verse?: string;
   /** 본문 말씀 전문 (우리말성경) — 절 번호와 함께 담는다 */

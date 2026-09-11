@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
-import SpeakerPhoto from "@/components/SpeakerPhoto";
+import SpeakerHead from "@/components/SpeakerHead";
 import { SPEAKERS, getSpeaker, getSpeakerSession } from "@/lib/content";
 
 type Props = { params: Promise<{ id: string }> };
@@ -19,8 +19,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /**
  * 설교자 상세.
  *
- * 사람 → 약력 → 본문 말씀 순서다. 시각·설교 제목은 일정표가 이미 보여주므로
- * 여기서는 되풀이하지 않고, 그 사람이 어떤 말씀을 여는지로 마무리한다.
+ * 사람(태그에 주제어) → 설교 제목·본문 출처 → 본문 말씀 순서다.
+ * 시각은 일정표가 이미 보여주므로 되풀이하지 않고, 약력은 싣지 않는다 —
+ * 이 화면은 그 사람이 여는 말씀을 읽는 자리다.
  */
 export default async function SpeakerDetailPage({ params }: Props) {
   const { id } = await params;
@@ -38,18 +39,22 @@ export default async function SpeakerDetailPage({ params }: Props) {
           {placed ? `${placed.day.label} 일정` : "일정표"}
         </BackLink>
 
-        <div className="spk-detail reveal">
-          <div className="ph">
-            <SpeakerPhoto speaker={speaker} />
-          </div>
-          <div className="meta">
-            {speaker.tag && <span className="tag">{speaker.tag}</span>}
-            <h2>{speaker.name}</h2>
-            {speaker.org && <p className="org">{speaker.org}</p>}
-          </div>
-        </div>
+        <SpeakerHead speaker={speaker} item={placed?.item} />
 
-        {speaker.bio && <p className="body-text reveal">{speaker.bio}</p>}
+        {placed?.item.sermonTitle && (
+          /* 제목 → 본문 출처 순. 주제어는 위 태그에 붙어 있다 */
+          <div className="sermon-head reveal">
+            <h3>{placed.item.sermonTitle}</h3>
+            {placed.item.sermonTitleReading && (
+              <p className="reading">{placed.item.sermonTitleReading}</p>
+            )}
+            {placed.item.verse && (
+              <p className="passage">
+                <span aria-hidden="true">📖</span> {placed.item.verse}
+              </p>
+            )}
+          </div>
+        )}
 
         {placed?.item.verseText && (
           <blockquote className="spk-verse reveal">

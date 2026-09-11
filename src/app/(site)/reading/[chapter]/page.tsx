@@ -2,13 +2,17 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BackLink from "@/components/BackLink";
 import ChapterNav from "@/components/reading/ChapterNav";
-import PageHead from "@/components/PageHead";
+import SpeakerHead from "@/components/SpeakerHead";
 import {
   READING_BOOK,
   READING_CHAPTERS,
   READING_TRANSLATION,
   getChapter,
 } from "@/lib/bible";
+import { getSpeaker, getSpeakerSession } from "@/lib/content";
+
+/** 이 시간을 여는 사람 — 일정표의 배정 한 곳(speakerId)에서 가져온다 */
+const READING_SPEAKER_ID = "cho-youngchan";
 
 type Props = { params: Promise<{ chapter: string }> };
 
@@ -23,6 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 /**
  * 성경 통독 — MIRACLE 2, 조영찬 전도사님 시간.
+ *
+ * 머리는 다른 말씀 화면과 같다 — 사람 → 제목 → 본문. 장 넘김만 그 사이에 선다.
  *
  * 장을 주소에 넣는다. 물음표 뒤(?ch=)에 두면 그 부분이 정적 렌더링에서 빠져
  * 본문이 HTML에 실리지 않는다 — 열한 장짜리 읽을거리인데 첫 화면이 비고,
@@ -39,15 +45,19 @@ export default async function ReadingChapterPage({ params }: Props) {
   const found = getChapter(n);
   if (!found) notFound();
 
+  const speaker = getSpeaker(READING_SPEAKER_ID);
+  const placed = getSpeakerSession(READING_SPEAKER_ID);
+
   return (
     <section id="reading">
       <div className="container">
         <BackLink href="/timetable/2">9.12 (토) 일정</BackLink>
 
-        <PageHead
-          title={`${READING_BOOK} 통독`}
-          lede={`${READING_BOOK} 1~10장을 함께 읽어요.`}
-        />
+        {speaker && <SpeakerHead speaker={speaker} item={placed?.item} />}
+
+        <div className="sermon-head reveal">
+          <h3>{placed?.item.sermonTitle ?? `${READING_BOOK} 통독`}</h3>
+        </div>
 
         {/* 위아래 양쪽에 둔다 — 다 읽고 나면 위 꺾쇠는 화면 밖에 있다 */}
         <ChapterNav
