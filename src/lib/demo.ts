@@ -1,4 +1,5 @@
 import type {
+  JoinRequest,
   AdminParticipant,
   AdminRoom,
   AdminStats,
@@ -26,7 +27,12 @@ export const DEMO_SUMMARY: MySummary = {
   reject_reason: null,
   checked_in_at: null,
   checkin_token: "00000000-0000-4000-8000-000000000000",
-  room: { building: "본관", room_no: "203", capacity: 4, note: "본관에서 도보 2분 · 4인실" },
+  room: {
+    building: "본관",
+    room_no: "203",
+    capacity: 4,
+    note: "본관에서 도보 2분 · 4인실",
+  },
   mates: [
     { name: "이요셉", gender: "남", leader: true },
     { name: "김예찬", gender: "남", leader: false },
@@ -53,7 +59,10 @@ const minsAgo = (m: number) => new Date(Date.now() - m * 60_000).toISOString();
 /** 대시보드 통계 (관리자 목업 수치) — recent 시각은 호출 시점 기준 */
 export function demoAdminStats(): AdminStats {
   const trio = (members: number, pastors: number, mentors: number) => ({
-    all: members + pastors + mentors, members, pastors, mentors,
+    all: members + pastors + mentors,
+    members,
+    pastors,
+    mentors,
   });
   return {
     total: trio(108, 4, 8),
@@ -68,10 +77,46 @@ export function demoAdminStats(): AdminStats {
     rooms_total: 30,
     rooms_used: 28,
     recent: [
-      { name: "박다윗", checked_in_at: minsAgo(2), room: "본관 203", team: "오렌지조", room_leader: true, team_leader: false, tshirt: "L", mentor: "김목사 멘토" },
-      { name: "정사무엘", checked_in_at: minsAgo(3), room: "본관 203", team: "오렌지조", room_leader: false, team_leader: true, tshirt: "XL", mentor: null },
-      { name: "김한나", checked_in_at: minsAgo(6), room: "별관 102", team: "블루조", room_leader: false, team_leader: false, tshirt: "M", mentor: "이선교사 멘토" },
-      { name: "이레베카", checked_in_at: minsAgo(9), room: null, team: null, room_leader: null, team_leader: null, tshirt: null, mentor: null },
+      {
+        name: "박다윗",
+        checked_in_at: minsAgo(2),
+        room: "본관 203",
+        team: "오렌지조",
+        room_leader: true,
+        team_leader: false,
+        tshirt: "L",
+        mentor: "김목사 멘토",
+      },
+      {
+        name: "정사무엘",
+        checked_in_at: minsAgo(3),
+        room: "본관 203",
+        team: "오렌지조",
+        room_leader: false,
+        team_leader: true,
+        tshirt: "XL",
+        mentor: null,
+      },
+      {
+        name: "김한나",
+        checked_in_at: minsAgo(6),
+        room: "별관 102",
+        team: "블루조",
+        room_leader: false,
+        team_leader: false,
+        tshirt: "M",
+        mentor: "이선교사 멘토",
+      },
+      {
+        name: "이레베카",
+        checked_in_at: minsAgo(9),
+        room: null,
+        team: null,
+        room_leader: null,
+        team_leader: null,
+        tshirt: null,
+        mentor: null,
+      },
     ],
   };
 }
@@ -81,7 +126,7 @@ const p = (
   name: string,
   birth: string,
   phone: string,
-  opts: Partial<AdminParticipant> = {}
+  opts: Partial<AdminParticipant> = {},
 ): AdminParticipant => ({
   id,
   name,
@@ -198,8 +243,24 @@ export const DEMO_ROOMS: AdminRoom[] = [
     note: "본관 2층 · 엘리베이터 옆",
     leader_id: "d4",
   },
-  { id: "r2", building: "별관", room_no: "102", capacity: 4, gender: "여", note: null, leader_id: null },
-  { id: "r3", building: "별관", room_no: "103", capacity: 4, gender: "기타", note: null, leader_id: null },
+  {
+    id: "r2",
+    building: "별관",
+    room_no: "102",
+    capacity: 4,
+    gender: "여",
+    note: null,
+    leader_id: null,
+  },
+  {
+    id: "r3",
+    building: "별관",
+    room_no: "103",
+    capacity: 4,
+    gender: "기타",
+    note: null,
+    leader_id: null,
+  },
 ];
 
 export const DEMO_HOLDS: RoomHold[] = [
@@ -221,7 +282,7 @@ const pl = (
   inviter: string | null = null,
   applicant_type: string | null = null,
   gender: string | null = null,
-  no_stay = false
+  no_stay = false,
 ): PersonLite => ({
   id,
   name,
@@ -319,3 +380,39 @@ export const MY_PREVIEW: MySummary = {
     ],
   },
 };
+
+/** 가입 승인 미리보기용 예시 요청 */
+export function demoJoinRequests(): JoinRequest[] {
+  return [
+    {
+      id: "demo-1",
+      name: "이요셉",
+      birth_date: "1992-03-02",
+      phone: "010-2222-1234",
+      status: "pending",
+      requested_at: new Date(Date.now() - 20 * 60_000).toISOString(),
+      bound_provider: "kakao",
+      matched: true,
+      social_name: "요셉",
+      social_full_name: null,
+      social_avatar: null,
+      social_picture: null,
+      social_email: null,
+    },
+    {
+      id: "demo-2",
+      name: "최마리아",
+      birth_date: "1995-12-25",
+      phone: "010-7777-5678",
+      status: "pending",
+      requested_at: new Date(Date.now() - 3 * 3600_000).toISOString(),
+      bound_provider: "google",
+      matched: true,
+      social_name: "Maria Choi",
+      social_full_name: "Maria Choi",
+      social_avatar: null,
+      social_picture: null,
+      social_email: "maria@example.com",
+    },
+  ];
+}

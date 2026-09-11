@@ -8,7 +8,14 @@ import { useAdminDemo } from "../AdminMode";
 import { setParticipantStatus } from "../actions/approval";
 
 /** 가입 요청 한 건 — 사칭 판별을 위해 소셜 프로필을 함께 보여준다 */
-export default function JoinRequestCard({ request }: { request: JoinRequest }) {
+export default function JoinRequestCard({
+  request,
+  onDone,
+}: {
+  request: JoinRequest;
+  /** 승인·반려가 끝났다 — 목록을 다시 읽어 카드를 거둔다 */
+  onDone?: () => void;
+}) {
   const [done, setDone] = useState<string | null>(null);
   const { pending, run } = useServerAction();
   const demo = useAdminDemo();
@@ -24,11 +31,14 @@ export default function JoinRequestCard({ request }: { request: JoinRequest }) {
     run(
       async () => {
         const res = await setParticipantStatus(request.id, status);
-        setDone(res.ok ? (status === "approved" ? "승인됨" : "반려됨") : res.message);
+        setDone(
+          res.ok ? (status === "approved" ? "승인됨" : "반려됨") : res.message,
+        );
+        if (res.ok) onDone?.();
       },
       status === "rejected"
         ? { confirm: `${request.name} 님의 요청을 반려할까요?` }
-        : undefined
+        : undefined,
     );
   };
 
@@ -70,7 +80,9 @@ export default function JoinRequestCard({ request }: { request: JoinRequest }) {
         )}
         <div>
           <dt>요청 시각</dt>
-          <dd>{request.requested_at ? fmtDateTime(request.requested_at) : "—"}</dd>
+          <dd>
+            {request.requested_at ? fmtDateTime(request.requested_at) : "—"}
+          </dd>
         </div>
       </dl>
 
@@ -78,10 +90,18 @@ export default function JoinRequestCard({ request }: { request: JoinRequest }) {
         <p className="jr-done">{done}</p>
       ) : (
         <div className="jr-acts">
-          <button className="btn sm accent" disabled={pending} onClick={() => act("approved")}>
+          <button
+            className="btn sm accent"
+            disabled={pending}
+            onClick={() => act("approved")}
+          >
             {pending ? "처리 중…" : "승인"}
           </button>
-          <button className="btn sm ghost" disabled={pending} onClick={() => act("rejected")}>
+          <button
+            className="btn sm ghost"
+            disabled={pending}
+            onClick={() => act("rejected")}
+          >
             반려
           </button>
         </div>

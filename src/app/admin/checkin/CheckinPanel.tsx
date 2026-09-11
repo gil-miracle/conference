@@ -5,7 +5,7 @@ import useSWR from "swr";
 import Toast from "@/components/Toast";
 import { useConfirm } from "@/components/Confirm";
 import { useToast } from "@/hooks/useToast";
-import { jsonFetcher } from "@/lib/fetcher";
+import { ADMIN_POLL_MS, jsonFetcher } from "@/lib/fetcher";
 import { byKind, groupKind } from "@/lib/format";
 import { SIGNUP_FIELDS } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
@@ -186,7 +186,7 @@ export default function CheckinPanel({
   const { data, mutate, isLoading } = useSWR<AdminParticipant[]>(
     `/api/admin/participants?q=${encodeURIComponent(q)}`,
     jsonFetcher<AdminParticipant[]>,
-    { refreshInterval: 5000, keepPreviousData: true }
+    { refreshInterval: ADMIN_POLL_MS, keepPreviousData: true }
   );
 
   /* 상세는 id로만 들고 목록에서 다시 찾는다 — 객체를 붙들고 있으면 저장·해제
