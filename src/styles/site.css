@@ -753,7 +753,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 /* 하단 탭바 높이만큼 여백 (모바일) — 토스트도 탭바 위로 올린다 */
 @media (max-width: 767px) {
   footer.site { padding-bottom: calc(28px + 60px + env(safe-area-inset-bottom, 0px)); }
-  .site .toast { bottom: calc(26px + 60px + env(safe-area-inset-bottom, 0px)); }
+  .site-main .toast { bottom: calc(26px + 60px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* 상세 페이지는 히어로가 없으므로 상단 여백 축소 */
