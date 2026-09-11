@@ -1442,6 +1442,15 @@ a.ss-row.linked:focus-visible { outline: 2px solid var(--coral); outline-offset:
 }
 
 /* ── 아침 QT ────────────────────────────────────────────────── */
+/* QT 아래 통독 — 장마다 작은 제목을 세워 어디까지 읽었는지 보이게 */
+.qt-reading { margin-top: 28px; }
+.qt-reading .qt-ch {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--coral);
+  margin: 0 0 10px;
+}
 .qt-head { margin-bottom: 24px; }
 .qt-head h3 {
   font-family: "Nanum Myeongjo", Georgia, serif;

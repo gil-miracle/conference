@@ -17,6 +17,7 @@
 import { MARK_1_4 } from "./bible/mark-1-4";
 import { MARK_5_7 } from "./bible/mark-5-7";
 import { MARK_8_10 } from "./bible/mark-8-10";
+import { CHRONICLES_1_3 } from "./bible/chronicles-1-3";
 
 export type BibleVerse = { n: number; text: string };
 export type BibleChapter = { n: number; verses: BibleVerse[] };
@@ -60,6 +61,34 @@ export function parseChapter(raw: string): BibleVerse[] {
 export function getChapter(n: number): BibleChapter | null {
   if (!(READING_CHAPTERS as readonly number[]).includes(n)) return null;
   return { n, verses: parseChapter(RAW[n] ?? "") };
+}
+
+/**
+ * 아침 QT에 딸린 통독 — 그날 QT 화면 아래에 장별로 싣는다.
+ *
+ * 둘째 날은 시편 QT 뒤에 역대상 1~3장을 함께 읽는다. 마가복음 통독과 같은
+ * 「절번호 본문」 원문을 같은 파서로 나눈다. QT 본문(content.ts)에 넣지
+ * 않는 것은 133절이 참가자 화면 번들에 실려 나가지 않게 하려는 것이다 —
+ * 이 표는 QT 페이지(서버)만 읽는다.
+ */
+export type QtReading = {
+  book: string;
+  chapters: BibleChapter[];
+};
+
+const QT_READINGS: Record<string, { book: string; raw: Record<number, string> }> = {
+  "2": { book: "역대상", raw: CHRONICLES_1_3 },
+};
+
+/** 그날 QT의 통독 — 없는 날은 null */
+export function getQtReading(day: string): QtReading | null {
+  const found = QT_READINGS[day];
+  if (!found) return null;
+  const chapters = Object.keys(found.raw)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map((n) => ({ n, verses: parseChapter(found.raw[n] ?? "") }));
+  return { book: found.book, chapters };
 }
 
 /** 본문이 들어온 장 수 — 설정이 얼마나 찼는지 한눈에 */

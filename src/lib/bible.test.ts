@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   getChapter,
+  getQtReading,
   parseChapter,
   readyChapterCount,
   READING_CHAPTERS,
@@ -54,5 +55,21 @@ describe("통독 범위", () => {
 
   it("열 장이 다 들어와 있다", () => {
     expect(readyChapterCount()).toBe(10);
+  });
+});
+
+describe("QT 통독", () => {
+  it("둘째 날은 역대상 1~3장 — 절 수가 원문(54·55·24)과 같다", () => {
+    const r = getQtReading("2");
+    expect(r?.book).toBe("역대상");
+    expect(r?.chapters.map((c) => c.n)).toEqual([1, 2, 3]);
+    expect(r?.chapters.map((c) => c.verses.length)).toEqual([54, 55, 24]);
+    // 절번호가 1부터 빠짐없이 이어진다 — 붙여넣다 한 절이 빠지면 여기서 걸린다
+    for (const c of r?.chapters ?? [])
+      expect(c.verses.map((v) => v.n)).toEqual(c.verses.map((_, i) => i + 1));
+  });
+
+  it("통독이 없는 날은 null", () => {
+    expect(getQtReading("3")).toBeNull();
   });
 });

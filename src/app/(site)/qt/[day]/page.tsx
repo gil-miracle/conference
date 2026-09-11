@@ -4,6 +4,7 @@ import Link from "next/link";
 import BackLink from "@/components/BackLink";
 import PageHead from "@/components/PageHead";
 import { getQtDay, getQtDays } from "@/lib/content";
+import { READING_TRANSLATION, getQtReading } from "@/lib/bible";
 
 type Props = { params: Promise<{ day: string }> };
 
@@ -27,6 +28,7 @@ export default async function QtPage({ params }: Props) {
   if (!found?.qt) notFound();
 
   const { qt } = found;
+  const reading = getQtReading(found.day);
 
   return (
     <section>
@@ -74,6 +76,36 @@ export default async function QtPage({ params }: Props) {
           <h3>기도</h3>
         </div>
         <p className="qt-pray reveal">{qt.pray}</p>
+
+        {/* 그날 함께 읽는 통독 — 마가복음 통독 화면과 같은 본문 모양, 장마다 제목 */}
+        {reading && (
+          <>
+            <div className="sub-head reveal">
+              <h3>
+                통독 · {reading.book} {reading.chapters[0]?.n}~
+                {reading.chapters[reading.chapters.length - 1]?.n}장
+              </h3>
+            </div>
+            {reading.chapters.map((ch) => (
+              <div className="qt-reading" key={ch.n}>
+                <h4 className="qt-ch">
+                  {reading.book} {ch.n}장
+                </h4>
+                <blockquote className="spk-verse">
+                  {ch.verses.map((v) => (
+                    <p className="v" key={v.n}>
+                      <b className="vn">{v.n}</b>
+                      {v.text}
+                    </p>
+                  ))}
+                  <cite>
+                    {reading.book} {ch.n}장 · {READING_TRANSLATION}
+                  </cite>
+                </blockquote>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </section>
   );
