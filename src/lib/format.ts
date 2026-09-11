@@ -1,5 +1,5 @@
 import type { AdminParticipant } from "./types";
-import { isStaff } from "./participant-fields";
+import { WALKIN, isStaff } from "./participant-fields";
 
 /** 010-****-1234 형태로 마스킹 */
 export function maskPhone(phone: string) {
@@ -82,7 +82,10 @@ export const INVITED = "초청자";
  * 배지(groupTag)에 남긴다.
  *
  * 지체는 다락방에 든 사람과 MC — 어느 쪽 표도 없는 사람은 지체로 본다.
- * 넷으로 나누기로 한 이상 어디에도 안 드는 사람이 있으면 안 된다.
+ * 어디에도 안 드는 사람이 있으면 안 된다.
+ *
+ * 현장에서 신청서 없이 들어온 사람(현장접수)은 집계로는 지체지만 갈래는
+ * 따로 둔다 — 다락방도 초청자도 없어 데스크가 소속을 알 길이 없다.
  */
 export const MEMBER = "지체";
 
@@ -90,13 +93,14 @@ export function groupKind(
   p: Pick<AdminParticipant, "cell_group" | "inviter" | "applicant_type">
 ): string {
   if (isStaff(p.applicant_type)) return p.applicant_type as string;
+  if (p.applicant_type === WALKIN) return WALKIN;
   if (p.cell_group) return MEMBER;
   return p.inviter || p.applicant_type?.includes("초청") ? INVITED : MEMBER;
 }
 
-/** 지체 → 초청자 → 교역자 → 멘토. 섬기러 오신 분들은 뒤에 둔다 */
+/** 지체 → 현장접수 → 초청자 → 교역자 → 멘토. 섬기러 오신 분들은 뒤에 둔다 */
 export function byKind(a: string, b: string) {
-  const order = [MEMBER, INVITED, "교역자", "멘토"];
+  const order = [MEMBER, WALKIN, INVITED, "교역자", "멘토"];
   const rank = (x: string) => (order.indexOf(x) < 0 ? order.length : order.indexOf(x));
   return rank(a) - rank(b) || a.localeCompare(b);
 }
@@ -107,6 +111,7 @@ export function groupTag(
   // 교역자·멘토는 다락방에 매이지 않는다. 체크인 버튼도 없는 줄이라 표식까지
   // 없으면 왜 다른지 알 수가 없다
   if (isStaff(p.applicant_type)) return p.applicant_type;
+  if (p.applicant_type === WALKIN) return WALKIN;
   if (p.cell_group) return p.cell_group;
   return p.inviter || p.applicant_type?.includes("초청") ? INVITED : null;
 }

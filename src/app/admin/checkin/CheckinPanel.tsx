@@ -446,7 +446,7 @@ export default function CheckinPanel({
       <AddParticipant
         open={adding}
         options={options}
-        note="신청서를 쓰지 않는 분들입니다. 체크인과 집계는 똑같이 됩니다."
+        note="신청서 없이 온 분들입니다. 현장접수는 지체로 집계되고, 체크인은 똑같이 됩니다."
         onClose={() => setAdding(false)}
         onAdded={(message) => {
           setAdding(false);

@@ -2,14 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useAdminDemo } from "../AdminMode";
+import { WALKIN } from "@/lib/participant-fields";
 import { createParticipant, type ParticipantInput } from "../actions/participant";
 import ParticipantForm, { emptyParticipant } from "./ParticipantForm";
 
 /**
  * 명단에 사람 추가.
  *
- * 교역자·멘토는 신청서를 쓰지 않아 시트에 없다. 시트에 대신 적어 넣는 방법도
- * 있지만 그건 신청자 응답을 손대는 일이라, 우리 쪽 명단에서 넣는다.
+ * 신청서 없이 온 사람 — 현장에서 바로 온 지체, 교역자, 멘토 — 은 시트에 없다.
+ * 시트에 대신 적어 넣는 방법도 있지만 그건 신청자 응답을 손대는 일이라, 우리 쪽
+ * 명단에서 넣는다. 현장이 가장 흔해서 그것으로 시작한다.
  */
 export default function AddParticipant({
   open,
@@ -70,7 +72,7 @@ export default function AddParticipant({
               엉뚱한 사람이 들어간다 */}
           <ParticipantForm
             key={String(open)}
-            initial={emptyParticipant()}
+            initial={{ ...emptyParticipant(), applicant_type: staffOnly ? WALKIN : null }}
             options={options}
             busy={busy}
             submitLabel="추가"

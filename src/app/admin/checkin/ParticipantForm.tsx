@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import {
+  MANUAL_TYPES,
   SIGNUP_FIELDS,
   STAFF_HIDDEN,
   STAFF_TYPES,
+  WALKIN,
   isStaff,
 } from "@/lib/participant-fields";
 import type { SignupInfo } from "@/lib/types";
@@ -41,6 +43,7 @@ function ChoiceField({
   value,
   options,
   allowCustom = true,
+  allowEmpty = true,
   onChange,
 }: {
   label: string;
@@ -48,6 +51,8 @@ function ChoiceField({
   options: string[];
   /** 고를 값이 둘뿐이면 직접 칠 자리가 없다 */
   allowCustom?: boolean;
+  /** 「없음」이 말이 안 되는 칸 — 반드시 하나를 골라야 한다 */
+  allowEmpty?: boolean;
   onChange: (next: string) => void;
 }) {
   // 시트에서 온 값이 후보에 없을 수 있다 — 그대로 보여야 실수로 지워지지 않는다
@@ -66,7 +71,7 @@ function ChoiceField({
             onChange(next === CUSTOM ? "" : next);
           }}
         >
-          <option value="">없음</option>
+          {allowEmpty && <option value="">없음</option>}
           {list.map((o) => (
             <option key={o} value={o}>
               {o}
@@ -91,8 +96,8 @@ function ChoiceField({
  *
  * 추가와 수정이 같은 값을 다루므로 폼도 하나만 둔다.
  *
- * `staffOnly`는 추가 화면용이다. 참가자를 새로 넣는 일은 교역자·멘토뿐이라
- * (나머지는 신청서를 쓰고 시트로 들어온다) 유형을 그 둘로만 좁힌다.
+ * `staffOnly`는 추가 화면용이다. 참가자를 새로 넣는 일은 신청서를 안 쓴
+ * 사람뿐이라 (나머지는 시트로 들어온다) 유형을 현장접수·교역자·멘토로 좁힌다.
  */
 export default function ParticipantForm({
   initial,
@@ -115,11 +120,12 @@ export default function ParticipantForm({
   const set = (k: keyof ParticipantInput, value: string) =>
     setV((prev) => ({ ...prev, [k]: value }));
 
-  const staff = staffOnly || isStaff(v.applicant_type);
+  const staff = isStaff(v.applicant_type);
   /*
-   * 추가 화면은 교역자·멘토 전용이라 쓸 게 세 칸뿐이다 — 유형·이름·전화번호.
-   * 오는 방법·도착 시간·티셔츠는 신청서 문항이라 그분들께는 묻지 않는다.
-   * 생년월일도 마찬가지다 — 받으려면 따로 여줘야 한다.
+   * 추가 화면은 쓸 게 몇 칸 안 된다 — 유형·이름·전화번호, 현장접수면 생년월일.
+   * 오는 방법·도착 시간·티셔츠는 신청서 문항이라 여기서는 묻지 않는다.
+   * 생년월일은 지체가 로그인할 때 맞춰 보는 열쇠라 현장접수에게는 받고,
+   * 교역자·멘토는 이름과 전화번호로 충분하다.
    */
   const leadField = staffOnly
     ? SIGNUP_FIELDS.find((f) => f.key === "applicant_type")
@@ -128,13 +134,13 @@ export default function ParticipantForm({
     ? []
     : SIGNUP_FIELDS.filter((f) => !(staff && STAFF_HIDDEN.includes(f.key)));
 
-  /** 유형만은 코드가 아는 값이 있다 — 교역자·멘토는 시트에서 오지 않는다 */
+  /** 유형만은 코드가 아는 값이 있다 — 현장접수·교역자·멘토는 시트에서 오지 않는다 */
   const choicesFor = (key: keyof SignupInfo) =>
     key !== "applicant_type"
       ? options[key] ?? []
       : staffOnly
-        ? STAFF_TYPES
-        : [...new Set([...(options[key] ?? []), ...STAFF_TYPES])];
+        ? MANUAL_TYPES
+        : [...new Set([...(options[key] ?? []), ...STAFF_TYPES, WALKIN])];
 
   const submit = () => {
     const value = { ...v };
@@ -157,6 +163,7 @@ export default function ParticipantForm({
           value={v[leadField.key]}
           options={choicesFor(leadField.key)}
           allowCustom={false}
+          allowEmpty={false}
           onChange={(next) => set(leadField.key, next)}
         />
       )}
@@ -169,8 +176,9 @@ export default function ParticipantForm({
           required
         />
       </label>
-      {/* 교역자·멘토는 생년월일이 없다. 고칠 땐 칸을 남기되 강요하지 않는다 */}
-      {!staffOnly && (
+      {/* 교역자·멘토는 생년월일이 없다 — 추가할 땐 칸도 안 보이고, 고칠 땐
+          칸을 남기되 강요하지 않는다. 현장접수는 지체라 받는다 */}
+      {(!staffOnly || !staff) && (
         <label>
           <span>생년월일</span>
           <input

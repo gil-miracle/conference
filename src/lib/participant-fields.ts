@@ -28,6 +28,18 @@ export const SIGNUP_FIELDS: { key: keyof SignupInfo; label: string }[] = [
  */
 export const STAFF_TYPES = ["교역자", "멘토"];
 
+/**
+ * 현장에서 바로 넣는 지체 — 신청서 없이 온 사람.
+ *
+ * 집계에서는 지체다(교역자·멘토가 아니므로). 다만 명단 구분에서는 따로 세운다 —
+ * 다락방도 초청자도 없어서 어디 소속인지 데스크가 알 길이 없고, 나중에
+ * 신청서와 맞춰 볼 때 「누가 현장에서 들어왔나」가 남아야 한다.
+ */
+export const WALKIN = "현장접수";
+
+/** 추가 화면의 유형 — 신청서를 안 쓴 사람은 이 셋뿐이다 */
+export const MANUAL_TYPES = [WALKIN, ...STAFF_TYPES];
+
 /** 교역자·멘토에게는 해당이 없는 항목 — 물어볼 것도, 채울 것도 없다 */
 export const STAFF_HIDDEN: (keyof SignupInfo)[] = ["cell_group", "inviter"];
 
