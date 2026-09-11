@@ -60,19 +60,28 @@ export default async function ProfilePage({
                 checkedInAt={summary.checked_in_at}
               />
             )}
-            {/* 공개 전에도 자리는 둔다. 없다가 생기면 "내 건 왜 없지"가 된다.
-                아예 안 쓰기로 한 카드는 설정에서 끈다 — 배정 공개(rooms_open)와
-                카드 노출은 다른 판단이다 */}
-            {menus.room && (
-              <RoomCard
-                room={summary.room}
-                mates={summary.mates}
-                open={summary.rooms_open === true}
-              />
+            {/* 체크인 전에는 QR만 둔다. 숙소·조·말씀카드는 데스크를 지난 뒤의
+                일이라, 그 전에 보이면 "내 건 왜 없지"가 데스크 앞에서 나온다.
+                체크인되면 QR 카드가 서버 화면을 다시 받아 여기가 함께 열린다.
+                (2026-09-11 결정)
+                공개 전에도 자리는 둔다 — 아예 안 쓰기로 한 카드는 설정에서 끈다.
+                배정 공개(rooms_open)와 카드 노출은 다른 판단이다 */}
+            {summary.checked_in_at && (
+              <>
+                {menus.room && (
+                  <RoomCard
+                    room={summary.room}
+                    mates={summary.mates}
+                    open={summary.rooms_open === true}
+                  />
+                )}
+                {menus.team && (
+                  <TeamCard team={summary.team} open={summary.teams_open === true} />
+                )}
+                {/* 한 사람에게 한 장 — 뽑기 전에는 뒷면만 보인다 */}
+                {menus.wordcard && <WordcardDraw initialSlug={summary.wordcard ?? null} />}
+              </>
             )}
-            {menus.team && <TeamCard team={summary.team} open={summary.teams_open === true} />}
-            {/* 한 사람에게 한 장 — 뽑기 전에는 뒷면만 보인다 */}
-            {menus.wordcard && <WordcardDraw initialSlug={summary.wordcard ?? null} />}
           </div>
         )}
       </div>
