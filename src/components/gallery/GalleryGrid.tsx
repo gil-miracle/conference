@@ -6,7 +6,7 @@ import PageHead from "@/components/PageHead";
 import PhotoViewer from "@/components/gallery/PhotoViewer";
 import { CameraIcon } from "@/components/icons";
 import { thumbUrl } from "@/lib/cloudinary";
-import { DAYS, photoDay, todayDay } from "@/lib/gallery-days";
+import { DAYS, photoDay } from "@/lib/gallery-days";
 import type { Photo } from "@/lib/types";
 
 /**
@@ -36,8 +36,10 @@ export default function GalleryGrid({
 }) {
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
 
-  /* 오늘이 행사 중이면 오늘 탭으로 연다 — 현장에서 열면 방금 찍은 것이 보여야 한다 */
-  const [day, setDay] = useState(todayDay);
+  /* 늘 DAY 1부터 연다. 오늘 탭으로 열어 봤더니 어제 사진을 찾는 사람이
+     「사진이 없네」 하고 나갔다 — 처음부터 차례로 보는 쪽이 자연스럽다.
+     올리는 쪽(관리자 게시판)은 오늘 탭으로 연다 (2026-09-12 결정) */
+  const [day, setDay] = useState(0);
   const [hasMore, setHasMore] = useState(initialPhotos.length === PAGE);
   const [viewing, setViewing] = useState<number | null>(null);
 
