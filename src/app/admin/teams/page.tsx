@@ -17,7 +17,7 @@ export default async function AdminTeamsPage() {
       ctx.supabase.from("teams").select("id,name,leader,leader_id").order("name"),
       ctx.supabase
         .from("participants")
-        .select("id,name,room_id,team_id,cell_group,inviter,applicant_type,gender")
+        .select("id,name,room_id,team_id,cell_group,inviter,applicant_type,gender,cancelled_at")
         .order("name"),
     ]);
     teams = (teamsRes.data ?? []) as AdminTeam[];

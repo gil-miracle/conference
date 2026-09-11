@@ -249,6 +249,8 @@ export type PersonLite = {
   room_id: string | null;
   team_id: string | null;
   no_stay?: boolean;
+  /** 참가 취소 — 미배정 목록에서 뺀다 */
+  cancelled_at?: string | null;
   /* 아래는 거르개(RosterFilter)용 — 숙소 화면은 싣고, 조 화면·데모는 비워 둔다 */
   auth_user_id?: string | null;
   checked_in_at?: string | null;

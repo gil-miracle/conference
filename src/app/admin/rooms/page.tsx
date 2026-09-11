@@ -24,7 +24,7 @@ export default async function AdminRoomsPage() {
         .from("participants")
         // 거르개(RosterFilter)가 보는 칸까지 — 명단과 같은 조건으로 거른다
         .select(
-          "id,name,room_id,team_id,no_stay,cell_group,inviter,applicant_type,gender,arrive_day,stay,tshirt,transport,auth_user_id,checked_in_at,role",
+          "id,name,room_id,team_id,no_stay,cell_group,inviter,applicant_type,gender,arrive_day,stay,tshirt,transport,auth_user_id,checked_in_at,role,cancelled_at",
         )
         .order("name"),
       ctx.supabase

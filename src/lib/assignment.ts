@@ -14,7 +14,8 @@ export function groupByAssignment(
   for (const person of people) {
     const key = person[field];
     if (!key) {
-      unassigned.push(person);
+      // 참가 취소한 사람은 방·조가 없는 게 정상이다 — 미배정에 세지 않는다
+      if (!person.cancelled_at) unassigned.push(person);
       continue;
     }
     const bucket = grouped.get(key);

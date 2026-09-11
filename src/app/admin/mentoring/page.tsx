@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 type Person = Pick<
   AdminParticipant,
-  "id" | "name" | "applicant_type" | "gender" | "cell_group" | "inviter"
+  "id" | "name" | "applicant_type" | "gender" | "cell_group" | "inviter" | "cancelled_at"
 >;
 export type SignupRow = { participant_id: string; session_id: string };
 
@@ -28,7 +28,7 @@ export default async function AdminMentoringPage() {
         )
         .order("starts_at")
         .order("sort_order"),
-      ctx.supabase.from("participants").select("id,name,applicant_type,gender,cell_group,inviter").order("name"),
+      ctx.supabase.from("participants").select("id,name,applicant_type,gender,cell_group,inviter,cancelled_at").order("name"),
       ctx.supabase.from("mentor_signups").select("participant_id,session_id"),
     ]);
     // taken은 목록 RPC가 세는 값이라 여기서는 신청 행으로 직접 센다

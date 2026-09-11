@@ -18,7 +18,7 @@ import type { SignupRow } from "./page";
 
 type Person = Pick<
   AdminParticipant,
-  "id" | "name" | "applicant_type" | "gender" | "cell_group" | "inviter"
+  "id" | "name" | "applicant_type" | "gender" | "cell_group" | "inviter" | "cancelled_at"
 >;
 
 /**
@@ -27,7 +27,9 @@ type Person = Pick<
  */
 const SKIP_GROUPS = new Set(["CORNERSTONE", "코너스톤"]);
 const skipsMentoring = (p: Person) =>
-  isStaff(p.applicant_type) || SKIP_GROUPS.has((p.cell_group ?? "").trim().toUpperCase());
+  Boolean(p.cancelled_at) ||
+  isStaff(p.applicant_type) ||
+  SKIP_GROUPS.has((p.cell_group ?? "").trim().toUpperCase());
 
 /** 숙소 화면과 같은 차례 — 지체 다락방 → 현장접수 → 초청자 → 기타 */
 const RANK = (key: string) => (key === INVITED ? 1 : key === "기타" ? 2 : 0);
@@ -305,7 +307,7 @@ export default function MentoringPanel({
       }));
 
   const chosen = new Set(signups.map((s) => s.participant_id));
-  /* 교역자·멘토·코너스톤은 신청 대상이 아니다 — 여기 남아 있으면 "아직 안 고른
+  /* 취소자·교역자·멘토·코너스톤은 신청 대상이 아니다 — 여기 남아 있으면 "아직 안 고른
      사람"이 영영 0이 되지 않아 무엇이 남았는지 알 수 없다 */
   const notYet = people.filter((p) => !chosen.has(p.id) && !skipsMentoring(p));
 
