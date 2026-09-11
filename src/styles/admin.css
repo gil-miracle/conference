@@ -117,7 +117,7 @@
   font-size: 0.56rem;
   letter-spacing: 0.2em;
   color: var(--ink-60);
-  margin-top: 4px;
+  margin-top: 10px;
 }
 .stat.hot .n { color: var(--coral); }
 .bar { height: 8px; background: rgba(33, 29, 25, 0.08); margin-top: 14px; position: relative; }
@@ -162,7 +162,8 @@
 .feed .row.ci .chip.off { color: var(--ink-40); border-style: dashed; }
 .feed .row.ci .chip.on { color: var(--green); border-color: var(--green); font-weight: 600; }
 .feed .row.ci time { padding-top: 5px; font-size: 0.7rem; }
-.stat .n em.sub { display: block; font-size: 0.72rem; margin-top: 2px; }
+/* 큰 수 · 갈래 줄 · 이름표가 서로 붙어 있으면 한 덩어리로 읽힌다 — 위아래를 띄운다 */
+.stat .n em.sub { display: block; font-size: 0.72rem; margin-top: 9px; line-height: 1.4; }
 
 /* 말씀카드 배부 현황 — 한 장에 한 줄, 그림·구절·받은 사람 */
 .wc-list { list-style: none; margin: 14px 0 0; padding: 0; border: 1px solid var(--ink); background: var(--paper); }
