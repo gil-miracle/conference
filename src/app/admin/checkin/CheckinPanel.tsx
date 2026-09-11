@@ -321,13 +321,15 @@ export default function CheckinPanel({
 
   return (
     <>
+      {/* 추가 단추는 제목 오른쪽 — 숙소의 방 추가, 조의 조 추가와 같은 자리.
+          QR 스캔은 대시보드 맨 아래로 갔다 — 찍히면 그 위 피드에 바로 붙는다 */}
       <div className="sec-title">
         <b>참가자 명단</b>
-      </div>
-      {/* QR 스캔은 대시보드 맨 아래로 갔다 — 찍히면 그 위 피드에 바로 붙는다 */}
-      <div className="qr-strip">
-        <button className="btn ghost qr-main" onClick={() => setAdding(true)}>
-          참가자 추가
+        <button
+          className="btn sm ghost sec-add"
+          onClick={() => setAdding(true)}
+        >
+          ＋ 참가자 추가
         </button>
       </div>
       <div className="search">

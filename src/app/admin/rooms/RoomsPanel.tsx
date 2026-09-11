@@ -96,11 +96,11 @@ export default function RoomsPanel({
 
   return (
     <>
+      {/* 추가 단추는 제목 오른쪽 — 명단·조와 같은 자리 */}
       <div className="sec-title">
         <b>숙소 배정</b>
+        <RoomEditor />
       </div>
-
-      <RoomEditor />
 
       <div className="filters">
         <select value={gender} onChange={(e) => setGender(e.target.value)}>

@@ -44,11 +44,11 @@ export default function TeamsPanel({
 
   return (
     <>
+      {/* 추가 단추는 제목 오른쪽 — 명단의 참가자 추가, 숙소의 방 추가와 같은 자리 */}
       <div className="sec-title">
         <b>게임 조 배정</b>
+        <TeamEditor />
       </div>
-
-      <TeamEditor />
 
       {teams.map((team) => {
         const members = membersOf(team.id);
