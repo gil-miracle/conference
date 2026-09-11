@@ -983,8 +983,9 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 /* ── 하단 탭바 (모바일) ── */
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
-  display: none; background: rgba(250, 246, 238, 0.96);
-  backdrop-filter: blur(14px); border-top: 1px solid var(--ink);
+  /* 불투명하게, 흐림 없이 — 맨 위로 단추와 같은 이유(scroll-aids.css) */
+  display: none; background: var(--cream);
+  border-top: 1px solid var(--ink);
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .tabbar .tab {

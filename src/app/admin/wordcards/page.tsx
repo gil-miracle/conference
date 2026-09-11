@@ -52,7 +52,7 @@ export default async function AdminWordcardsPage() {
     <>
       <div className="sec-title">
         <b>말씀카드 배부 현황</b>
-        <Link className="btn sm sec-add" href="/admin/settings">
+        <Link className="btn sm ghost sec-add" href="/admin/settings">
           설정으로
         </Link>
       </div>

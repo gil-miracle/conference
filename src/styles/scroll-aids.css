@@ -21,8 +21,9 @@
   place-items: center;
   border: 1px solid var(--ink);
   border-radius: 50%;
-  background: rgba(250, 246, 238, 0.94);
-  backdrop-filter: blur(10px);
+  /* 불투명하게, 흐림 없이. 아이폰 사파리는 backdrop-filter가 붙은 고정 요소를
+     스크롤 중에 엉뚱한 자리(화면 가운데)에 그린다 — 실제로 그랬다 (2026-09-11) */
+  background: var(--cream);
   color: var(--ink);
   box-shadow: 0 4px 16px rgba(33, 29, 25, 0.16);
   /* 없는 동안에도 자리에 남아 있는다 — 그래야 사라질 때 흐려질 틈이 있다.
