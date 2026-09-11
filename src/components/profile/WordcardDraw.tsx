@@ -14,6 +14,12 @@ const KINDS = [
 ] as const;
 type Kind = (typeof KINDS)[number];
 
+/** iPhone·iPad — 아이패드는 데스크톱 사파리인 척해서 터치로 가른다 */
+function isIOS() {
+  const ua = navigator.userAgent;
+  return /iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+}
+
 /**
  * 말씀카드 — 뽑고, 보고, 저장한다.
  *
@@ -77,13 +83,18 @@ export default function WordcardDraw({
     const name = `MIRACLE2026-말씀카드-${kind.file}.jpg`;
     try {
       /*
-       * 폰에서는 공유 시트로 넘긴다 — 거기 「이미지 저장」이 있다.
-       * a[download]는 iOS에서 사진 앱이 아니라 파일 내려받기 화면으로 가서,
-       * 받은 사람이 어디 갔는지 모른다. 공유를 못 여는 브라우저(데스크톱)만
-       * 예전처럼 파일로 내려준다.
+       * 웹에서 사진 앱에 바로 넣는 길은 없다. 그나마 가까운 길이 기기마다 다르다.
+       * · 안드로이드: a[download]로 받으면 Downloads에 떨어지고 갤러리가 바로
+       *   보여 준다 — 시트를 거치지 않는 것이 제일 빠르다.
+       * · iOS: a[download]는 사진 앱이 아니라 파일 앱으로 가서 받은 사람이
+       *   어디 갔는지 모른다. 공유 시트의 「이미지 저장」만 사진 앱으로 간다.
        */
       const file = new File([blob], name, { type: "image/jpeg" });
-      if (typeof navigator.canShare === "function" && navigator.canShare({ files: [file] })) {
+      if (
+        isIOS() &&
+        typeof navigator.canShare === "function" &&
+        navigator.canShare({ files: [file] })
+      ) {
         await navigator.share({ files: [file] });
         return;
       }
@@ -137,11 +148,13 @@ export default function WordcardDraw({
       </div>
       {/* 세 그림을 다 올려 두고 보이는 것만 바꾼다 — src를 갈아 끼우면 새 그림이
           올 때까지 빈 칸이 번쩍인다. 미리 그려 둔 파일이라 next/image는 안 쓴다 */}
-      {KINDS.map((k) => (
-        <div key={k.key} className="wcard" data-kind={k.key} hidden={k.key !== kind.key}>
-          <img src={`/wordcards/${k.dir}${slug}.jpg`} alt={`내 말씀카드 (${k.label})`} />
-        </div>
-      ))}
+      <div className="wc-stage">
+        {KINDS.map((k) => (
+          <div key={k.key} className="wcard" data-kind={k.key} hidden={k.key !== kind.key}>
+            <img src={`/wordcards/${k.dir}${slug}.jpg`} alt={`내 말씀카드 (${k.label})`} />
+          </div>
+        ))}
+      </div>
       <button className="btn wc-save" disabled={saving || !blob} onClick={save}>
         {saving ? "저장하는 중…" : `${kind.label} 카드 저장하기`}
       </button>

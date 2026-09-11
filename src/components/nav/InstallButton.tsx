@@ -15,13 +15,13 @@ const standalone = () =>
   // iOS 사파리는 display-mode 대신 이 값을 쓴다
   (window.navigator as { standalone?: boolean }).standalone === true;
 
-type Platform = "ios" | "android" | "pc";
+type Platform = "ios" | "android";
 
+/** 폰 둘만 안내한다. PC에서 열었으면 안드로이드 쪽을 보인다 — 크롬 메뉴가 거의 같다 */
 function detectPlatform(ua: string): Platform {
   if (/iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document))
     return "ios";
-  if (/android/i.test(ua)) return "android";
-  return "pc";
+  return "android";
 }
 
 /* ── 안내에 쓰는 작은 그림들 ────────────────────────────────── */
@@ -112,30 +112,9 @@ const GUIDE: Record<Platform, { tab: string; lead: string; steps: Step[] }> = {
       },
     ],
   },
-  pc: {
-    tab: "PC",
-    lead: "크롬·엣지에서 아래 순서대로 하시면 돼요.",
-    steps: [
-      {
-        icon: <DownloadIcon />,
-        title: "주소창 오른쪽 끝 보기",
-        body: "화면 모양의 설치 아이콘이 있으면 그걸 누르세요.",
-      },
-      {
-        icon: <DotsIcon />,
-        title: "없으면 메뉴에서",
-        body: "오른쪽 위 점 세 개 → 「앱 설치」 또는 「캐스트, 저장 및 공유」 안에 있어요.",
-      },
-      {
-        icon: <CheckIcon />,
-        title: "「설치」 누르기",
-        body: "확인 창에서 「설치」를 누르면 창이 따로 열립니다.",
-      },
-    ],
-  },
 };
 
-const ORDER: Platform[] = ["ios", "android", "pc"];
+const ORDER: Platform[] = ["ios", "android"];
 
 /**
  * 홈 화면에 추가.
