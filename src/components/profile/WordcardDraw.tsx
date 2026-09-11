@@ -40,21 +40,26 @@ export default function WordcardDraw({
   const [drawing, setDrawing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
-  /* 그림 파일을 미리 받아 둔다. iOS는 공유 시트를 「누른 그 순간」에만 열어
-     줘서, 누른 뒤에 받아 오면 늦다 */
-  const [blob, setBlob] = useState<Blob | null>(null);
+  /* 세 모양의 그림 파일을 처음에 다 받아 둔다. iOS는 공유 시트를 「누른 그
+     순간」에만 열어 줘서 누른 뒤에 받아 오면 늦고, 탭을 오갈 때마다 받으면
+     그 사이 단추가 꺼졌다 켜지며 깜빡인다 */
+  const [blobs, setBlobs] = useState<Partial<Record<Kind["key"], Blob>>>({});
   useEffect(() => {
     if (!slug) return;
     let gone = false;
-    setBlob(null);
-    fetch(`/wordcards/${kind.dir}${slug}.jpg`)
-      .then((r) => (r.ok ? r.blob() : null))
-      .then((b) => !gone && setBlob(b))
-      .catch(() => {});
+    for (const k of KINDS) {
+      fetch(`/wordcards/${k.dir}${slug}.jpg`)
+        .then((r) => (r.ok ? r.blob() : null))
+        .then((b) => {
+          if (!gone && b) setBlobs((prev) => ({ ...prev, [k.key]: b }));
+        })
+        .catch(() => {});
+    }
     return () => {
       gone = true;
     };
-  }, [slug, kind]);
+  }, [slug]);
+  const blob = blobs[kind.key] ?? null;
 
   async function draw() {
     setDrawing(true);
@@ -130,10 +135,13 @@ export default function WordcardDraw({
           </button>
         ))}
       </div>
-      <div className="wcard" data-kind={kind.key}>
-        {/* 미리 그려 둔 카드 — next/image 미사용 (정적 파일 그대로) */}
-        <img src={`/wordcards/${kind.dir}${slug}.jpg`} alt={`내 말씀카드 (${kind.label})`} />
-      </div>
+      {/* 세 그림을 다 올려 두고 보이는 것만 바꾼다 — src를 갈아 끼우면 새 그림이
+          올 때까지 빈 칸이 번쩍인다. 미리 그려 둔 파일이라 next/image는 안 쓴다 */}
+      {KINDS.map((k) => (
+        <div key={k.key} className="wcard" data-kind={k.key} hidden={k.key !== kind.key}>
+          <img src={`/wordcards/${k.dir}${slug}.jpg`} alt={`내 말씀카드 (${k.label})`} />
+        </div>
+      ))}
       <button className="btn wc-save" disabled={saving || !blob} onClick={save}>
         {saving ? "저장하는 중…" : `${kind.label} 카드 저장하기`}
       </button>

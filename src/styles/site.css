@@ -1041,7 +1041,8 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
      서 있으면 폭이 안 맞아 보인다 */
   .wc-save {
     display: block;
-    width: auto;
+    /* button은 block이어도 제 폭으로 오그라든다 — 폭을 직접 준다 */
+    width: calc(100% + var(--gutter) * 2);
     margin-left: calc(var(--gutter) * -1);
     margin-right: calc(var(--gutter) * -1);
   }
