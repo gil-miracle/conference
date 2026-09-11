@@ -252,17 +252,44 @@ export type JoinRequest = {
   social_email: string | null;
 };
 
+/** 대시보드 수치 하나 — 전체와 지체·교역자·멘토로 나눈 값 */
+export type StatTrio = {
+  all: number;
+  /** 지체 (applicant_type이 교역자·멘토가 아닌 사람) */
+  members: number;
+  pastors: number;
+  mentors: number;
+};
+
 export type AdminStats = {
-  total: number;
-  checked_in: number;
+  /** 명단 전체 — 승인 여부와 무관 */
+  total: StatTrio;
+  checked_in: StatTrio;
+  /** 소셜 계정을 연결한 사람 / 아직 안 한 사람 */
+  joined: StatTrio;
+  not_joined: StatTrio;
+  /** 도착 요일별 — 지체는 arrive_day의 (금)·(토), 교역자는 금요일, 멘토는 토요일 */
+  fri_total: StatTrio;
+  fri_in: StatTrio;
+  sat_total: StatTrio;
+  sat_in: StatTrio;
   /** 승인 대기 건수 */
   pending: number;
   rooms_total: number;
   rooms_used: number;
-  guestbook: number;
-  photos: number;
-  recent: { name: string; checked_in_at: string; room: string | null }[];
-  missing: { name: string; phone: string; room: string | null }[];
+  /** 체크인한 사람, 최근 순 — 데스크에서 바로 안내할 것들을 함께 */
+  recent: {
+    name: string;
+    checked_in_at: string;
+    room: string | null;
+    team: string | null;
+    /** 방장·조장 — 방·조가 없으면 null */
+    room_leader: boolean | null;
+    team_leader: boolean | null;
+    tshirt: string | null;
+    /** 신청한 멘토 이름 — 안 했으면 null. 이름에 "멘토"가 이미 붙어 있다 */
+    mentor: string | null;
+  }[];
 };
 
 export type BannerSetting = { text: string; visible: boolean };

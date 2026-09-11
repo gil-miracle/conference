@@ -52,24 +52,26 @@ const minsAgo = (m: number) => new Date(Date.now() - m * 60_000).toISOString();
 
 /** 대시보드 통계 (관리자 목업 수치) — recent 시각은 호출 시점 기준 */
 export function demoAdminStats(): AdminStats {
+  const trio = (members: number, pastors: number, mentors: number) => ({
+    all: members + pastors + mentors, members, pastors, mentors,
+  });
   return {
-    total: 120,
-    checked_in: 87,
+    total: trio(108, 4, 8),
+    checked_in: trio(80, 2, 5),
+    joined: trio(93, 3, 5),
+    not_joined: trio(15, 1, 3),
+    fri_total: trio(96, 0, 0),
+    fri_in: trio(72, 0, 0),
+    sat_total: trio(12, 0, 0),
+    sat_in: trio(8, 0, 0),
     pending: 3,
     rooms_total: 30,
     rooms_used: 28,
-    guestbook: 142,
-    photos: 0,
     recent: [
-      { name: "박다윗", checked_in_at: minsAgo(2), room: "본관 203" },
-      { name: "정사무엘", checked_in_at: minsAgo(3), room: "본관 203" },
-      { name: "김한나", checked_in_at: minsAgo(6), room: "별관 102" },
-      { name: "이레베카", checked_in_at: minsAgo(9), room: "별관 102" },
-    ],
-    missing: [
-      { name: "강바울", phone: "010-8888-9012", room: null },
-      { name: "이요셉", phone: "010-2222-1234", room: "본관 203" },
-      { name: "최마리아", phone: "010-7777-5678", room: "별관 103" },
+      { name: "박다윗", checked_in_at: minsAgo(2), room: "본관 203", team: "오렌지조", room_leader: true, team_leader: false, tshirt: "L", mentor: "김목사 멘토" },
+      { name: "정사무엘", checked_in_at: minsAgo(3), room: "본관 203", team: "오렌지조", room_leader: false, team_leader: true, tshirt: "XL", mentor: null },
+      { name: "김한나", checked_in_at: minsAgo(6), room: "별관 102", team: "블루조", room_leader: false, team_leader: false, tshirt: "M", mentor: "이선교사 멘토" },
+      { name: "이레베카", checked_in_at: minsAgo(9), room: null, team: null, room_leader: null, team_leader: null, tshirt: null, mentor: null },
     ],
   };
 }

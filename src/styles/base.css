@@ -12,6 +12,7 @@
   --paper: #fffdf8;
   --ink: #211d19;
   --ink-60: rgba(33, 29, 25, 0.56);
+  --ink-40: rgba(33, 29, 25, 0.4);
   --hair: rgba(33, 29, 25, 0.14);
   /* IBM Plex Mono엔 한글 글리프가 없어 한글은 Pretendard로 폴백시킨다 */
   --mono: "IBM Plex Mono", "Pretendard Variable", Pretendard, monospace;
