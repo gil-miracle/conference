@@ -19,10 +19,10 @@ export default function RoomCard({
 }) {
   return (
     <div className="my-card room-card">
-      <div className="eyebrow">MY ROOM</div>
+      <div className="eyebrow">숙소</div>
       {!open ? (
         <>
-          <h3 className="tbd">미정</h3>
+          <h3 className="tbd">아직 공개 전이에요</h3>
           <small>배정이 끝나면 여기에 열려요.</small>
         </>
       ) : room ? (
