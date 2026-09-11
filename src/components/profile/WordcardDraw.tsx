@@ -126,7 +126,7 @@ export default function WordcardDraw({
         <p>
           한 사람에게 한 장씩,
           <br />
-          올해의 말씀을 드립니다.
+          말씀카드를 선물 드립니다.
         </p>
         <button className="btn accent" disabled={drawing || preview} onClick={draw}>
           {drawing ? "뽑는 중…" : "말씀카드 뽑기"}

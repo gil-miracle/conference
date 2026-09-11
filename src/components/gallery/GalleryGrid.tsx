@@ -25,7 +25,11 @@ const PAGE = 200;
  * 있다. 갤러리는 여기 한 곳뿐이라 아무나 올린 것이 곧 공식 기록이 되고,
  * 올린 사람이 지우면 남들이 이미 본 것이 말없이 사라진다.
  */
-export default function GalleryGrid({ initialPhotos }: { initialPhotos: Photo[] }) {
+export default function GalleryGrid({
+  initialPhotos,
+}: {
+  initialPhotos: Photo[];
+}) {
   const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
   /* 오늘이 행사 중이면 오늘 탭으로 연다 — 현장에서 열면 방금 찍은 것이 보여야 한다 */
   const [day, setDay] = useState(todayDay);
@@ -34,9 +38,11 @@ export default function GalleryGrid({ initialPhotos }: { initialPhotos: Photo[] 
 
   async function loadMore() {
     // 서버는 최신순으로 준다 — 가장 오래된 것보다 더 이전을 청한다
-    const oldest = photos.reduce((a, b) => (a.created_at <= b.created_at ? a : b));
+    const oldest = photos.reduce((a, b) =>
+      a.created_at <= b.created_at ? a : b,
+    );
     const res = await fetch(
-      `/api/photos?before=${encodeURIComponent(oldest.created_at)}`
+      `/api/photos?before=${encodeURIComponent(oldest.created_at)}`,
     );
     if (!res.ok) return;
     const more = (await res.json()) as Photo[];
@@ -51,7 +57,7 @@ export default function GalleryGrid({ initialPhotos }: { initialPhotos: Photo[] 
     .sort(
       (a, b) =>
         (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
-        a.created_at.localeCompare(b.created_at)
+        a.created_at.localeCompare(b.created_at),
     );
 
   const move = (next: number) => {
@@ -74,24 +80,36 @@ export default function GalleryGrid({ initialPhotos }: { initialPhotos: Photo[] 
           </button>
         ))}
       </div>
-      {photos.length === 0 ? (
+      {/* 그날 사진이 없으면 격자를 아예 안 그린다 — 빈 격자에 글만 넣으면
+          회색 바탕에 줄 하나 얹힌 깨진 모양이 된다. 전체가 비었든 그날만
+          비었든 같은 점선 상자로, 문구만 다르게 */}
+      {shown.length === 0 ? (
         <div className="locked">
           <CameraIcon />
-          <p>아직 올라온 사진이 없어요.</p>
+          <p>
+            {photos.length === 0
+              ? "아직 올라온 사진이 없어요."
+              : "이 날 올라온 사진이 아직 없어요."}
+          </p>
         </div>
       ) : (
         <div className="gal-grid">
           {shown.map((photo, i) => (
             <div className="cell" key={photo.id}>
-              <button type="button" className="cell-open" onClick={() => setViewing(i)}>
+              <button
+                type="button"
+                className="cell-open"
+                onClick={() => setViewing(i)}
+              >
                 {/* Cloudinary CDN 썸네일 — next/image 미사용 (v1 단순화) */}
-                <img src={thumbUrl(photo.cloudinary_public_id)} alt="" loading="lazy" />
+                <img
+                  src={thumbUrl(photo.cloudinary_public_id)}
+                  alt=""
+                  loading="lazy"
+                />
               </button>
             </div>
           ))}
-          {shown.length === 0 && (
-            <p className="msg gal-empty">이 날 올라온 사진이 아직 없어요.</p>
-          )}
         </div>
       )}
       {hasMore && (
