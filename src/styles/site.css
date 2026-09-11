@@ -643,6 +643,15 @@ nav.site {
 }
 .gal-grid .cell { aspect-ratio: 1/1; position: relative; background: #eae0cb; overflow: hidden; }
 .gal-grid .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* 길게 눌러 「사진 앱에 저장」이 뜨지 않게 — 갤러리는 보는 자리다. 크게 보기의
+   그림과 아래 띠도 같다. 안드로이드 쪽 메뉴는 contextmenu 를 막아 함께 끈다 */
+.gal-grid .cell img,
+.pv-stage img,
+.pv-strip img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}
 .gal-grid .cell-open { display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; }
 .gal-grid .cell .del {
   position: absolute;

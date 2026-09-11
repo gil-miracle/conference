@@ -67,7 +67,11 @@ export default function PhotoViewer({
   // 넘긴 사진이 아래 띠에서도 보이게 따라간다
   useEffect(() => {
     const el = strip.current?.children[at] as HTMLElement | undefined;
-    el?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+    el?.scrollIntoView({
+      block: "nearest",
+      inline: "center",
+      behavior: "smooth",
+    });
   }, [at]);
 
   const from = useRef<{ x: number; y: number } | null>(null);
@@ -91,7 +95,12 @@ export default function PhotoViewer({
   if (!photo) return null;
 
   return createPortal(
-    <div className="pv" role="dialog" aria-label="사진 보기">
+    <div
+      className="pv"
+      role="dialog"
+      aria-label="사진 보기"
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <div className="pv-bar">
         <span className="pv-count">
           {at + 1} / {photos.length}
@@ -111,12 +120,21 @@ export default function PhotoViewer({
               <button type="button" onClick={() => admin.onHide(photo)}>
                 {photo.hidden ? "다시 보이기" : "숨기기"}
               </button>
-              <button type="button" className="danger" onClick={() => admin.onDelete(photo)}>
+              <button
+                type="button"
+                className="danger"
+                onClick={() => admin.onDelete(photo)}
+              >
                 삭제
               </button>
             </>
           )}
-          <button type="button" className="pv-x" aria-label="닫기" onClick={onClose}>
+          <button
+            type="button"
+            className="pv-x"
+            aria-label="닫기"
+            onClick={onClose}
+          >
             ✕
           </button>
         </span>
@@ -155,7 +173,7 @@ export default function PhotoViewer({
               as="image"
               href={fullUrl(p.cloudinary_public_id)}
             />
-          )
+          ),
       )}
 
       {photos.length > 1 && (
@@ -168,12 +186,16 @@ export default function PhotoViewer({
               aria-label={`${i + 1}번째 사진`}
               onClick={() => onMove(i)}
             >
-              <img src={stripUrl(p.cloudinary_public_id)} alt="" loading="lazy" />
+              <img
+                src={stripUrl(p.cloudinary_public_id)}
+                alt=""
+                loading="lazy"
+              />
             </button>
           ))}
         </div>
       )}
     </div>,
-    document.body
+    document.body,
   );
 }
