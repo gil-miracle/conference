@@ -26,6 +26,22 @@ export default function VideoDeck({ videos }: { videos: DeckVideo[] }) {
   const [sel, setSel] = useState(videos[0]?.src ?? "");
   const ref = useRef<HTMLVideoElement | null>(null);
   const mounted = useRef(false);
+  /*
+   * 홈 화면 앱(standalone)에서는 자동재생을 걸지 않는다.
+   *
+   * 아이폰 홈 화면 앱에서 autoplay가 붙은 영상이 재생되지 않았다 — 포스터는
+   * 뜨고 재생바도 움직이는데 재생 단추가 먹지 않는다(사파리에서는 된다).
+   * iOS가 막은 자동재생 상태에 갇혀 사람이 눌러도 안 도는 것으로 보여, 앱에서는
+   * 자동재생·음소거 없이 새 요소로 다시 만든다 — 누르면 소리와 함께 돈다.
+   * 서버 HTML에는 자동재생 판이 실려 있으므로 마운트 뒤에 갈아 끼운다.
+   */
+  const [app, setApp] = useState(false);
+  useEffect(() => {
+    const standalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as { standalone?: boolean }).standalone === true;
+    if (standalone) setApp(true);
+  }, []);
 
   const fail = useCallback((src: string) => {
     setFailed((prev) => (prev.includes(src) ? prev : [...prev, src]));
@@ -96,16 +112,19 @@ export default function VideoDeck({ videos }: { videos: DeckVideo[] }) {
     <div className="vdeck reveal">
       <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <video
+          // 앱 모드로 판정되면 key가 바뀌어 요소가 새로 만들어진다 — 속성만
+          // 떼어 내면 이미 막힌 상태가 그대로 남는다
+          key={app ? "app" : "web"}
           ref={attach}
           className="teaser"
           src={current.src}
           poster={current.poster}
           // 자동재생은 브라우저 정책상 음소거일 때만 허용된다
-          autoPlay
-          muted
+          autoPlay={!app}
+          muted={!app}
           controls
           playsInline
-          preload="auto"
+          preload={app ? "metadata" : "auto"}
           onError={() => fail(current.src)}
         />
       </div>
