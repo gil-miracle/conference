@@ -72,7 +72,18 @@ export default function GalleryGrid({
 
   return (
     <div className="reveal">
-      <PageHead title="우리의 순간들" />
+      {/* 올릴 수 있는 사람에게만 제목 옆에 — 주황 글씨 단추가 아니라 검은
+          테두리의 보통 단추다. 선 끝에서 제목과 같은 무게로 선다 */}
+      <PageHead
+        title="우리의 순간들"
+        action={
+          canUpload ? (
+            <Link className="btn ghost" href="/admin/board">
+              사진 올리기 · 정리
+            </Link>
+          ) : undefined
+        }
+      />
 
       <div className="day-tabs gal-tabs">
         {DAYS.map((_, i) => (
@@ -86,14 +97,6 @@ export default function GalleryGrid({
           </button>
         ))}
       </div>
-      {/* 올릴 수 있는 사람에게만 — 제목 옆이 아니라 탭 아래에, 작은 단추로 */}
-      {canUpload && (
-        <div className="gal-tools">
-          <Link className="btn sm ghost" href="/admin/board">
-            사진 올리기 · 정리
-          </Link>
-        </div>
-      )}
       {/* 그날 사진이 없으면 격자를 아예 안 그린다 — 빈 격자에 글만 넣으면
           회색 바탕에 줄 하나 얹힌 깨진 모양이 된다. 전체가 비었든 그날만
           비었든 같은 점선 상자로, 문구만 다르게 */}
