@@ -34,6 +34,7 @@ const WHAT: Record<string, string> = {
   sheet_sync: "명단 동기화",
   host: "진행자 지정",
   role: "관리자 지정",
+  wordcard_reset: "말씀카드 초기화",
 };
 
 /** 되돌릴 수 없는 일은 눈에 먼저 들어와야 한다 */

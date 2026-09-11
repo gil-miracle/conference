@@ -26,7 +26,8 @@ export type AuditAction =
   | "team_delete"
   | "sheet_sync"
   | "host"
-  | "role";
+  | "role"
+  | "wordcard_reset";
 
 type Ctx = Extract<AdminCtx, { demo: false }> | { supabase: unknown; me: { id: string; name: string } };
 

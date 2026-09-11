@@ -57,7 +57,9 @@ function clean(input: ParticipantInput): {
  * 교역자·멘토는 신청서를 쓰지 않으므로 시트에 없다. 화면에서 넣고
  * source=manual로 표시해 동기화가 "시트에서 사라진 사람"으로 잡지 않게 한다.
  */
-export async function createParticipant(input: ParticipantInput): Promise<Result> {
+export async function createParticipant(
+  input: ParticipantInput,
+): Promise<Result> {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false, message: "권한이 없어요." };
 
@@ -86,7 +88,7 @@ export async function createParticipant(input: ParticipantInput): Promise<Result
  */
 export async function updateParticipant(
   id: string,
-  input: ParticipantInput
+  input: ParticipantInput,
 ): Promise<Result> {
   const ctx = await getAdminContext();
   if (!ctx) return { ok: false, message: "권한이 없어요." };
@@ -104,7 +106,9 @@ export async function updateParticipant(
     return {
       ok: false,
       message:
-        err.code === DUPLICATE ? "같은 사람이 이미 명단에 있어요." : err.message,
+        err.code === DUPLICATE
+          ? "같은 사람이 이미 명단에 있어요."
+          : err.message,
     };
   if (!data?.length) return { ok: false, message: "변경되지 않았어요." };
 
@@ -123,9 +127,46 @@ export async function removeParticipant(id: string) {
     .eq("id", id)
     .select("id,name,phone");
   if (error) return { ok: false as const, message: error.message };
-  if (!data?.length) return { ok: false as const, message: "삭제되지 않았어요." };
+  if (!data?.length)
+    return { ok: false as const, message: "삭제되지 않았어요." };
 
-  await logAdmin(ctx, "participant_delete", data[0].name, { phone: data[0].phone });
+  await logAdmin(ctx, "participant_delete", data[0].name, {
+    phone: data[0].phone,
+  });
   revalidatePath("/admin");
   return { ok: true as const, message: "삭제했어요." };
+}
+
+/**
+ * 말씀카드를 비운다 — 다음에 내 정보를 열면 다시 뽑는다.
+ *
+ * 잘못 연결된 계정으로 뽑았거나, 인쇄 카드와 다른 장이 나갔을 때 데스크에서
+ * 쓴다. 어느 장이 나갔었는지는 감사 기록에 남긴다 — 비우고 나면 남는 것이 없다.
+ */
+export async function resetWordcard(id: string): Promise<Result> {
+  const ctx = await getAdminContext();
+  if (!ctx) return { ok: false, message: "권한이 없어요." };
+
+  const { data: before } = await ctx.supabase
+    .from("participants")
+    .select("name,wordcard")
+    .eq("id", id)
+    .maybeSingle();
+  if (!before?.wordcard)
+    return { ok: false, message: "아직 뽑은 카드가 없어요." };
+
+  const { data, error } = await ctx.supabase
+    .from("participants")
+    .update({ wordcard: null, wordcard_drawn_at: null })
+    .eq("id", id)
+    .select("id");
+  if (error) return { ok: false, message: error.message };
+  if (!data?.length) return { ok: false, message: "변경되지 않았어요." };
+
+  await logAdmin(ctx, "wordcard_reset", before.name, {
+    wordcard: before.wordcard,
+  });
+  revalidatePath("/admin");
+  revalidatePath("/profile");
+  return { ok: true, message: "말씀카드를 비웠어요. 다음에 열면 다시 뽑아요." };
 }

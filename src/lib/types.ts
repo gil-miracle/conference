@@ -194,8 +194,13 @@ export type AdminParticipant = SignupInfo & {
   team_id: string | null;
   /** 숙박하지 않음 — 방을 안 주는 게 정상이라 미배정과 구분한다 */
   no_stay: boolean;
+  /** 뽑은 말씀카드 — wordcards.id. 아직 안 뽑았으면 null */
+  wordcard: string | null;
+  wordcard_drawn_at: string | null;
   rooms: { building: string; room_no: string; leader_id: string | null } | null;
   teams: { name: string } | null;
+  /** 카드에 적힌 출처(ISAIAH 43:19) — 상세에서 어느 장인지 보여 준다 */
+  wordcards: { ref_en: string; slug: string } | null;
 };
 
 /** 건물은 둘뿐이다. 순서도 이 배열이 정한다 — 가나다순으로는 별관이 앞선다 */

@@ -11,6 +11,7 @@ import { assignTeam } from "../actions/teams";
 import { setHost, setRole } from "../actions/role";
 import {
   removeParticipant,
+  resetWordcard,
   updateParticipant,
   type ParticipantInput,
 } from "../actions/participant";
@@ -119,6 +120,22 @@ export default function ParticipantDetail({
     setBusy(false);
     if (!res.ok) return setMsg(res.message);
     onDeleted(`${p.name} 님을 지웠어요.`);
+  };
+
+  const clearCard = async () => {
+    if (!p) return;
+    const ok = await confirm({
+      message: `${p.name} 님의 말씀카드(${p.wordcards?.ref_en ?? p.wordcard})를 비울까요? 다음에 내 정보를 열면 다시 뽑게 돼요.`,
+      confirmLabel: "초기화",
+      danger: true,
+    });
+    if (!ok) return;
+    if (demo) return setMsg("미리보기 모드 — 저장되지 않아요.");
+    setBusy(true);
+    const res = await resetWordcard(p.id);
+    setBusy(false);
+    setMsg(res.message);
+    if (res.ok) onChanged();
   };
 
   const toggleHost = async () => {
@@ -251,8 +268,37 @@ export default function ParticipantDetail({
                 </div>
                 <Row
                   label="체크인"
-                  value={p.checked_in_at ? fmtDateTime(p.checked_in_at) : "아직"}
+                  value={
+                    p.checked_in_at ? fmtDateTime(p.checked_in_at) : "아직"
+                  }
                 />
+                {/* 어느 장을 받았는지와 비우는 단추 — 연결해제와 같은 자리다.
+                    잘못 뽑힌 장을 데스크에서 바로 되돌린다 */}
+                <div>
+                  <dt>말씀카드</dt>
+                  <dd className="dd-act">
+                    <span>
+                      {p.wordcard ? (
+                        <>
+                          {p.wordcards?.ref_en ?? p.wordcard}
+                          {p.wordcard_drawn_at &&
+                            ` ${fmtDateTime(p.wordcard_drawn_at)}`}
+                        </>
+                      ) : (
+                        "아직"
+                      )}
+                    </span>
+                    {p.wordcard && (
+                      <button
+                        className="btn sm ghost"
+                        disabled={busy}
+                        onClick={clearCard}
+                      >
+                        초기화
+                      </button>
+                    )}
+                  </dd>
+                </div>
               </dl>
 
               {/* 여기부터는 명단 쪽에서 바꾸는 값들 */}
@@ -262,9 +308,13 @@ export default function ParticipantDetail({
                   <select
                     value={p.room_id ?? ""}
                     disabled={busy || p.no_stay}
-                    onChange={(e) => run(() => assignRoom(p.id, e.target.value || null))}
+                    onChange={(e) =>
+                      run(() => assignRoom(p.id, e.target.value || null))
+                    }
                   >
-                    <option value="">{p.no_stay ? "숙박 안 함" : "미배정"}</option>
+                    <option value="">
+                      {p.no_stay ? "숙박 안 함" : "미배정"}
+                    </option>
                     {rooms.map((r) => (
                       <option key={r.id} value={r.id}>
                         {r.building} {r.room_no} · {r.gender}
@@ -277,7 +327,9 @@ export default function ParticipantDetail({
                   <select
                     value={p.team_id ?? ""}
                     disabled={busy}
-                    onChange={(e) => run(() => assignTeam(p.id, e.target.value || null))}
+                    onChange={(e) =>
+                      run(() => assignTeam(p.id, e.target.value || null))
+                    }
                   >
                     <option value="">미배정</option>
                     {teams.map((t) => (
@@ -319,7 +371,11 @@ export default function ParticipantDetail({
                   >
                     신청 정보 수정
                   </button>
-                  <button className="btn sm danger" disabled={busy} onClick={drop}>
+                  <button
+                    className="btn sm danger"
+                    disabled={busy}
+                    onClick={drop}
+                  >
                     삭제
                   </button>
                 </div>
@@ -328,7 +384,6 @@ export default function ParticipantDetail({
           )}
 
           {msg && <p className="msg mt-12">{msg}</p>}
-
         </div>
       )}
     </dialog>
