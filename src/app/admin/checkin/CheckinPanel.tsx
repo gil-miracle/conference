@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import Toast from "@/components/Toast";
 import { useConfirm } from "@/components/Confirm";
@@ -10,15 +10,10 @@ import { byKind, groupKind } from "@/lib/format";
 import { SIGNUP_FIELDS } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
 import type { AdminParticipant, AdminRoom, AdminTeam } from "@/lib/types";
-import {
-  setCheckin,
-  unbindParticipant,
-  type CheckinResult,
-} from "../actions/checkin";
+import { setCheckin, unbindParticipant } from "../actions/checkin";
 import ParticipantRow from "./ParticipantRow";
 import ParticipantDetail from "./ParticipantDetail";
 import AddParticipant from "./AddParticipant";
-import QrScanner from "./QrScanner";
 
 const DEMO_MSG = "미리보기 모드 — 변경사항은 저장되지 않아요.";
 
@@ -101,15 +96,24 @@ function MultiFilter({
             <header>
               <b>{label}</b>
               {value.length > 0 && (
-                <button type="button" className="btn-plain" onClick={() => onChange([])}>
+                <button
+                  type="button"
+                  className="btn-plain"
+                  onClick={() => onChange([])}
+                >
                   전체 해제
                 </button>
               )}
             </header>
             <div className="fill-list">
-              {options.length === 0 && <p className="hint-sm">고를 것이 없어요.</p>}
+              {options.length === 0 && (
+                <p className="hint-sm">고를 것이 없어요.</p>
+              )}
               {options.map((o) => (
-                <div key={o} className={`fill-row${value.includes(o) ? " on" : ""}`}>
+                <div
+                  key={o}
+                  className={`fill-row${value.includes(o) ? " on" : ""}`}
+                >
                   <label>
                     <input
                       type="checkbox"
@@ -122,7 +126,11 @@ function MultiFilter({
               ))}
             </div>
             <div className="pform-actions">
-              <button type="button" className="btn accent" onClick={() => setOpen(false)}>
+              <button
+                type="button"
+                className="btn accent"
+                onClick={() => setOpen(false)}
+              >
                 닫기
               </button>
             </div>
@@ -141,7 +149,6 @@ export default function CheckinPanel({
   teams: AdminTeam[];
 }) {
   const [q, setQ] = useState("");
-  const [scanning, setScanning] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   /* 여러 개를 한꺼번에 고른다 — 데스크에서 「A·B 다락방만」, 「L·XL만」처럼
@@ -186,7 +193,7 @@ export default function CheckinPanel({
   const { data, mutate, isLoading } = useSWR<AdminParticipant[]>(
     `/api/admin/participants?q=${encodeURIComponent(q)}`,
     jsonFetcher<AdminParticipant[]>,
-    { refreshInterval: ADMIN_POLL_MS, keepPreviousData: true }
+    { refreshInterval: ADMIN_POLL_MS, keepPreviousData: true },
   );
 
   /* 상세는 id로만 들고 목록에서 다시 찾는다 — 객체를 붙들고 있으면 저장·해제
@@ -223,20 +230,6 @@ export default function CheckinPanel({
     mutate();
   }
 
-  // 스캐너 effect 의존성으로 들어가므로 안정된 identity 유지
-  const onScanResult = useCallback(
-    (result: CheckinResult) => {
-      if (result.status === "ok") showToast(`✓ ${result.name} 체크인 완료`);
-      else if (result.status === "already")
-        showToast(`${result.name}님은 이미 체크인했어요.`, true);
-      else if (result.status === "not_found")
-        showToast("등록되지 않은 QR이에요.", true);
-      else showToast("처리에 실패했어요.", true);
-      mutate();
-    },
-    [showToast, mutate]
-  );
-
   /* 고를 값은 명단에서 뽑는다 — 폼 선택지가 바뀌어도 따라간다 */
   /* 사이즈는 글자순이 아니다 — 그냥 정렬하면 4XL이 L보다 앞에 선다.
      아는 사이즈를 먼저 순서대로, 모르는 값은 뒤에 가나다순으로 */
@@ -259,8 +252,11 @@ export default function CheckinPanel({
   const stayOpts = [
     ...new Set(
       (data ?? []).flatMap((p) =>
-        (p.stay ?? "").split(",").map((x) => x.trim()).filter(Boolean)
-      )
+        (p.stay ?? "")
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean),
+      ),
     ),
   ].sort();
   /* 티셔츠는 사이즈별로 몇 장인지 세야 하고, 교통편은 버스 인원을 잡아야 한다 */
@@ -273,7 +269,9 @@ export default function CheckinPanel({
     const o: Record<string, string[]> = {};
     for (const f of SIGNUP_FIELDS)
       o[f.key] = [
-        ...new Set((data ?? []).map((p) => p[f.key]).filter(Boolean) as string[]),
+        ...new Set(
+          (data ?? []).map((p) => p[f.key]).filter(Boolean) as string[],
+        ),
       ].sort();
     return o;
   }, [data]);
@@ -283,13 +281,21 @@ export default function CheckinPanel({
     if (arrive.length && !arrive.includes(p.arrive_day ?? "")) return false;
     // 숙박일은 "9월 11일(금), 9월 12일(토)"처럼 여러 날이 한 칸에 들어온다 —
     // 고른 날 중 하나라도 들어 있으면 잡는다
-    if (stay.length && !stay.some((d) => (p.stay ?? "").includes(d))) return false;
-    if (tshirt.length && !tshirt.includes(p.tshirt ?? "")) return false;
-    if (transport.length && !transport.includes(p.transport ?? "")) return false;
-    // 하나만 골랐을 때만 거른다. 둘 다면 전체와 같다
-    if (joined.length === 1 && (joined[0] === JOINED) !== Boolean(p.auth_user_id))
+    if (stay.length && !stay.some((d) => (p.stay ?? "").includes(d)))
       return false;
-    if (checked.length === 1 && (checked[0] === CHECKED) !== Boolean(p.checked_in_at))
+    if (tshirt.length && !tshirt.includes(p.tshirt ?? "")) return false;
+    if (transport.length && !transport.includes(p.transport ?? ""))
+      return false;
+    // 하나만 골랐을 때만 거른다. 둘 다면 전체와 같다
+    if (
+      joined.length === 1 &&
+      (joined[0] === JOINED) !== Boolean(p.auth_user_id)
+    )
+      return false;
+    if (
+      checked.length === 1 &&
+      (checked[0] === CHECKED) !== Boolean(p.checked_in_at)
+    )
       return false;
     if (onlyAdmin && p.role !== "admin") return false;
     return true;
@@ -318,14 +324,9 @@ export default function CheckinPanel({
       <div className="sec-title">
         <b>참가자 명단</b>
       </div>
+      {/* QR 스캔은 대시보드 맨 아래로 갔다 — 찍히면 그 위 피드에 바로 붙는다 */}
       <div className="qr-strip">
-        <button
-          className="btn accent qr-main"
-          onClick={() => (demo ? showToast(DEMO_MSG) : setScanning(true))}
-        >
-          QR 스캔
-        </button>
-        <button className="btn ghost" onClick={() => setAdding(true)}>
+        <button className="btn ghost qr-main" onClick={() => setAdding(true)}>
           참가자 추가
         </button>
       </div>
@@ -338,10 +339,30 @@ export default function CheckinPanel({
       </div>
       {/* 걸어 둔 조건이 하나라도 있으면 초기화가 나온다 */}
       <div className="filters">
-        <MultiFilter label="구분" options={cellOpts} value={cell} onChange={setCell} />
-        <MultiFilter label="도착" options={arriveOpts} value={arrive} onChange={setArrive} />
-        <MultiFilter label="숙박" options={stayOpts} value={stay} onChange={setStay} />
-        <MultiFilter label="티셔츠" options={tshirtOpts} value={tshirt} onChange={setTshirt} />
+        <MultiFilter
+          label="구분"
+          options={cellOpts}
+          value={cell}
+          onChange={setCell}
+        />
+        <MultiFilter
+          label="도착"
+          options={arriveOpts}
+          value={arrive}
+          onChange={setArrive}
+        />
+        <MultiFilter
+          label="숙박"
+          options={stayOpts}
+          value={stay}
+          onChange={setStay}
+        />
+        <MultiFilter
+          label="티셔츠"
+          options={tshirtOpts}
+          value={tshirt}
+          onChange={setTshirt}
+        />
         <MultiFilter
           label="교통편"
           options={transportOpts}
@@ -455,9 +476,6 @@ export default function CheckinPanel({
         }}
       />
 
-      {scanning && (
-        <QrScanner onResult={onScanResult} onClose={() => setScanning(false)} />
-      )}
       <Toast toast={toast} />
     </>
   );
