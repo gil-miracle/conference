@@ -34,6 +34,7 @@ const WHAT: Record<string, string> = {
   sheet_sync: "명단 동기화",
   host: "진행자 지정",
   role: "관리자 지정",
+  photographer: "사진 담당 지정",
   wordcard_reset: "말씀카드 초기화",
 };
 

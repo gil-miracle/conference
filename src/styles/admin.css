@@ -511,7 +511,7 @@
   background: none;
 }
 /* 집는 동안에는 그림을 브라우저가 끌고 가지 않게 */
-.gal-mod .cell img { -webkit-user-drag: none; user-select: none; }
+.gal-mod .cell img { -webkit-user-drag: none; user-select: none; -webkit-touch-callout: none; }
 /* 집힌 칸 — 들려 있다는 것이 보여야 어디로 가는지 알 수 있다 */
 .gal-mod .cell.held {
   outline: 2px solid var(--coral);
@@ -802,6 +802,12 @@
   border-color: rgba(47, 111, 176, 0.55);
 }
 .mchip-empty { font-size: 0.78rem; color: var(--ink-60); }
+/* 사진 담당 — 갤러리에 올리기만. 진행자·관리자 옆에 서므로 셋이 다른 색 */
+.tagit[data-g="사진"] {
+  color: #5b4bb5;
+  background: rgba(91, 75, 181, 0.1);
+  border-color: rgba(91, 75, 181, 0.5);
+}
 .tagit[data-g="관리자"] {
   color: #8a5313;
   background: rgba(239, 154, 71, 0.16);

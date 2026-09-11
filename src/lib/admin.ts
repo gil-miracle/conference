@@ -10,6 +10,8 @@ export type AdminMe = {
   role: string;
   /** 레크리에이션 점수를 넣을 수 있는가 — 역할과 독립이다 */
   is_host: boolean;
+  /** 갤러리에 사진을 올릴 수 있는가 — 역시 역할과 독립이다 (0051) */
+  is_photographer?: boolean;
 };
 
 export type AdminCtx =

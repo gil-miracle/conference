@@ -47,6 +47,11 @@ export default function ParticipantRow({
               진행자
             </span>
           )}
+          {p.is_photographer && (
+            <span className="tagit" data-g="사진">
+              사진
+            </span>
+          )}
         </button>
         {/* 없는 값은 가운데점까지 같이 빠진다 — 교역자·멘토는 생년월일이 없다 */}
         <small>
@@ -62,14 +67,22 @@ export default function ParticipantRow({
         {/* 데스크에서 "이 사람 언제 어떻게 오는지"를 바로 보게 한다 */}
         {(arrive || p.tshirt || p.inviter) && (
           <small>
-            {[arrive, p.tshirt && `티셔츠 ${p.tshirt}`, p.inviter && `${p.inviter} 초청`]
+            {[
+              arrive,
+              p.tshirt && `티셔츠 ${p.tshirt}`,
+              p.inviter && `${p.inviter} 초청`,
+            ]
               .filter(Boolean)
               .join(" · ")}
           </small>
         )}
       </div>
       {p.checked_in_at ? (
-        <button className="done" title="탭하면 체크인 취소" onClick={onToggleCheckin}>
+        <button
+          className="done"
+          title="탭하면 체크인 취소"
+          onClick={onToggleCheckin}
+        >
           ✓ {fmtTime(p.checked_in_at)}
         </button>
       ) : (

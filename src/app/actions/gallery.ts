@@ -7,6 +7,13 @@ import { NEED_BIND } from "@/lib/messages";
 import { getBoundParticipant } from "@/lib/participant";
 
 const FOLDER = "miracle2026";
+
+/** 올릴 수 있는 사람 — 운영진, 그리고 사진 담당으로 지정된 사람(0051).
+    정책(is_photographer())과 같은 판단이다. 여기서 한 번 더 보는 건 서명을
+    내주기 전에 막으려는 것 — 서명만 받아 가면 Cloudinary에는 올라간다 */
+function canUpload(me: { role: string; is_photographer?: boolean | null }) {
+  return me.role === "admin" || Boolean(me.is_photographer);
+}
 const ALLOWED_FORMATS = "jpg,jpeg,png,webp,heic,gif";
 
 export type UploadSignature = {
@@ -42,8 +49,11 @@ export async function getUploadSignature(): Promise<
 
   const ctx = await getBoundParticipant();
   if (!ctx) return { ok: false, message: NEED_BIND };
-  if (ctx.me.role !== "admin")
-    return { ok: false, message: "사진은 운영진만 올릴 수 있어요." };
+  if (!canUpload(ctx.me))
+    return {
+      ok: false,
+      message: "사진은 운영진과 사진 담당만 올릴 수 있어요.",
+    };
 
   const timestamp = Math.floor(Date.now() / 1000);
   const publicId = `${ctx.me.id}-${timestamp}-${randomUUID().slice(0, 8)}`;
@@ -84,8 +94,11 @@ export async function savePhoto(input: {
   day?: number;
 }) {
   const ctx = await getBoundParticipant();
-  if (!ctx || ctx.me.role !== "admin")
-    return { ok: false as const, message: "사진은 운영진만 올릴 수 있어요." };
+  if (!ctx || !canUpload(ctx.me))
+    return {
+      ok: false as const,
+      message: "사진은 운영진과 사진 담당만 올릴 수 있어요.",
+    };
 
   const expectedPrefix = `${FOLDER}/${ctx.me.id}-`;
   if (
@@ -105,7 +118,10 @@ export async function savePhoto(input: {
       width: clamp(input.width),
       height: clamp(input.height),
       // 1~3 밖이면 비워 보낸다 — DB가 올린 날로 채운다 (0049)
-      day: input.day && input.day >= 1 && input.day <= 3 ? Math.floor(input.day) : null,
+      day:
+        input.day && input.day >= 1 && input.day <= 3
+          ? Math.floor(input.day)
+          : null,
     })
     .select()
     .single();

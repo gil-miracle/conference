@@ -27,6 +27,7 @@ export type AuditAction =
   | "sheet_sync"
   | "host"
   | "role"
+  | "photographer"
   | "wordcard_reset";
 
 type Ctx = Extract<AdminCtx, { demo: false }> | { supabase: unknown; me: { id: string; name: string } };

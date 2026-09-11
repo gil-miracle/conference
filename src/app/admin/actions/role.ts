@@ -24,13 +24,36 @@ export async function setHost(participantId: string, isHost: boolean) {
     .eq("id", participantId)
     .select("id,name");
   if (error) return { ok: false as const, message: error.message };
-  if (!data?.length) return { ok: false as const, message: "변경되지 않았어요." };
+  if (!data?.length)
+    return { ok: false as const, message: "변경되지 않았어요." };
 
   await logAdmin(ctx, "host", data[0].name, { on: isHost });
   revalidatePath("/admin");
   return {
     ok: true as const,
     message: isHost ? "진행자로 지정했어요." : "진행자에서 내렸어요.",
+  };
+}
+
+/** 사진 담당 지정·해제 — 갤러리에 올릴 수 있는가. 역할과 독립이다 (0051) */
+export async function setPhotographer(participantId: string, on: boolean) {
+  const ctx = await getAdminContext();
+  if (!ctx) return { ok: false as const, message: "권한이 없어요." };
+
+  const { data, error } = await ctx.supabase
+    .from("participants")
+    .update({ is_photographer: on })
+    .eq("id", participantId)
+    .select("id,name");
+  if (error) return { ok: false as const, message: error.message };
+  if (!data?.length)
+    return { ok: false as const, message: "변경되지 않았어요." };
+
+  await logAdmin(ctx, "photographer", data[0].name, { on });
+  revalidatePath("/admin");
+  return {
+    ok: true as const,
+    message: on ? "사진 담당으로 지정했어요." : "사진 담당에서 내렸어요.",
   };
 }
 
@@ -51,9 +74,13 @@ export async function setRole(participantId: string, role: "admin" | "member") {
     .eq("id", participantId)
     .select("id,name");
   if (error) return { ok: false as const, message: error.message };
-  if (!data?.length) return { ok: false as const, message: "변경되지 않았어요." };
+  if (!data?.length)
+    return { ok: false as const, message: "변경되지 않았어요." };
 
   await logAdmin(ctx, "role", data[0].name, { role });
   revalidatePath("/admin");
-  return { ok: true as const, message: role === "admin" ? "관리자로 지정했어요." : "관리자에서 내렸어요." };
+  return {
+    ok: true as const,
+    message: role === "admin" ? "관리자로 지정했어요." : "관리자에서 내렸어요.",
+  };
 }

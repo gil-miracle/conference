@@ -184,6 +184,8 @@ export type AdminParticipant = SignupInfo & {
   role: "member" | "admin";
   /** 레크리에이션 점수를 넣을 수 있는가 — 역할과 독립이다 */
   is_host: boolean;
+  /** 갤러리에 사진을 올릴 수 있는가 — 올리기만이다. 내리기는 운영진 */
+  is_photographer: boolean;
   /** sheet = 시트 동기화로 들어온 사람, manual = 화면에서 직접 넣은 사람 */
   source: string;
   checked_in_at: string | null;

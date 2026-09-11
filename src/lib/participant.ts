@@ -16,7 +16,7 @@ export async function getBoundParticipant() {
 
   const { data: me } = await supabase
     .from("participants")
-    .select("id,name,role")
+    .select("id,name,role,is_photographer")
     .eq("auth_user_id", user.id)
     .maybeSingle();
   if (!me) return null;

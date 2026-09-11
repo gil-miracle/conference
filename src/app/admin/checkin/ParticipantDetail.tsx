@@ -8,7 +8,7 @@ import { SIGNUP_FIELDS } from "@/lib/participant-fields";
 import { useAdminDemo } from "../AdminMode";
 import { assignRoom, setNoStay } from "../actions/rooms";
 import { assignTeam } from "../actions/teams";
-import { setHost, setRole } from "../actions/role";
+import { setHost, setPhotographer, setRole } from "../actions/role";
 import {
   removeParticipant,
   resetWordcard,
@@ -209,6 +209,11 @@ export default function ParticipantDetail({
                   진행자
                 </span>
               )}
+              {p.is_photographer && (
+                <span className="tagit" data-g="사진">
+                  사진
+                </span>
+              )}
               {p.no_stay && (
                 <span className="tagit" data-g="숙박 안 함">
                   숙박 안 함
@@ -362,6 +367,19 @@ export default function ParticipantDetail({
                   onClick={toggleHost}
                 >
                   {p.is_host ? "진행자에서 내리기" : "진행자로 지정"}
+                </button>
+                {/* 사진 담당 — 갤러리에 올리기만. 관리자 권한을 주지 않고도
+                    현장에서 찍는 사람이 바로 올릴 수 있게 */}
+                <button
+                  className="btn sm ghost full"
+                  disabled={busy}
+                  onClick={() =>
+                    run(() => setPhotographer(p.id, !p.is_photographer))
+                  }
+                >
+                  {p.is_photographer
+                    ? "사진 담당에서 내리기"
+                    : "사진 담당으로 지정"}
                 </button>
                 <div className="pdetail-row2">
                   <button
