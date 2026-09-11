@@ -844,12 +844,14 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   width: 92px;
   aspect-ratio: 16 / 9;
   padding: 0;
-  border: 2px solid transparent;
-  background: var(--ink);
+  /* 테두리는 두르지 않는다 — 고른 편은 밝기만으로 구분한다. 굵은 선이 그림보다
+     먼저 보였다 (2026-09-12) */
+  border: none;
+  background: transparent;
   cursor: pointer;
   /* 고르지 않은 편은 한 걸음 물러나 있게 */
   opacity: 0.55;
-  transition: opacity 0.15s ease, border-color 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 .vd-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .vd-thumb span {
@@ -861,7 +863,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   font-size: 0.78rem;
 }
 .vd-thumb:hover { opacity: 0.8; }
-.vd-thumb.on { opacity: 1; border-color: var(--coral); }
+.vd-thumb.on { opacity: 1; }
 
 @media (max-width: 380px) {
   .vd-thumb { width: 78px; }
