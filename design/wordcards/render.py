@@ -283,7 +283,7 @@ def page_html(ratio: str, rows: list[tuple[str, str, str, str]]) -> str:
         bg = data_uri(ART / "bg-square.jpg")
         css = f"""
         .card{{position:relative;width:{w}px;height:{h}px;background:{PAPER};
-          border:2px solid {INK};box-sizing:border-box;padding:{r['pad']}px;
+          box-sizing:border-box;padding:{r['pad']}px;
           display:flex;gap:{r['gap']}px;overflow:hidden}}
         .col{{width:{r['img_w']}px;flex:0 0 auto;overflow:hidden}}
         .col img{{width:100%;height:100%;object-fit:cover;object-position:38% center;display:block}}
