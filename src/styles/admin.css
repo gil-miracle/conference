@@ -151,7 +151,6 @@
   color: var(--ink-60);
   white-space: nowrap;
 }
-
 /* 대시보드 피드 — 이름 아래 방·조·티셔츠·멘토 칩 */
 .feed .row.ci { align-items: flex-start; padding: 14px 16px; }
 .feed .row.ci .who { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
@@ -628,8 +627,9 @@
   letter-spacing: 0.22em;
   opacity: 0.6;
 }
+/* 폰에서는 화면 폭을 거의 다 쓰고, 태블릿에서는 높이가 먼저 막는다 */
 .scan-box {
-  width: min(78vw, 340px);
+  width: min(92vw, 62vh, 520px);
   aspect-ratio: 1/1;
   border: 1px solid rgba(250, 246, 238, 0.4);
   overflow: hidden;
@@ -641,7 +641,7 @@
   font-size: 0.92rem;
   text-align: center;
   word-break: keep-all;
-  max-width: 340px;
+  max-width: 520px;
 }
 .scan-result b { color: var(--peach); }
 

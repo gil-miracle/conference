@@ -1,4 +1,6 @@
 import QRCode from "qrcode";
+import CheckinWatch from "@/components/profile/CheckinWatch";
+import QrZoom from "@/components/profile/QrZoom";
 import { fmtDateTime } from "@/lib/format";
 
 /**
@@ -33,12 +35,11 @@ export default async function QrCard({
   return (
     <div className="my-card center">
       <div className="eyebrow">CHECK-IN QR</div>
-      <div
-        className="qr"
-        // qrcode 라이브러리가 만든 신뢰 가능한 SVG 문자열
-        dangerouslySetInnerHTML={{ __html: qrSvg }}
-      />
+      {/* 누르면 화면 가득 — 데스크 스캐너에는 카드 안의 크기가 작다 */}
+      <QrZoom svg={qrSvg} />
       <small>체크인 데스크에서 이 화면을 보여주세요</small>
+      {/* 찍히는 순간 이 카드가 완료 카드로 바뀌게 — 새로고침 없이 */}
+      <CheckinWatch />
     </div>
   );
 }

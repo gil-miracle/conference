@@ -44,7 +44,15 @@ export default function QrScanner({
         scanner = inst;
         await inst.start(
           { facingMode: "environment" },
-          { fps: 8, qrbox: 230 },
+          {
+            fps: 8,
+            // 읽는 영역은 화면의 8할 — 고정 230px이면 큰 화면에서 가운데 조그맣게
+            // 남아 조준이 까다롭다. 참가자 QR도 이제 화면 가득이라 넉넉히 잡는다
+            qrbox: (w: number, h: number) => {
+              const side = Math.floor(Math.min(w, h) * 0.8);
+              return { width: side, height: side };
+            },
+          },
           async (text) => {
             const token = text.trim();
             if (!UUID_RE.test(token)) return;

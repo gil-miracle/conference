@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { drawMyWordcard } from "@/app/actions/wordcard";
 
 /**
@@ -40,6 +40,21 @@ export default function WordcardDraw({
   const [drawing, setDrawing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
+  /* 그림 파일을 미리 받아 둔다. iOS는 공유 시트를 「누른 그 순간」에만 열어
+     줘서, 누른 뒤에 받아 오면 늦다 */
+  const [blob, setBlob] = useState<Blob | null>(null);
+  useEffect(() => {
+    if (!slug) return;
+    let gone = false;
+    setBlob(null);
+    fetch(`/wordcards/${kind.dir}${slug}.jpg`)
+      .then((r) => (r.ok ? r.blob() : null))
+      .then((b) => !gone && setBlob(b))
+      .catch(() => {});
+    return () => {
+      gone = true;
+    };
+  }, [slug, kind]);
 
   async function draw() {
     setDrawing(true);
@@ -51,19 +66,31 @@ export default function WordcardDraw({
   }
 
   async function save() {
-    if (!slug) return;
+    if (!slug || !blob) return;
     setSaving(true);
+    setFailed(false);
+    const name = `MIRACLE2026-말씀카드-${kind.file}.jpg`;
     try {
-      // a[download]는 같은 출처의 파일에만 듣는다 — 받아서 넘겨준다
-      const res = await fetch(`/wordcards/${kind.dir}${slug}.jpg`);
-      const url = URL.createObjectURL(await res.blob());
+      /*
+       * 폰에서는 공유 시트로 넘긴다 — 거기 「이미지 저장」이 있다.
+       * a[download]는 iOS에서 사진 앱이 아니라 파일 내려받기 화면으로 가서,
+       * 받은 사람이 어디 갔는지 모른다. 공유를 못 여는 브라우저(데스크톱)만
+       * 예전처럼 파일로 내려준다.
+       */
+      const file = new File([blob], name, { type: "image/jpeg" });
+      if (typeof navigator.canShare === "function" && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file] });
+        return;
+      }
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `MIRACLE2026-말씀카드-${kind.file}.jpg`;
+      a.download = name;
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
-    } catch {
-      setFailed(true);
+    } catch (e) {
+      // 시트를 그냥 닫은 것은 실패가 아니다
+      if (!(e instanceof DOMException && e.name === "AbortError")) setFailed(true);
     } finally {
       setSaving(false);
     }
@@ -107,9 +134,12 @@ export default function WordcardDraw({
         {/* 미리 그려 둔 카드 — next/image 미사용 (정적 파일 그대로) */}
         <img src={`/wordcards/${kind.dir}${slug}.jpg`} alt={`내 말씀카드 (${kind.label})`} />
       </div>
-      <button className="btn wc-save" disabled={saving} onClick={save}>
+      <button className="btn wc-save" disabled={saving || !blob} onClick={save}>
         {saving ? "저장하는 중…" : `${kind.label} 카드 저장하기`}
       </button>
+      {failed && (
+        <p className="msg err">저장이 안 되면 그림을 길게 눌러 「사진에 저장」을 골라 주세요.</p>
+      )}
     </>
   );
 }
