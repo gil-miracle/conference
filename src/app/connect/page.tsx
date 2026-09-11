@@ -23,12 +23,9 @@ export default async function BindPage() {
   const rejected = my?.status === "rejected";
   if (my && !rejected) redirect("/profile");
 
-  // 소셜 프로필 이름을 미리 채워 입력 부담을 줄인다 (수정 가능)
-  const meta = user.user_metadata ?? {};
-  const defaultName =
-    (typeof meta.name === "string" && meta.name) ||
-    (typeof meta.full_name === "string" && meta.full_name) ||
-    "";
+  // 소셜 프로필 이름은 미리 채우지 않는다 — 카톡·구글 이름은 별명이거나
+  // 영문이라 신청서 이름과 다른 경우가 많고, 그대로 보내면 반려된다.
+  // 빈 칸이면 신청 때 적은 이름을 떠올려 적는다 (2026-09-11 결정)
 
   return (
     <div className="bind-wrap">
@@ -52,7 +49,7 @@ export default async function BindPage() {
           </>
         )}
       </p>
-      <BindForm defaultName={defaultName} />
+      <BindForm />
     </div>
   );
 }

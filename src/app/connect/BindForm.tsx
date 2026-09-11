@@ -14,7 +14,7 @@ import {
  *   ① 이름·생년월일·전화번호로 신청 명단 조회 — 없으면 여기서 끝
  *   ② 본인이 맞는지 확인받고 가입 요청 전송 → 관리자 승인 대기
  */
-export default function BindForm({ defaultName }: { defaultName: string }) {
+export default function BindForm() {
   const [lookup, lookupFormAction, looking] = useActionState<
     LookupResult | null,
     FormData
@@ -24,7 +24,7 @@ export default function BindForm({ defaultName }: { defaultName: string }) {
     FormData
   >(requestAction, null);
 
-  const [name, setName] = useState(defaultName);
+  const [name, setName] = useState("");
   const [birth, setBirth] = useState("");
   const [phone, setPhone] = useState("");
   /* 교역자·멘토는 신청서를 안 써서 생년월일이 없다 */
