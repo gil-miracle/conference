@@ -168,9 +168,17 @@ textarea.f-input { resize: vertical; min-height: 96px; line-height: 1.7; }
 .msg.ok { border-color: var(--green); color: var(--green); }
 
 /* ── 토스트 ── */
+/* 시트(.sheet)도 함께 쓰는 올라오기 */
 @keyframes up {
   from { transform: translateY(64px); opacity: 0.3; }
   to { transform: none; opacity: 1; }
+}
+/* 토스트는 left:50% + translateX(-50%) 로 가운데를 잡는다. 키프레임이 transform 을
+   통째로 덮으므로 -50% 를 안에 넣은 전용 키프레임을 쓴다 — 공용 `up` 을 쓰면
+   올라오는 0.3초 동안 오른쪽에 있다가 끝나는 순간 왼쪽으로 튄다 */
+@keyframes toast-up {
+  from { transform: translate(-50%, 64px); opacity: 0.3; }
+  to { transform: translate(-50%, 0); opacity: 1; }
 }
 .toast {
   position: fixed;
@@ -182,7 +190,7 @@ textarea.f-input { resize: vertical; min-height: 96px; line-height: 1.7; }
   font-size: 0.84rem;
   padding: 12px 22px;
   z-index: 140;
-  animation: up 0.3s;
+  animation: toast-up 0.3s;
   max-width: min(88vw, 560px);
   word-break: keep-all;
   text-align: center;
