@@ -60,9 +60,11 @@ RATIOS = {
     "phone": dict(
         w=1080, h=2340, per_page=6,
         side=0.09,
-        ref_px=33, ref_ls=0.28, ref_top=0.294,
-        verse_px=51, verse_lh=2.12, verse_top=0.3829,
-        foot_px=32, foot_ls=0.26, foot_top=0.570,
+        # 구절·말씀·소속 사이를 좁혀 소속 줄이 산에 닿지 않게 한다 (2026-09-11).
+        # 폰 카드는 44장 모두 3줄 이하라 소속을 올려도 겹치지 않는다
+        ref_px=33, ref_ls=0.28, ref_top=0.290,
+        verse_px=51, verse_lh=2.12, verse_top=0.360,
+        foot_px=32, foot_ls=0.26, foot_top=0.528,
     ),
 }
 
