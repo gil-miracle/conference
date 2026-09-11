@@ -9,6 +9,20 @@ import TeamCard from "@/components/profile/TeamCard";
 import QrCard from "@/components/profile/QrCard";
 import { MY_PREVIEW } from "@/lib/demo";
 import { getSiteContext } from "@/lib/data/site";
+import { getSupabaseServer } from "@/lib/supabase/server";
+
+/** 내 티셔츠 크기 한 칸 — 체크인한 사람에게만 필요하다 */
+async function myTshirt(participantId: string | null): Promise<string | null> {
+  if (!participantId) return null;
+  const supabase = await getSupabaseServer();
+  if (!supabase) return null;
+  const { data } = await supabase
+    .from("participants")
+    .select("tshirt")
+    .eq("id", participantId)
+    .maybeSingle();
+  return data?.tshirt ?? null;
+}
 
 export const metadata: Metadata = { title: "내 정보 — MIRACLE 2026" };
 export const dynamic = "force-dynamic";
@@ -22,6 +36,9 @@ export default async function ProfilePage({
   const { demo } = await searchParams;
   const ctx = await getSiteContext(demo === "1");
   const summary = ctx.summary;
+  // 티셔츠 크기는 요약 RPC에 없다 — 체크인 뒤 완료 카드에서만 쓰는 한 칸이라
+  // 그때만 내 줄에서 읽는다 (participants_select_own)
+  const tshirt = await myTshirt(summary?.checked_in_at ? summary.id : null);
   const menus = ctx.menus;
 
   // 비로그인 방문자에게는 예시 화면을 보여준다 — 잠긴 화면만 띄우면
@@ -54,11 +71,13 @@ export default async function ProfilePage({
         ) : (
           <div className="reveal">
             {/* 체크인 데스크에서 제일 먼저 여는 화면이다 — QR이 맨 위.
-                체크인되면 QR 카드는 내려가고 아래 카드들이 그 자리를 잇는다 */}
-            {summary.checkin_token && !summary.checked_in_at && (
+                체크인되면 같은 자리가 「체크인 완료 · 티셔츠 크기」로 바뀐다 —
+                데스크가 티셔츠를 건네며 화면을 보고, 참가자도 됐다는 것을 안다 */}
+            {summary.checkin_token && (
               <QrCard
                 token={summary.checkin_token}
                 checkedInAt={summary.checked_in_at}
+                tshirt={tshirt}
               />
             )}
             {/* 체크인 전에는 QR만 둔다. 숙소·조·말씀카드는 데스크를 지난 뒤의
