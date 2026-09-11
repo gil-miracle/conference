@@ -4,13 +4,13 @@ import { useState } from "react";
 import { drawMyWordcard } from "@/app/actions/wordcard";
 
 /**
- * 같은 말씀을 세 모양으로 — SNS에 올릴 정사각, 잠금화면에 걸 폰 배경, 뽑아
- * 둘 인쇄용. 그림은 모두 미리 그려 두었고 여기서는 고르기만 한다.
+ * 같은 말씀을 세 모양으로 — SNS에 올릴 정사각, 인화할 5x7, 잠금화면에 걸
+ * 폰 배경. 그림은 모두 미리 그려 두었고 여기서는 고르기만 한다.
  */
 const KINDS = [
-  { key: "square", label: "SNS", dir: "", file: "정사각" },
-  { key: "phone", label: "폰 배경", dir: "phone/", file: "폰배경" },
-  { key: "print", label: "인쇄용", dir: "5x7/", file: "5x7" },
+  { key: "square", label: "정사각", dir: "", file: "정사각" },
+  { key: "print", label: "5x7", dir: "5x7/", file: "5x7" },
+  { key: "phone", label: "폰배경", dir: "phone/", file: "폰배경" },
 ] as const;
 type Kind = (typeof KINDS)[number];
 
