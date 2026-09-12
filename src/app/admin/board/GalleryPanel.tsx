@@ -6,7 +6,7 @@ import PhotoViewer from "@/components/gallery/PhotoViewer";
 import { useConfirm } from "@/components/Confirm";
 import { useToast } from "@/hooks/useToast";
 import { thumbUrl } from "@/lib/cloudinary";
-import { DAYS, photoDay } from "@/lib/gallery-days";
+import { DAYS, photoDay, todayDay } from "@/lib/gallery-days";
 import { uploadOnePhoto } from "@/lib/gallery-upload";
 import type { Photo } from "@/lib/types";
 import {
@@ -51,8 +51,7 @@ export default function GalleryPanel({
   const rowsRef = useRef(rows);
   rowsRef.current = rows;
   /* 오늘이 행사 중이면 오늘 칸으로 연다 — 현장에서 열면 방금 찍은 것을 올리는 자리다 */
-  // 참가자 갤러리와 같게 늘 DAY 1부터 — 올릴 날은 어차피 올릴 때 고른다 (2026-09-12 결정)
-  const [day, setDay] = useState(0);
+  const [day, setDay] = useState(todayDay);
   const dayRef = useRef(day);
   dayRef.current = day;
   const [uploading, setUploading] = useState<string | null>(null);
