@@ -3,13 +3,33 @@
 import { useMemo, useState } from "react";
 import type { SongSet } from "@/lib/content";
 import { ChevronIcon, PlayIcon } from "@/components/icons";
+import { DAYS } from "@/lib/gallery-days";
+
+/**
+ * 오늘 집회의 탭 번호.
+ *
+ * 갤러리처럼 오늘 것부터 연다 — 토요일 저녁에 열면 토요일 집회가 먼저다.
+ * 행사 전이나 지나면 첫 집회. 갤러리는 지나면 마지막 날인데, 찬양은 끝난
+ * 뒤 다시 들을 때 처음부터 듣는 쪽이 맞다 (2026-09-12 결정).
+ *
+ * 날짜 라벨은 「금 11」·「토 12」·「주일 13」 — 숫자가 그날 일(日)이다. 오늘과
+ * 같은 일자의 집회가 여럿이면 앞 것(sort_order 순)을 고른다. 라벨이 없는
+ * 집회는 못 맞추므로 지나간다.
+ */
+function todaySetIndex(sets: SongSet[]): number {
+  const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Seoul" });
+  if (today < DAYS[0] || today > DAYS[DAYS.length - 1]) return 0;
+  const dayOfMonth = String(Number(today.slice(-2)));
+  const i = sets.findIndex((s) => (s.dayLabel ?? "").trim().split(/\s+/).pop() === dayOfMonth);
+  return i >= 0 ? i : 0;
+}
 
 /**
  * 플레이리스트 — 상단 YouTube 플레이어 + 집회 탭 + 트랙 목록.
  * 탭을 바꿔도 재생 중인 곡은 유지되고, 트랙을 누르면 영상만 교체된다.
  */
 export default function Playlist({ sets }: { sets: SongSet[] }) {
-  const [activeSet, setActiveSet] = useState(0);
+  const [activeSet, setActiveSet] = useState(() => todaySetIndex(sets));
   // 재생 중인 곡은 집회를 넘나들 수 있으므로 곡 id로 추적
   const firstPlayable = useMemo(() => {
     for (const set of sets) {
