@@ -154,7 +154,14 @@ export async function getGuestbook(limit = 30): Promise<GuestbookEntry[]> {
   return (data as GuestbookEntry[]) ?? [];
 }
 
-export async function getPhotos(limit = 24): Promise<Photo[]> {
+/**
+ * 갤러리 사진 전부.
+ *
+ * 잘라 받지 않는다. 사흘짜리 행사라 몇백 장이 상한이고 한 줄이 200바이트
+ * 남짓이라 다 받아도 몇십 KB다. 잘라 받으면 날짜 탭에 그날 사진이 빠진다.
+ * PostgREST 기본 상한(1000)만 넘지 않으면 된다 — 넘을 일이 없다.
+ */
+export async function getPhotos(): Promise<Photo[]> {
   const supabase = await getSupabaseServer();
   if (!supabase) return [];
 
@@ -163,6 +170,6 @@ export async function getPhotos(limit = 24): Promise<Photo[]> {
     .select("id,participant_id,cloudinary_public_id,width,height,hidden,sort_order,day,created_at")
     .eq("hidden", false)
     .order("created_at", { ascending: false })
-    .limit(limit);
+    .limit(1000);
   return (data as Photo[]) ?? [];
 }

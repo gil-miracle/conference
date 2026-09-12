@@ -23,7 +23,7 @@ export default async function GalleryPage({
   const loggedIn = await hasAuthCookie();
   const [ctx, loadedPhotos, staff] = await Promise.all([
     getSiteContext(demo === "1"),
-    loggedIn ? getPhotos(200) : Promise.resolve([]),
+    loggedIn ? getPhotos() : Promise.resolve([]),
     loggedIn ? getPhotographerContext() : Promise.resolve(null),
   ]);
   const bound = Boolean(ctx.summary);

@@ -10,16 +10,6 @@ import { DAYS, photoDay, todayDay } from "@/lib/gallery-days";
 import type { Photo } from "@/lib/types";
 
 /**
- * 한 번에 받아 오는 장수.
- *
- * 사흘짜리 행사라 사진이 몇백 장을 넘기 어렵고, 한 줄이 200바이트 남짓이라
- * 넉넉히 받아도 몇십 KB다. 그림 자체는 보이는 것만 받으므로(lazy) 무겁지
- * 않다. 잘게 나눠 받으면 「더 보기」를 누를 때마다 오래된 사진이 위에
- * 끼어들어 읽던 자리를 잃는다.
- */
-const PAGE = 200;
-
-/**
  * 우리의 순간들 — 보는 자리다.
  *
  * 올리고 정리하는 일은 운영진과 사진 담당(0051·0052)의 몫이고, 그 사람에게만
@@ -34,26 +24,14 @@ export default function GalleryGrid({
   /** 운영진 또는 사진 담당 — 관리 화면 링크를 그릴지 */
   canUpload?: boolean;
 }) {
-  const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
+  /* 사흘치를 한 번에 다 받는다 — 한 줄이 200바이트 남짓이라 몇백 장이어도 몇십
+     KB고, 그림은 보이는 것만 받는다(lazy). 잘라 받으면 날짜 탭과 어긋난다 —
+     「이전 사진 더 보기」가 지금 보는 날이 아니라 전체의 오래된 쪽을 늘렸다 */
+  const photos = initialPhotos;
 
   /* 오늘이 행사 중이면 오늘 탭으로 연다 — 현장에서 열면 방금 찍은 것이 보여야 한다 */
   const [day, setDay] = useState(todayDay);
-  const [hasMore, setHasMore] = useState(initialPhotos.length === PAGE);
   const [viewing, setViewing] = useState<number | null>(null);
-
-  async function loadMore() {
-    // 서버는 최신순으로 준다 — 가장 오래된 것보다 더 이전을 청한다
-    const oldest = photos.reduce((a, b) =>
-      a.created_at <= b.created_at ? a : b,
-    );
-    const res = await fetch(
-      `/api/photos?before=${encodeURIComponent(oldest.created_at)}`,
-    );
-    if (!res.ok) return;
-    const more = (await res.json()) as Photo[];
-    setPhotos((prev) => [...prev, ...more]);
-    setHasMore(more.length === PAGE);
-  }
 
   /* 운영진이 정한 차례를 뒤에서부터 — 방금 올린 것이 왼쪽 위에 서고, 오래된
      것이 아래로 내려간다. 사진은 여러 사람 폰에서 모여 와서 올린 시각이 찍은
@@ -128,11 +106,6 @@ export default function GalleryGrid({
             </div>
           ))}
         </div>
-      )}
-      {hasMore && (
-        <button className="btn ghost full mt-14" onClick={loadMore}>
-          이전 사진 더 보기
-        </button>
       )}
 
       {viewing !== null && (
