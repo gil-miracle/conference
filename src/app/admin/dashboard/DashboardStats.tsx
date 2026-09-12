@@ -64,12 +64,10 @@ export default function DashboardStats({ stats }: { stats: AdminStats }) {
       <div className="bar">
         <i style={{ width: `${pct}%` }} />
       </div>
+      {/* 승인 대기·참가 취소는 여기 적지 않는다 — 데스크에서 보는 줄은 도착률과
+          갱신 시각뿐이다. 대기는 참가자 탭의 가입 승인에, 취소는 명단에 있다 */}
       <p className="upd">
         {pct}% ARRIVED · 갱신 {updated}
-        {stats.pending > 0 && ` · 가입 승인 대기 ${stats.pending}`}
-        {/* 취소는 위 어느 칸에도 안 든다 — 「명단은 89인데 왜 86이지」에 답하는 줄 */}
-        {/* 0053을 아직 안 돌린 DB는 이 칸이 없다 — 그것 때문에 대시보드가 죽으면 안 된다 */}
-        {(stats.cancelled?.all ?? 0) > 0 && ` · 참가 취소 ${stats.cancelled.all}`}
       </p>
     </>
   );
