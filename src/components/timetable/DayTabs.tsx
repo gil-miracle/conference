@@ -1,16 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DaySchedule from "./DaySchedule";
 import type { TimetableDay } from "@/lib/content";
-import { DAYS } from "@/lib/gallery-days";
-
-/** 오늘이 행사 며칠째인가 — 행사 밖이면 null. 화면은 정적이라 서버는 오늘을 모른다 */
-function todayId(days: readonly TimetableDay[]): string | null {
-  const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Seoul" });
-  const i = (DAYS as readonly string[]).indexOf(today);
-  return i >= 0 ? (days[i]?.day ?? null) : null;
-}
 
 /**
  * 날짜 탭.
@@ -27,10 +19,10 @@ function todayId(days: readonly TimetableDay[]): string | null {
  * /timetable/2 같은 주소는 살아 있어야 한다. 다만 기록을 쌓지는 않는다 —
  * 탭을 여섯 번 누르고 뒤로 가기를 여섯 번 하게 만들 이유가 없다.
  *
- * 메뉴에서 들어오면(첫 날 주소) 오늘 탭으로 옮긴다. 화면은 정적이라 서버가
- * 오늘을 모르니 마운트 뒤에 한다 — 첫 그림은 첫 날이고 곧 오늘로 바뀐다.
- * 날짜를 짚어 들어온 주소(/timetable/3)는 그대로 둔다 — 그 날을 보려고 온
- * 것이다 (2026-09-12 결정).
+ * 오늘 탭은 여기서 고르지 않는다. 화면은 정적이라 서버가 오늘을 모르고,
+ * 마운트 뒤에 옮기면 첫 날이 잠깐 보였다 바뀐다. 대신 메뉴·탭바 링크가
+ * 처음부터 오늘 날짜 주소를 가리킨다(todayTimetableHref) — 들어온 주소가
+ * 곧 보여 줄 날이라 흔들릴 것이 없다 (2026-09-12 결정).
  */
 export default function DayTabs({
   days,
@@ -45,15 +37,6 @@ export default function DayTabs({
     setDay(next);
     window.history.replaceState(null, "", `/timetable/${next}`);
   };
-
-  useEffect(() => {
-    // 첫 날 주소로 들어왔을 때만 — 메뉴·탭바가 보내는 주소가 그것이다
-    if (initial !== days[0]?.day) return;
-    const today = todayId(days);
-    if (today && today !== initial) go(today);
-    // 처음 한 번만 — 그 뒤 탭 이동은 사람이 한다
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <>

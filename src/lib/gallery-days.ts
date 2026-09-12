@@ -25,3 +25,12 @@ export function photoDay(p: Pick<Photo, "day" | "created_at">): number {
 
 /** 오늘이 행사 며칠째인가 — 현장에서 열면 오늘 칸부터 */
 export const todayDay = () => dayOf(new Date().toISOString());
+
+/**
+ * 오늘의 일정표 주소 — 메뉴·탭바가 쓴다.
+ *
+ * 행사 중이면 오늘 날짜(/timetable/2), 밖이면 첫 날. 링크가 처음부터 오늘을
+ * 가리키면 일정표 화면이 첫 날에서 오늘로 넘어가는 깜빡임이 없다 — 화면은
+ * 정적이라 서버가 오늘을 모르지만, 메뉴는 클라이언트라 안다.
+ */
+export const todayTimetableHref = () => `/timetable/${todayDay() + 1}`;
