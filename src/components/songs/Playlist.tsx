@@ -30,13 +30,17 @@ function todaySetIndex(sets: SongSet[]): number {
  */
 export default function Playlist({ sets }: { sets: SongSet[] }) {
   const [activeSet, setActiveSet] = useState(() => todaySetIndex(sets));
-  // 재생 중인 곡은 집회를 넘나들 수 있으므로 곡 id로 추적
+  // 재생 중인 곡은 집회를 넘나들 수 있으므로 곡 id로 추적.
+  // 처음 곡은 처음 열린 집회(오늘 것)의 첫 곡 — 탭은 오늘인데 곡은 첫날이면
+  // 어긋난다. 그 집회부터 앞으로 찾고, 없으면 처음부터 다시 찾는다
   const firstPlayable = useMemo(() => {
-    for (const set of sets) {
+    const start = todaySetIndex(sets);
+    const order = [...sets.slice(start), ...sets.slice(0, start)];
+    for (const set of order) {
       const found = set.songs.find((s) => s.youtubeId);
       if (found) return found.id;
     }
-    return sets[0]?.songs[0]?.id ?? null;
+    return sets[start]?.songs[0]?.id ?? sets[0]?.songs[0]?.id ?? null;
   }, [sets]);
 
   const [currentId, setCurrentId] = useState<string | null>(firstPlayable);
