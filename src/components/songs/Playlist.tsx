@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { SongSet } from "@/lib/content";
 import { ChevronIcon, PlayIcon } from "@/components/icons";
 import { DAYS } from "@/lib/gallery-days";
@@ -72,6 +72,67 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
     setActiveSet(target.si);
   };
 
+  /*
+   * 영상이 끝나면 같은 집회의 다음 곡으로.
+   *
+   * 유튜브 플레이어는 끝났다는 것을 postMessage로 알린다 — enablejsapi=1로
+   * 열고 듣기 시작하겠다고 한 번 말해 둬야 온다. 별도 SDK 없이 그 메시지만
+   * 받는다.
+   *
+   * 집회는 넘지 않는다. 그 집회의 마지막 곡이 끝나면 멈춘다 — 예배 찬양을
+   * 이어 듣는 것이지 사흘치를 밤새 트는 것이 아니다. 앞뒤 단추는 전처럼
+   * 집회를 가로지른다 (2026-09-12 결정).
+   */
+  const nextInSet = next && at >= 0 && next.si === flat[at].si ? next : null;
+  const nextRef = useRef(nextInSet);
+  nextRef.current = nextInSet;
+  const frame = useRef<HTMLIFrameElement>(null);
+  /* 한 영상에 한 번만 넘긴다 — 끝났다는 신호가 두 모양(onStateChange ·
+     infoDelivery.playerState)으로 겹쳐 올 수 있어, 둘 다 받되 두 번 넘기지 않는다 */
+  const endedFor = useRef<string | null>(null);
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (!e.origin.endsWith("youtube-nocookie.com") && !e.origin.endsWith("youtube.com")) return;
+      if (e.source !== frame.current?.contentWindow) return;
+      let data: { event?: string; info?: number | { playerState?: number } } | null = null;
+      try {
+        data = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+      } catch {
+        return;
+      }
+      // 플레이어가 준비되면 상태 변화를 보내 달라고 한다
+      if (data?.event === "onReady") {
+        frame.current?.contentWindow?.postMessage(
+          JSON.stringify({ event: "listening", id: 1, channel: "widget" }),
+          "*"
+        );
+      }
+      // 0 = ended. 위젯은 onStateChange로도, infoDelivery의 playerState로도 알린다
+      const ended =
+        (data?.event === "onStateChange" && data.info === 0) ||
+        (data?.event === "infoDelivery" &&
+          typeof data.info === "object" &&
+          data.info?.playerState === 0);
+      if (!ended) return;
+      const src = frame.current?.getAttribute("src") ?? "";
+      if (endedFor.current === src) return;
+      endedFor.current = src;
+      goTo(nextRef.current);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+    // goTo는 렌더마다 새로 만들어지지만 하는 일은 같다 — 한 번만 건다
+  }, []);
+
+  // iframe이 새로 붙을 때(곡이 바뀔 때) 듣기 시작하겠다고 말한다 — onReady를
+  // 놓쳤을 때를 위해 load 뒤에도 한 번 더
+  const onFrameLoad = () => {
+    frame.current?.contentWindow?.postMessage(
+      JSON.stringify({ event: "listening", id: 1, channel: "widget" }),
+      "*"
+    );
+  };
+
   if (sets.length === 0) {
     return <p className="msg">아직 등록된 찬양이 없어요.</p>;
   }
@@ -84,7 +145,11 @@ export default function Playlist({ sets }: { sets: SongSet[] }) {
         {current?.song.youtubeId ? (
           <iframe
             key={current.song.youtubeId}
-            src={`https://www.youtube-nocookie.com/embed/${current.song.youtubeId}?rel=0${
+            ref={frame}
+            onLoad={onFrameLoad}
+            // origin은 붙이지 않는다 — 서버에는 window가 없어 하이드레이션이
+            // 어긋나고, 없어도 플레이어는 부모 창으로 메시지를 보낸다
+            src={`https://www.youtube-nocookie.com/embed/${current.song.youtubeId}?rel=0&enablejsapi=1${
               autoplay ? "&autoplay=1" : ""
             }`}
             title={current.song.title}
